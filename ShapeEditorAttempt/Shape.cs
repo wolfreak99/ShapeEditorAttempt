@@ -11,8 +11,11 @@ namespace ShapeEditorAttempt
 {
 	public abstract class Shape
 	{
+		public const int EDGE_WIDTH = 6;
+
 		public Rectangle position;
-		public Point moveOffset;
+		public Point dragOffset;
+		public Size resizeOffset;
 		public Color color;
 
 		public Shape(int x, int y, int width, int height, Color color)
@@ -29,19 +32,37 @@ namespace ShapeEditorAttempt
 
 		public abstract void Draw(Graphics graphics);
 
-		public abstract bool IsPointOverShape(Point point);
+		/// <summary>
+		/// Helps determine if point is over shape or shape edge, and returns the appropriate action.
+		/// </summary>
+		public abstract ShapeClickAction GetPointOverShapeAction(Point point);
 
-		public void ApplyMoveOffset()
+		public void ApplyDragOffset()
 		{
-			position.Location = Utils.SubtractPoints(position.Location, moveOffset);
-			moveOffset = Point.Empty;
+			position.Location = Utils.SubtractPoints(position.Location, dragOffset);
+			dragOffset = Point.Empty;
 		}
 		
-		protected Rectangle PreviewMoveOffset()
+		protected Rectangle PreviewDragOffset()
 		{
 			Rectangle value = position;
-			value.X -= moveOffset.X;
-			value.Y -= moveOffset.Y;
+			value.X -= dragOffset.X;
+			value.Y -= dragOffset.Y;
+			return value;
+		}
+
+		public void ApplyResizeOffset()
+		{
+			position.Width -= resizeOffset.Width;
+			position.Height -= resizeOffset.Height;
+			resizeOffset = Size.Empty;
+		}
+
+		public Rectangle PreviewResizeOffset()
+		{
+			Rectangle value = position;
+			value.Width -= resizeOffset.Width;
+			value.Height -= resizeOffset.Height;
 			return value;
 		}
 

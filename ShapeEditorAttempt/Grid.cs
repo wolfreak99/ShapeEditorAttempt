@@ -11,19 +11,11 @@ namespace ShapeEditorAttempt
 {
 	public static class Grid
 	{
-		public static Shape[] shapes = new Shape[]{new Square(10, 20, 30, 30, Color.Blue), new Square(50, 60, 20, 10, Color.Red)};
 		public static int GridSize = 10;
 
 		public static void Draw(PictureBox picCanvas, PaintEventArgs e)
 		{
 			DrawBackgroundGrid(picCanvas, e);
-			
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			
-			foreach (var s in shapes)
-			{
-				s.Draw(e.Graphics);
-			}
 		}
 
 		public static void DrawBackgroundGrid(PictureBox canvas, PaintEventArgs e)
@@ -45,9 +37,12 @@ namespace ShapeEditorAttempt
 		// Snap to the nearest grid point.
 		public static Point SnapToGrid(Point point)
 		{
-			int x = GridSize * (int)Math.Round((float)point.X / GridSize);
-			int y = GridSize * (int)Math.Round((float)point.Y / GridSize);
-			return new Point(x, y);
+			return new Point(SnapToGrid(point.X), SnapToGrid(point.Y));
+		}
+
+		public static int SnapToGrid(int num)
+		{
+			return GridSize * (int)Math.Round((float)num / GridSize);
 		}
 	}
 }

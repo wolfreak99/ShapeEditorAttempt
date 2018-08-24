@@ -11,14 +11,23 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
+	public enum ShapeClickAction
+	{
+		None,
+		Resize,
+		Drag,
+		Delete,		// Todo
+		// Duplicate	// Todo
+	}
+
 	public partial class Form1 : Form
 	{
-		bool mouseIsDown = false;
+		public static List<Shape> Shapes = new List<Shape>(new Shape[]{new Square(10, 20, 30, 30, Color.Blue), new Square(50, 60, 20, 10, Color.Red)});
 
 		Shape clickedShape = null;
 		Point clickedOrigin = Point.Empty;
+		public static ShapeClickAction clickedShapeAction { get; private set; }
 
-		
 		public Form1()
 		{
 			InitializeComponent();
@@ -27,30 +36,42 @@ namespace ShapeEditorAttempt
 		private void Canvas_Paint(object sender, PaintEventArgs e)
 		{
 			Grid.Draw(Canvas, e);
+			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			foreach (var s in Shapes)
+			{
+				s.Draw(e.Graphics);
+			}
 		}
 
 		private void Canvas_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (!mouseIsDown)
+			if (clickedShapeAction == ShapeClickAction.None)
 				return;
 
 			if (clickedShape != null)
 			{
-				clickedShape.ApplyMoveOffset();
+				if (clickedShapeAction == ShapeClickAction.Drag)
+				{
+					clickedShape.ApplyDragOffset();
+				}
+				else if (clickedShapeAction == ShapeClickAction.Resize)
+				{
+					clickedShape.ApplyResizeOffset();
+				}
 				clickedShape = null;
 				clickedOrigin = Point.Empty;
 			}
 
+			clickedShapeAction = ShapeClickAction.None;
+
 			Canvas.Invalidate();
-			mouseIsDown = false;
-			
 		}
 
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (!mouseIsDown)
+			if (clickedShapeAction == ShapeClickAction.None)
 				return;
-			
+
 			// Todo: Copy over the moving mechanics a little better.
 			if (Grid.SnapToGrid(e.Location) == Grid.SnapToGrid(clickedOrigin) || clickedShape == null)
 				return;
@@ -62,7 +83,14 @@ namespace ShapeEditorAttempt
 			if (moveTo == Point.Empty)
 				return;
 
-			clickedShape.moveOffset = moveTo;
+			if (clickedShapeAction == ShapeClickAction.Drag)
+			{
+				clickedShape.dragOffset = moveTo;
+			}
+			else if (clickedShapeAction == ShapeClickAction.Resize)
+			{
+				clickedShape.resizeOffset = (Size)moveTo;
+			}
 
 			Canvas.Invalidate();
 		}
@@ -70,22 +98,48 @@ namespace ShapeEditorAttempt
 		private void Canvas_MouseDown(object sender, MouseEventArgs e)
 		{
 			// Only run during initial press
-			if (mouseIsDown)
+			if (clickedShapeAction != ShapeClickAction.None)
 				return;
 
-			int i = 0;
-			foreach (Shape s in Grid.shapes)
+			// Check if right button first..
+			if (e.Button == MouseButtons.Right)
 			{
-				if (s.IsPointOverShape(e.Location))
+				
+				for (int i = Shapes.Count - 1; i >= 0; i--)
 				{
-					clickedShape = s;
-					clickedOrigin = Grid.SnapToGrid(e.Location);
+					var s = Shapes[i];
+					var action = s.GetPointOverShapeAction(e.Location);
+					if (action != ShapeClickAction.None)
+					{
+						Shapes.Remove(s);
+						clickedShapeAction = ShapeClickAction.Delete;
+						return;
+					}
 				}
-				i++;
+				return;
 			}
 
-			mouseIsDown = true;
-			//throw new NotImplementedException();
+			clickedOrigin = Grid.SnapToGrid(e.Location);
+			foreach (Shape s in Shapes)
+			{
+				var action = s.GetPointOverShapeAction(e.Location);
+				if (action != ShapeClickAction.None)
+				{
+					clickedShapeAction = action;
+					clickedShape = s;
+					return;
+				}
+			}
+
+			var size = Grid.SnapToGrid(20);
+			var newShape = new Square(clickedOrigin.X - (size / 2), clickedOrigin.Y - (size / 2), size, size, Utils.GetRandomColor());
+			Shapes.Add(newShape);
+			// Force new shape to go into resize mode.
+			clickedShapeAction = ShapeClickAction.Resize;
+			clickedShape = newShape;
+
+			Canvas.Invalidate();
+
 		}
 
 	}

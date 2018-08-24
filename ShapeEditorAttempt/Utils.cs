@@ -26,6 +26,7 @@ namespace ShapeEditorAttempt
 
 			return result;
 		}
+
 		public static Point SubtractPoints(params Point[] points)
 		{
 			if (points.Length == 0)
@@ -42,6 +43,49 @@ namespace ShapeEditorAttempt
 			}
 
 			return result;
+		}
+
+		public static Size AddSizes(params Size[] sizes)
+		{
+			if (sizes.Length == 0)
+				return Size.Empty;
+
+			Size result = sizes[0];
+			for (int i = 1; i < sizes.Length; i++)
+			{
+				if (sizes[i].IsEmpty)
+					continue;
+
+				result.Width += sizes[i].Width;
+				result.Height += sizes[i].Height;
+			}
+
+			return result;
+		}
+
+		public static Size SubtractSizes(params Size[] sizes)
+		{
+			if (sizes.Length == 0)
+				return Size.Empty;
+
+			Size result = sizes[0];
+			for (int i = 1; i < sizes.Length; i++)
+			{
+				if (sizes[i].IsEmpty)
+					continue;
+
+				result.Width += sizes[i].Width;
+				result.Height += sizes[i].Height;
+			}
+
+			return result;
+		}
+
+		static Random random = new Random();
+		public static Color GetRandomColor()
+		{
+			return Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+			
 		}
 	}
 }
