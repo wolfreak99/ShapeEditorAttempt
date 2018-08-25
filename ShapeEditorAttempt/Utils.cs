@@ -9,6 +9,8 @@ namespace ShapeEditorAttempt
 {
 	public class Utils
 	{
+		static Random random = new Random();
+
 		public static Point AddPoints(params Point[] points)
 		{
 			if (points.Length == 0)
@@ -61,12 +63,23 @@ namespace ShapeEditorAttempt
 			});
 		}
 
-
-		static Random random = new Random();
 		public static Color GetRandomColor()
 		{
-			return Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+			// These are modifiable
+			int randomSeed = random.Next(100, 1000),
+				scale = 2;
 
+			// Core cache content
+			int maxValue = 255,
+				divider = maxValue / scale,
+				saturation = divider;
+
+			Random r = new Random(random.Next(randomSeed));
+			return Color.FromArgb(
+				r.Next(maxValue / (maxVal) * saturation,
+				r.Next(maxValue / divider) * saturation,
+				r.Next(maxValue / divider) * saturation
+			);
 		}
 	}
 }
