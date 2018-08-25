@@ -52,7 +52,8 @@ namespace ShapeEditorAttempt
 			this.Canvas.MouseDown += new MouseEventHandler(this.Canvas_MouseDown);
 			this.Canvas.MouseMove += new MouseEventHandler(this.Canvas_MouseMove);
 			this.Canvas.MouseUp += new MouseEventHandler(this.Canvas_MouseUp);
-			
+			this.KeyPress += new KeyPressEventHandler(this.Canvas_KeyPress);
+
 			// 
 			// Form1
 			// 
@@ -66,7 +67,7 @@ namespace ShapeEditorAttempt
 			this.Text = "Form1";
 			((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
 			this.ResumeLayout(false);
-			
+
 		}
 
 		#endregion

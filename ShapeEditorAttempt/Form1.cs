@@ -16,14 +16,17 @@ namespace ShapeEditorAttempt
 		None,
 		Resize,
 		Drag,
-		Delete,		// Todo
-		// Duplicate	// Todo
+		Delete,     // Todo
+					// Duplicate	// Todo
 	}
 
 	public partial class Form1 : Form
 	{
-		public static List<Shape> Shapes = new List<Shape>(new Shape[]{new Square(10, 20, 30, 30, Color.Blue), new Square(50, 60, 20, 10, Color.Red)});
-
+		public static List<Shape> Shapes = new List<Shape>(new Shape[]{
+			new Square(10, 20, 30, 30, Color.Blue),
+			new Square(50, 60, 20, 10, Color.Red)
+		});
+		public bool MakeCircle = false;
 		Shape clickedShape = null;
 		Point clickedOrigin = Point.Empty;
 		public static ShapeClickAction clickedShapeAction { get; private set; }
@@ -50,14 +53,7 @@ namespace ShapeEditorAttempt
 
 			if (clickedShape != null)
 			{
-				if (clickedShapeAction == ShapeClickAction.Drag)
-				{
-					clickedShape.ApplyDragOffset();
-				}
-				else if (clickedShapeAction == ShapeClickAction.Resize)
-				{
-					clickedShape.ApplyResizeOffset();
-				}
+				clickedShape.ApplyOffset();
 				clickedShape = null;
 				clickedOrigin = Point.Empty;
 			}
@@ -102,13 +98,13 @@ namespace ShapeEditorAttempt
 				return;
 
 			// Check if right button first..
+			GraphicsPath path = new GraphicsPath(FillMode.Alternate);
 			if (e.Button == MouseButtons.Right)
 			{
-				
 				for (int i = Shapes.Count - 1; i >= 0; i--)
 				{
 					var s = Shapes[i];
-					var action = s.GetPointOverShapeAction(e.Location);
+					var action = s.GetPointOverShapeAction(path, e.Location);
 					if (action != ShapeClickAction.None)
 					{
 						Shapes.Remove(s);
@@ -120,9 +116,11 @@ namespace ShapeEditorAttempt
 			}
 
 			clickedOrigin = Grid.SnapToGrid(e.Location);
-			foreach (Shape s in Shapes)
+
+			for (int i = Shapes.Count - 1; i >= 0; i--)
 			{
-				var action = s.GetPointOverShapeAction(e.Location);
+				var s = Shapes[i];
+				var action = s.GetPointOverShapeAction(path, e.Location);
 				if (action != ShapeClickAction.None)
 				{
 					clickedShapeAction = action;
@@ -132,7 +130,23 @@ namespace ShapeEditorAttempt
 			}
 
 			var size = Grid.SnapToGrid(20);
-			var newShape = new Square(clickedOrigin.X - (size / 2), clickedOrigin.Y - (size / 2), size, size, Utils.GetRandomColor());
+			Shape newShape;
+			if (MakeCircle)
+			{
+				newShape = new Circle(
+					clickedOrigin.X - (size / 2),
+					clickedOrigin.Y - (size / 2),
+					size, size, Utils.GetRandomColor()
+				);
+			}
+			else
+			{
+				newShape = new Square(
+					clickedOrigin.X - (size / 2),
+					clickedOrigin.Y - (size / 2),
+					size, size, Utils.GetRandomColor()
+				);
+			}
 			Shapes.Add(newShape);
 			// Force new shape to go into resize mode.
 			clickedShapeAction = ShapeClickAction.Resize;
@@ -142,5 +156,9 @@ namespace ShapeEditorAttempt
 
 		}
 
+		public void Canvas_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			MakeCircle = !MakeCircle;
+		}
 	}
 }

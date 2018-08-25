@@ -8,30 +8,33 @@ using System.Threading.Tasks;
 
 namespace ShapeEditorAttempt
 {
-	public class Square : Shape
+	public class Circle : Shape
 	{
-		public Square(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
+		public Circle(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
 		{
 		}
 
 		public override void Draw(Graphics graphics)
 		{
 			Rectangle pos = PreviewOffset();
-
-			graphics.FillRectangle(pen.Brush, pos);
+			graphics.FillEllipse(pen.Brush, pos);
 		}
 
 		public override ShapeClickAction GetPointOverShapeAction(GraphicsPath path, Point point)
 		{
-			// Determine if not overlappint border, and drag.
+			// TODO: Are new GraphicsPaths intensive? Are adding rectangles?
+			// If both, create internal graphicspaths with AddRectangle, and reference IsVisible.
+			// If not, Create either global or local GraphicsPath and add shapes and reset them.
+			
+			// Determine if not overlapping border, and drag.
 			path.Reset();
-			path.AddRectangle(Rectangle.Inflate(position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));
+			path.AddEllipse(Rectangle.Inflate(position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));
 			if (path.IsVisible(point))
 				return ShapeClickAction.Drag;
 
 			// Determine if overlapping border, and resize.
 			path.Reset();
-			path.AddRectangle(position);
+			path.AddEllipse(position);
 			if (path.IsVisible(point))
 				return ShapeClickAction.Resize;
 
