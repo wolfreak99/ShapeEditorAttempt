@@ -76,7 +76,7 @@ namespace ShapeEditorAttempt
 
 			Random r = new Random(random.Next(randomSeed));
 			return Color.FromArgb(
-				r.Next(maxValue / (maxVal) * saturation,
+				r.Next(maxValue / divider) * saturation,
 				r.Next(maxValue / divider) * saturation,
 				r.Next(maxValue / divider) * saturation
 			);
