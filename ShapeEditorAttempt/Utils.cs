@@ -14,17 +14,12 @@ namespace ShapeEditorAttempt
 			if (points.Length == 0)
 				return Point.Empty;
 
-			Point result = points[0];
-			for (int i = 1; i < points.Length; i++)
+			return points.Aggregate((source, next) =>
 			{
-				if (points[i].IsEmpty)
-					continue;
-
-				result.X += points[i].X;
-				result.Y += points[i].Y;
-			}
-
-			return result;
+				source.X += next.X;
+				source.Y += next.Y;
+				return source;
+			});
 		}
 
 		public static Point SubtractPoints(params Point[] points)
@@ -32,17 +27,12 @@ namespace ShapeEditorAttempt
 			if (points.Length == 0)
 				return Point.Empty;
 
-			Point result = points[0];
-			for (int i = 1; i < points.Length; i++)
+			return points.Aggregate((source, next) =>
 			{
-				if (points[i].IsEmpty)
-					continue;
-
-				result.X -= points[i].X;
-				result.Y -= points[i].Y;
-			}
-
-			return result;
+				source.X -= next.X;
+				source.Y -= next.Y;
+				return source;
+			});
 		}
 
 		public static Size AddSizes(params Size[] sizes)
@@ -50,17 +40,12 @@ namespace ShapeEditorAttempt
 			if (sizes.Length == 0)
 				return Size.Empty;
 
-			Size result = sizes[0];
-			for (int i = 1; i < sizes.Length; i++)
+			return sizes.Aggregate((source, next) =>
 			{
-				if (sizes[i].IsEmpty)
-					continue;
-
-				result.Width += sizes[i].Width;
-				result.Height += sizes[i].Height;
-			}
-
-			return result;
+				source.Width += next.Width;
+				source.Height += next.Height;
+				return source;
+			});
 		}
 
 		public static Size SubtractSizes(params Size[] sizes)
@@ -68,24 +53,20 @@ namespace ShapeEditorAttempt
 			if (sizes.Length == 0)
 				return Size.Empty;
 
-			Size result = sizes[0];
-			for (int i = 1; i < sizes.Length; i++)
+			return sizes.Aggregate((source, next) =>
 			{
-				if (sizes[i].IsEmpty)
-					continue;
-
-				result.Width += sizes[i].Width;
-				result.Height += sizes[i].Height;
-			}
-
-			return result;
+				source.Width -= next.Width;
+				source.Height -= next.Height;
+				return source;
+			});
 		}
+
 
 		static Random random = new Random();
 		public static Color GetRandomColor()
 		{
 			return Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
-			
+
 		}
 	}
 }
