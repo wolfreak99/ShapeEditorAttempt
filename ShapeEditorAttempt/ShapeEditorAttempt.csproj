@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Canvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -57,7 +60,11 @@
     <Compile Include="Grid.cs" />
     <Compile Include="Shape.cs" />
     <Compile Include="Circle.cs" />
+    <Compile Include="ShapeClickAction.cs" />
+    <Compile Include="Shapes.cs" />
+    <Compile Include="ShapesHelper.cs" />
     <Compile Include="Square.cs" />
+    <Compile Include="Triangle.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

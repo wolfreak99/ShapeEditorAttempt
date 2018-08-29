@@ -14,39 +14,55 @@ namespace ShapeEditorAttempt
 		{
 		}
 
-		public override void Draw(Graphics graphics)
+		public override void Draw(Canvas sender, Graphics graphics)
 		{
-			Rectangle pos = PreviewOffset();
+			Rectangle pos;
+			if (sender.clickedShape == this)
+			{
+				pos = PreviewOffset(position, sender.clickedShapeAction);
+			}
+			else
+			{
+				pos = position;
+			}
+
 			graphics.FillEllipse(pen.Brush, pos);
 		}
 
 		public override ShapeClickAction GetPointOverShapeAction(GraphicsPath path, Point point)
 		{
-			// TODO: Are new GraphicsPaths intensive? Are adding rectangles?
-			// If both, create internal graphicspaths with AddRectangle, and reference IsVisible.
-			// If not, Create either global or local GraphicsPath and add shapes and reset them.
-			
-			// Determine if not overlapping border, and drag.
-			path.Reset();
-			path.AddEllipse(Rectangle.Inflate(position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));
-			if (path.IsVisible(point))
-				return ShapeClickAction.Drag;
+			if (IsPointOverShape(path, point))
+			{
+				// Determine if not overlapping border, and drag. otherwise resize.
+				path.Reset();
+				path.AddEllipse(Rectangle.Inflate(position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));
+				if (path.IsVisible(point))
+					return ShapeClickAction.Drag;
+				else
+					return ShapeClickAction.Resize;
+			}
+			else
+			{
+				return ShapeClickAction.None;
+			}
+		}
 
+		public override bool IsPointOverShape(GraphicsPath path, Point point)
+		{
 			// Determine if overlapping border, and resize.
 			path.Reset();
 			path.AddEllipse(position);
-			if (path.IsVisible(point))
-				return ShapeClickAction.Resize;
-
-			return ShapeClickAction.None;
+			return path.IsVisible(point);
 		}
-		
 
-		protected override string GetShapeName()
+		public override string GetShapeName()
 		{
-			return "Square";
+			return "Circle";
 		}
 
-
+		public override Shapes GetShapeType()
+		{
+			return Shapes.Circle;
+		}
 	}
 }

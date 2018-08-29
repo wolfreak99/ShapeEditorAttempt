@@ -32,8 +32,8 @@ namespace ShapeEditorAttempt
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.Canvas = new PictureBox();
-			((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
+			this.Canvas = new Canvas();
+			((System.ComponentModel.ISupportInitialize)this.Canvas).BeginInit();
 			this.SuspendLayout();
 			// 
 			// pictureBox1
@@ -48,11 +48,11 @@ namespace ShapeEditorAttempt
 			this.Canvas.Size = new Size(775, 425);
 			this.Canvas.TabIndex = 0;
 			this.Canvas.TabStop = false;
-			this.Canvas.Paint += new PaintEventHandler(this.Canvas_Paint);
-			this.Canvas.MouseDown += new MouseEventHandler(this.Canvas_MouseDown);
-			this.Canvas.MouseMove += new MouseEventHandler(this.Canvas_MouseMove);
-			this.Canvas.MouseUp += new MouseEventHandler(this.Canvas_MouseUp);
-			this.KeyPress += new KeyPressEventHandler(this.Canvas_KeyPress);
+			this.Canvas.Paint += new PaintEventHandler(this.Canvas.Canvas_Paint);
+			this.Canvas.MouseDown += new MouseEventHandler(this.Canvas.Canvas_MouseDown);
+			this.Canvas.MouseMove += new MouseEventHandler(this.Canvas.Canvas_MouseMove);
+			this.Canvas.MouseUp += new MouseEventHandler(this.Canvas.Canvas_MouseUp);
+			this.KeyPress += new KeyPressEventHandler(this.Canvas.Canvas_KeyPress);
 
 			// 
 			// Form1
@@ -72,7 +72,7 @@ namespace ShapeEditorAttempt
 
 		#endregion
 
-		private PictureBox Canvas;
+		private Canvas Canvas;
 	}
 }
 

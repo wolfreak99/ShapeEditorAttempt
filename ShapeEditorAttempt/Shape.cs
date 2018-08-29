@@ -14,21 +14,42 @@ namespace ShapeEditorAttempt
 		public const int EDGE_WIDTH = 6;
 		
 		public Rectangle position;
-		public Point dragOffset;
-		public Size resizeOffset;
+
+		public Point clickActionOffset;
 
 		private Color m_color;
 		public Color color
 		{
-			get {
+			get
+			{
 				return m_color;
 			}
-			set {
+			set
+			{
 				m_color = value;
 				pen = new Pen(m_color, 1);
 			}
 		}
-		public Pen pen { get; private set; }
+
+		private Pen m_pen;
+		/// <summary>
+		/// The pen, which is updated whenever "color" is changed.
+		/// </summary>
+		public Pen pen
+		{
+			get
+			{
+				if (m_pen == null)
+				{
+					throw new NullReferenceException("shape.pen is null because shape.color has not been set.");
+				}
+				return m_pen;
+			}
+			private set
+			{
+				m_pen = value;
+			}
+		}
 
 		public Shape(int x, int y, int width, int height, Color color)
 		{
@@ -42,63 +63,52 @@ namespace ShapeEditorAttempt
 			this.color = color;
 		}
 
-		public abstract void Draw(Graphics graphics);
+		public abstract void Draw(Canvas sender, Graphics graphics);
 
 		/// <summary>
 		/// Helps determine if point is over shape or shape edge, and returns the appropriate action.
 		/// </summary>
 		public abstract ShapeClickAction GetPointOverShapeAction(GraphicsPath path, Point point);
+		public abstract bool IsPointOverShape(GraphicsPath path, Point point);
 
-
-		public Rectangle PreviewOffset()
+		public Rectangle PreviewOffset(Rectangle position, ShapeClickAction action)
 		{
-			switch (Form1.clickedShapeAction)
+			Rectangle value = position;
+			switch (action)
 			{
-			case ShapeClickAction.Drag: return PreviewDragOffset();
-			case ShapeClickAction.Resize: return PreviewResizeOffset();
-			default: return position;
+			case ShapeClickAction.Drag:
+				value.X -= clickActionOffset.X;
+				value.Y -= clickActionOffset.Y;
+				break;
+			case ShapeClickAction.Resize:
+				value.Width -= clickActionOffset.X;
+				value.Height -= clickActionOffset.Y;
+				break;
+			}
+			return value;
+		}
+
+		public void ApplyOffset(ShapeClickAction action)
+		{
+
+			switch (action)
+			{
+			case ShapeClickAction.Drag:
+				position.X -= clickActionOffset.X;
+				position.Y -= clickActionOffset.Y;
+				break;
+			case ShapeClickAction.Resize:
+				position.Width -= clickActionOffset.X;
+				position.Height -= clickActionOffset.Y;
+				break;
 			}
 		}
 
-		public void ApplyOffset()
+		public void UpdateOffset(ShapeClickAction action, Point value)
 		{
-			switch (Form1.clickedShapeAction)
-			{
-			case ShapeClickAction.Drag: ApplyDragOffset(); break;
-			case ShapeClickAction.Resize: ApplyResizeOffset(); break;
-			}
-		}
-
-		public void ApplyDragOffset()
-		{
-			position.X -= dragOffset.X;
-			position.Y -= dragOffset.Y;
-			dragOffset = Point.Empty;
+			clickActionOffset = value;
 		}
 		
-		protected Rectangle PreviewDragOffset()
-		{
-			Rectangle value = position;
-			value.X -= dragOffset.X;
-			value.Y -= dragOffset.Y;
-			return value;
-		}
-
-		public void ApplyResizeOffset()
-		{
-			position.Width -= resizeOffset.Width;
-			position.Height -= resizeOffset.Height;
-			resizeOffset = Size.Empty;
-		}
-
-		public Rectangle PreviewResizeOffset()
-		{
-			Rectangle value = position;
-			value.Width -= resizeOffset.Width;
-			value.Height -= resizeOffset.Height;
-			return value;
-		}
-
 		public override string ToString()
 		{
 			return GetShapeName() + "(" + position.ToString() + ", " + color.ToString() + ")";
@@ -108,10 +118,11 @@ namespace ShapeEditorAttempt
 		/// Used inside ToString: returns the name of the shape.
 		/// </summary>
 		/// <returns>Name of shape (used by ToString)</returns>
-		protected virtual string GetShapeName()
+		public virtual string GetShapeName()
 		{
 			return this.GetType().Name;
 		}
 
+		public abstract Shapes GetShapeType();
 	}
 }
