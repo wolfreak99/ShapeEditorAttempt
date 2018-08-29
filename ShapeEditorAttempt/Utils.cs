@@ -63,23 +63,33 @@ namespace ShapeEditorAttempt
 			});
 		}
 
+		private static Color m_previousRandomColor = new Color();
 		public static Color GetRandomColor()
 		{
-			// These are modifiable
-			int randomSeed = random.Next(100, 1000),
+			Color color;
+			do
+			{
+				// These are modifiable
+				int randomSeed = random.Next(100, 1000),
 				scale = 2;
 
-			// Core cache content
-			int maxValue = 255,
+				// Core cache content
+				int maxValue = 255,
 				divider = maxValue / scale,
 				saturation = divider;
 
-			Random r = new Random(random.Next(randomSeed));
-			return Color.FromArgb(
-				r.Next(maxValue / divider) * saturation,
-				r.Next(maxValue / divider) * saturation,
-				r.Next(maxValue / divider) * saturation
-			);
+				Random r = new Random(random.Next(randomSeed));
+				color = Color.FromArgb(
+					r.Next(maxValue / divider) * saturation,
+					r.Next(maxValue / divider) * saturation,
+					r.Next(maxValue / divider) * saturation
+				);
+			}
+			while (color == m_previousRandomColor);
+
+			m_previousRandomColor = color;
+
+			return color;
 		}
 	}
 }
