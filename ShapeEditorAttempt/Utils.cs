@@ -10,8 +10,8 @@ namespace ShapeEditorAttempt
 	public class Utils
 	{
 		static Random random = new Random();
-
-		public static Point AddPoints(params Point[] points)
+		/*
+		static public Point AddPoints(params Point[] points)
 		{
 			if (points.Length == 0)
 				return Point.Empty;
@@ -24,7 +24,7 @@ namespace ShapeEditorAttempt
 			});
 		}
 
-		public static Point SubtractPoints(params Point[] points)
+		static public Point SubtractPoints(params Point[] points)
 		{
 			if (points.Length == 0)
 				return Point.Empty;
@@ -37,7 +37,7 @@ namespace ShapeEditorAttempt
 			});
 		}
 
-		public static Size AddSizes(params Size[] sizes)
+		static public Size AddSizes(params Size[] sizes)
 		{
 			if (sizes.Length == 0)
 				return Size.Empty;
@@ -50,7 +50,7 @@ namespace ShapeEditorAttempt
 			});
 		}
 
-		public static Size SubtractSizes(params Size[] sizes)
+		static public Size SubtractSizes(params Size[] sizes)
 		{
 			if (sizes.Length == 0)
 				return Size.Empty;
@@ -62,9 +62,9 @@ namespace ShapeEditorAttempt
 				return source;
 			});
 		}
-
-		private static Color m_previousRandomColor = new Color();
-		public static Color GetRandomColor()
+		*/
+		static private Color m_previousRandomColor = new Color();
+		static public Color GetRandomColor()
 		{
 			Color color;
 			do
@@ -90,6 +90,25 @@ namespace ShapeEditorAttempt
 			m_previousRandomColor = color;
 
 			return color;
+		}
+
+
+		static public int WrapIncrement(int current, int increment, int min, int max)
+		{
+			return (current + increment) % max;
+		}
+
+		/// <summary>
+		/// This is useful for incrementing/decrementing through an enum. 
+		/// </summary>
+		/// <param name="current"></param>
+		/// <param name="increment"></param>
+		/// <param name="min">Can be an enum or an int</param>
+		/// <param name="max"></param>
+		/// <returns></returns>
+		static public object WrapIncrement(object current, int increment, object min, object max)
+		{
+			return WrapIncrement((int)current, (int)increment, (int)min, (int)max);
 		}
 	}
 }

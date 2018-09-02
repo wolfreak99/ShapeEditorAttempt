@@ -5,6 +5,9 @@ namespace ShapeEditorAttempt
 {
 	public class Square : Shape
 	{
+		public new const string NAME = "Square";
+		public new const Shapes TYPE = Shapes.Square;
+
 		public Square(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
 		{
 		}
@@ -49,15 +52,15 @@ namespace ShapeEditorAttempt
 			path.AddRectangle(position);
 			return path.IsVisible(point);
 		}
-
+		
 		public override string GetShapeName()
 		{
-			return "Square";
-		}
-		public override Shapes GetShapeType()
-		{
-			return Shapes.Square; 
+			return NAME;
 		}
 
+		public override Shapes GetShapeType()
+		{
+			return TYPE;
+		}
 	}
 }

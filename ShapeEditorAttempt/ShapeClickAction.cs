@@ -6,6 +6,6 @@
 		Resize,
 		Drag,
 		Delete,     // Todo
-					// Duplicate	// Todo
+		// Duplicate	// Todo
 	}
 }

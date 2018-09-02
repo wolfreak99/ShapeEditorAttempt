@@ -10,6 +10,9 @@ namespace ShapeEditorAttempt
 {
 	public class Circle : Shape
 	{
+		public new const string NAME = "Circle";
+		public new const Shapes TYPE = Shapes.Circle;
+
 		public Circle(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
 		{
 		}
@@ -57,12 +60,12 @@ namespace ShapeEditorAttempt
 
 		public override string GetShapeName()
 		{
-			return "Circle";
+			return NAME;
 		}
 
 		public override Shapes GetShapeType()
 		{
-			return Shapes.Circle;
+			return TYPE;
 		}
 	}
 }

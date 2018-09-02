@@ -9,16 +9,16 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-	public static class Grid
+	static public class Grid
 	{
-		public static Size GridSize = new Size(10, 10);
+		static public Size GridSize = new Size(10, 10);
 
-		public static void Draw(PictureBox picCanvas, PaintEventArgs e)
+		static public void Draw(PictureBox picCanvas, PaintEventArgs e)
 		{
 			DrawBackgroundGrid(picCanvas, e);
 		}
 
-		public static void DrawBackgroundGrid(PictureBox canvas, PaintEventArgs e)
+		static public void DrawBackgroundGrid(PictureBox canvas, PaintEventArgs e)
 		{
 			var w = canvas.ClientSize.Width;
 			var h = canvas.ClientSize.Height;
@@ -35,16 +35,16 @@ namespace ShapeEditorAttempt
 		}
 
 		// Snap to the nearest grid point.
-		public static Point SnapToGrid(Point point)
+		static public Point SnapToGrid(Point point)
 		{
 			return new Point(SnapToGrid(point.X, GridSize.Width), SnapToGrid(point.Y, GridSize.Height));
 		}
-		public static Size SnapToGrid(Size size)
+		static public Size SnapToGrid(Size size)
 		{
 			return new Size(SnapToGrid(size.Width, GridSize.Width), SnapToGrid(size.Height, GridSize.Height));
 		}
 
-		public static int SnapToGrid(int num, int gridSize)
+		static public int SnapToGrid(int num, int gridSize)
 		{
 			return gridSize * (int)Math.Round((float)num / gridSize);
 		}

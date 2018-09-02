@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace ShapeEditorAttempt
 {
-	public static class Extensions
+	static public class Extensions
 	{
 		/// <summary>
 		///     Creates and returns an enlarged copy of the specified System.Drawing.Rectangle
@@ -14,7 +14,7 @@ namespace ShapeEditorAttempt
 		/// <param name="x">The amount to inflate this System.Drawing.Rectangle horizontally.</param>
 		/// <param name="y">The amount to inflate this System.Drawing.Rectangle vertically.</param>
 		/// <returns>The enlarged System.Drawing.Rectangle.</returns>
-		public static Rectangle InflatedBy(this Rectangle rect, int x, int y)
+		static public Rectangle InflatedBy(this Rectangle rect, int x, int y)
 		{
 			return Rectangle.Inflate(rect, x, y);
 		}

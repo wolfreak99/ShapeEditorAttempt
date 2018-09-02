@@ -12,7 +12,11 @@ namespace ShapeEditorAttempt
 	public abstract class Shape
 	{
 		public const int EDGE_WIDTH = 6;
-		
+
+		public const string NAME = "Shape";
+		public const Shapes TYPE = Shapes.Null;
+
+
 		public Rectangle position;
 
 		public Point clickActionOffset;
@@ -120,9 +124,12 @@ namespace ShapeEditorAttempt
 		/// <returns>Name of shape (used by ToString)</returns>
 		public virtual string GetShapeName()
 		{
-			return this.GetType().Name;
+			return NAME;
 		}
 
-		public abstract Shapes GetShapeType();
+		public virtual Shapes GetShapeType()
+		{
+			return TYPE;
+		}
 	}
 }
