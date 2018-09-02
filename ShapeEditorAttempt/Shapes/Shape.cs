@@ -94,7 +94,6 @@ namespace ShapeEditorAttempt
 
 		public void ApplyOffset(ShapeClickAction action)
 		{
-
 			switch (action)
 			{
 			case ShapeClickAction.Drag:

@@ -89,7 +89,7 @@ namespace ShapeEditorAttempt
 			}
 
 			// Reset click data
-			clickedShape = null;
+			//clickedShape = null;
 			clickedOrigin = Point.Empty;
 			clickedShapeAction = ShapeClickAction.None;
 
@@ -122,7 +122,7 @@ namespace ShapeEditorAttempt
 			// Only run during initial press
 			if (clickedShapeAction != ShapeClickAction.None)
 				return;
-
+			
 			GraphicsPath path = new GraphicsPath(FillMode.Alternate);
 			var location = e.Location;
 			clickedOrigin = Grid.SnapToGrid(e.Location);
@@ -135,6 +135,10 @@ namespace ShapeEditorAttempt
 				{
 					ShapeCollection.Remove(shape);
 					clickedShapeAction = ShapeClickAction.Delete;
+				}
+				else
+				{
+					clickedShape = null;
 				}
 				break;
 			case MouseButtons.Middle:
@@ -168,8 +172,9 @@ namespace ShapeEditorAttempt
 
 		private Shape GetShapeByPoint(GraphicsPath path, Point point)
 		{
-			foreach (Shape shape in ShapeCollection)
+			for (int i = ShapeCollection.Count - 1; i >= 0; i--)
 			{
+				var shape = ShapeCollection[i];
 				if (shape.IsPointOverShape(path, point))
 				{
 					return shape;
@@ -192,7 +197,7 @@ namespace ShapeEditorAttempt
 			);
 			
 			// Insert at top of list.
-			ShapeCollection.Insert(0, shape);
+			ShapeCollection.Add(shape);
 
 			// Force new shape to go into resize mode.
 			clickedShapeAction = ShapeClickAction.Resize;

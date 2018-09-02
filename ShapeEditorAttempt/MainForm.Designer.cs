@@ -33,14 +33,11 @@ namespace ShapeEditorAttempt
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.Canvas = new Canvas();
-			this.selectedShapeWidget = new SelectedShapeWidget(13, 13, 600, 80);
-			this.selectedColorWidget = new SelectedColorWidget(613, 13, 600, 80);
-
-			((ISupportInitialize)(this.Canvas)).BeginInit();
-			selectedColorWidget.InitializeComponent(this);
-			selectedShapeWidget.InitializeComponent(this);
-
+			this.Canvas = new ShapeEditorAttempt.Canvas();
+			this.selectedShapeWidget = new ShapeEditorAttempt.SelectedShapeWidget();
+			this.selectedColorWidget = new ShapeEditorAttempt.SelectedColorWidget();
+			this.buttonClear = new System.Windows.Forms.Button();
+			((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// Canvas
@@ -52,20 +49,54 @@ namespace ShapeEditorAttempt
 			this.Canvas.Cursor = System.Windows.Forms.Cursors.Cross;
 			this.Canvas.Location = new System.Drawing.Point(13, 100);
 			this.Canvas.Name = "Canvas";
+			this.Canvas.ParentMainForm = null;
 			this.Canvas.Size = new System.Drawing.Size(775, 448);
 			this.Canvas.TabIndex = 0;
 			this.Canvas.TabStop = false;
-			
 			// 
-			// Form1
+			// selectedShapeWidget
+			// 
+			this.selectedShapeWidget.Location = new System.Drawing.Point(13, 13);
+			this.selectedShapeWidget.Name = "selectedShapeWidget";
+			this.selectedShapeWidget.ParentMainForm = null;
+			this.selectedShapeWidget.SelectedShape = ShapeEditorAttempt.Shapes.Square;
+			this.selectedShapeWidget.Size = new System.Drawing.Size(331, 80);
+			this.selectedShapeWidget.TabIndex = 1;
+			this.selectedShapeWidget.TabStop = false;
+			this.selectedShapeWidget.Text = "Selected Shape";
+			// 
+			// selectedColorWidget
+			// 
+			this.selectedColorWidget.Location = new System.Drawing.Point(350, 13);
+			this.selectedColorWidget.Name = "selectedColorWidget";
+			this.selectedColorWidget.ParentMainForm = null;
+			this.selectedColorWidget.Size = new System.Drawing.Size(302, 80);
+			this.selectedColorWidget.TabIndex = 1;
+			this.selectedColorWidget.TabStop = false;
+			this.selectedColorWidget.Text = "Selected Color";
+			// 
+			// buttonClear
+			// 
+			this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonClear.Location = new System.Drawing.Point(701, 13);
+			this.buttonClear.Name = "buttonClear";
+			this.buttonClear.Size = new System.Drawing.Size(87, 23);
+			this.buttonClear.TabIndex = 0;
+			this.buttonClear.Text = "Clear Shapes";
+			this.buttonClear.UseVisualStyleBackColor = true;
+			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+			// 
+			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 560);
+			this.Controls.Add(this.buttonClear);
 			this.Controls.Add(this.selectedShapeWidget);
+			this.Controls.Add(this.selectedColorWidget);
 			this.Controls.Add(this.Canvas);
-			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Name = "MainForm";
+			this.Text = "MainForm";
 			((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
 			this.ResumeLayout(false);
 
@@ -76,6 +107,7 @@ namespace ShapeEditorAttempt
 		public Canvas Canvas;
 		public SelectedShapeWidget selectedShapeWidget;
 		public SelectedColorWidget selectedColorWidget;
+		private Button buttonClear;
 	}
 }
 

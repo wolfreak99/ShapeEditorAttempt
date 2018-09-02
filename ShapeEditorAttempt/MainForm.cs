@@ -16,7 +16,6 @@ namespace ShapeEditorAttempt
 		public MainForm()
 		{
 			InitializeComponent();
-
 			selectedShapeWidget.InitializeComponent(this);
 			selectedColorWidget.InitializeComponent(this);
 			Canvas.InitializeComponent(this);
@@ -34,6 +33,12 @@ namespace ShapeEditorAttempt
 			{
 				m_parentForm = value;
 			}
+		}
+
+		private void buttonClear_Click(object sender, EventArgs e)
+		{
+			Canvas.ShapeCollection.Clear();
+			Canvas.Invalidate();
 		}
 	}
 }
