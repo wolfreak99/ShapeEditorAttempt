@@ -49,7 +49,6 @@ namespace ShapeEditorAttempt
 			this.Canvas.Cursor = System.Windows.Forms.Cursors.Cross;
 			this.Canvas.Location = new System.Drawing.Point(13, 100);
 			this.Canvas.Name = "Canvas";
-			this.Canvas.ParentMainForm = null;
 			this.Canvas.Size = new System.Drawing.Size(775, 448);
 			this.Canvas.TabIndex = 0;
 			this.Canvas.TabStop = false;
@@ -58,7 +57,6 @@ namespace ShapeEditorAttempt
 			// 
 			this.selectedShapeWidget.Location = new System.Drawing.Point(13, 13);
 			this.selectedShapeWidget.Name = "selectedShapeWidget";
-			this.selectedShapeWidget.ParentMainForm = null;
 			this.selectedShapeWidget.Value = ShapeEditorAttempt.ShapeType.Square;
 			this.selectedShapeWidget.Size = new System.Drawing.Size(331, 80);
 			this.selectedShapeWidget.TabIndex = 1;
@@ -69,7 +67,6 @@ namespace ShapeEditorAttempt
 			// 
 			this.selectedColorWidget.Location = new System.Drawing.Point(350, 13);
 			this.selectedColorWidget.Name = "selectedColorWidget";
-			this.selectedColorWidget.ParentMainForm = null;
 			this.selectedColorWidget.Size = new System.Drawing.Size(302, 80);
 			this.selectedColorWidget.TabIndex = 1;
 			this.selectedColorWidget.TabStop = false;

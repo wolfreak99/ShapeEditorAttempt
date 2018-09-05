@@ -4,20 +4,16 @@ using System;
 
 namespace ShapeEditorAttempt
 {
-	public class SelectedShapeWidget : GroupBox, IInitializeMainFormComponent
+	public class SelectedShapeWidget : GroupBox, IInitializeComponent
 	{
 		private ShapeButton[] ShapeButtons;
 
 		public ShapeType Value = ShapeType.Square;
-
-		public MainForm ParentMainForm { get; set; }
-
+		
 		public SelectedShapeWidget() : base() { }
 		
-		public void InitializeComponent(MainForm parentMainForm)
+		public void InitializeComponent()
 		{
-			ParentMainForm = parentMainForm;
-
 			int xspacing = 6, yspacing = 16;
 			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
 
@@ -59,7 +55,7 @@ namespace ShapeEditorAttempt
 			// Change last selected shapes color if control is held.
 			if (KeyboardController.IsControlDown)
 			{
-				ParentMainForm.Canvas.SetShapeType(ClickData.Shape, Value);
+				MainForm.Instance.Canvas.SetShapeType(ClickData.Shape, Value);
 			}
 		}
 

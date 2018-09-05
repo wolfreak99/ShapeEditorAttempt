@@ -14,14 +14,17 @@ namespace ShapeEditorAttempt
 	public partial class MainForm : Form
 	{
 		public static MainForm Instance;
+
+
 		public MainForm()
 		{
 			Instance = this;
+
 			KeyPreview = true;
 			InitializeComponent();
-			selectedShapeWidget.InitializeComponent(this);
-			selectedColorWidget.InitializeComponent(this);
-			Canvas.InitializeComponent(this);
+			selectedShapeWidget.InitializeComponent();
+			selectedColorWidget.InitializeComponent();
+			Canvas.InitializeComponent();
 			KeyDown += KeyboardController.MainForm_KeyDown;
 			KeyUp += KeyboardController.MainForm_KeyUp;
 		}

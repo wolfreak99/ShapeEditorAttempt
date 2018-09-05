@@ -3,20 +3,17 @@ using System.Drawing;
 
 namespace ShapeEditorAttempt
 {
-	public class SelectedColorWidget : GroupBox, IInitializeMainFormComponent
+	public class SelectedColorWidget : GroupBox, IInitializeComponent
 	{
 		public Color Value = Color.Black;
 
 		private Color[] colors = new Color[6]{ Color.Red, Color.Green, Color.Blue, Color.Black, Color.Gray, Color.White };
 		private ColorButton[] colorToggles;
 		
-		public MainForm ParentMainForm { get; set; }
-		
 		public SelectedColorWidget() : base() { }
 
-		public void InitializeComponent(MainForm parentMainForm = null)
+		public void InitializeComponent()
 		{
-			ParentMainForm = parentMainForm;
 			int xspacing = 6, yspacing = 16;
 			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
 
@@ -67,7 +64,7 @@ namespace ShapeEditorAttempt
 			// Change last selected shapes color if control is held.
 			if (KeyboardController.IsControlDown)
 			{
-				ParentMainForm.Canvas.SetShapeColor(ClickData.Shape, Value);
+				MainForm.Instance.Canvas.SetShapeColor(ClickData.Shape, Value);
 			}
 		}
 

@@ -6,24 +6,19 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-	public class Canvas : PictureBox, IInitializeMainFormComponent
+	public class Canvas : PictureBox, IInitializeComponent
 	{
-		public static Canvas Instance;
 		public Layer layer = new Layer();
 		
-		private ShapeType GetSelectedShapeType() { return ParentMainForm.selectedShapeWidget.Value; }
-		private Color GetSelectedColor() { return ParentMainForm.selectedColorWidget.Value; }
-
-		public MainForm ParentMainForm { get; set; }
+		private ShapeType GetSelectedShapeType() { return MainForm.Instance.selectedShapeWidget.Value; }
+		private Color GetSelectedColor() { return MainForm.Instance.selectedColorWidget.Value; }
 
 		public Canvas() : base()
 		{
 		}
 
-		public void InitializeComponent(MainForm parentMainForm)
+		public void InitializeComponent()
 		{
-			ParentMainForm = parentMainForm;
-
 			this.Paint += this.Canvas_Paint;
 			this.MouseDown += this.Canvas_MouseDown;
 			this.MouseMove += this.Canvas_MouseMove;
@@ -167,13 +162,13 @@ namespace ShapeEditorAttempt
 				switch (value)
 				{
 				case ShapeType.Square:
-					newShape = new Square(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					newShape = new Square(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.Color);
 					break;
 				case ShapeType.Circle:
-					newShape = new Circle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					newShape = new Circle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.Color);
 					break;
 				case ShapeType.Triangle:
-					newShape = new Triangle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					newShape = new Triangle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.Color);
 					break;
 				default:
 					throw new NotSupportedException(Utils.GetEnumName(value) + " not supported");
@@ -185,7 +180,7 @@ namespace ShapeEditorAttempt
 
 		internal void SetShapeColor(Shape shape, Color color)
 		{
-			shape.color = color;
+			shape.Color = color;
 			Invalidate();
 		}
 

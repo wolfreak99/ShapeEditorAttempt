@@ -17,8 +17,7 @@ namespace ShapeEditorAttempt
 		public const ShapeType TYPE = ShapeType.Square;
 		virtual public string Name { get { return NAME; } }
 		virtual public ShapeType Type { get { return TYPE; } }
-
-
+		
 		public Rectangle position;
 
 		public Point clickActionOffset;
@@ -33,7 +32,7 @@ namespace ShapeEditorAttempt
 				m_pen = new Pen(m_color, 1);
 			}
 		}
-
+		
 		internal Pen m_pen;
 		/// <summary>
 		/// The pen, which is updated whenever "color" is changed.
