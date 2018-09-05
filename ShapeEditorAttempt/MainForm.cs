@@ -27,11 +27,7 @@ namespace ShapeEditorAttempt
 			selectedShapeWidget.InitializeComponent();
 			selectedColorWidget.InitializeComponent();
 			Canvas.InitializeComponent();
-
-			// Initialize Keyboard Controller
-			KeyPreview = true;
-			KeyDown += KeyboardController.MainForm_KeyDown;
-			KeyUp += KeyboardController.MainForm_KeyUp;
+			KeyboardController.InitializeComponent();
 		}
 
 		// Parent Form

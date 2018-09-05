@@ -11,22 +11,50 @@ namespace ShapeEditorAttempt
 	{
 		public static bool IsControlDown { get; private set; }
 
-		internal static void MainForm_KeyDown(object sender, KeyEventArgs e)
+		internal static void InitializeComponent()
 		{
-			if (e.KeyCode == Keys.ControlKey)
-			{
-				IsControlDown = true;
-				MainForm.Instance.Canvas.Invalidate();
-			}
+			MainForm.Instance.KeyPreview = true;
+			MainForm.Instance.KeyDown += MainForm_KeyDown;
+			MainForm.Instance.KeyUp += MainForm_KeyUp;
 		}
 
-		internal static void MainForm_KeyUp(object sender, KeyEventArgs e)
+		internal static void UninitializeComponent()
 		{
-			if (e.KeyCode == Keys.ControlKey)
+			MainForm.Instance.KeyPreview = true;
+			MainForm.Instance.KeyDown -= MainForm_KeyDown;
+			MainForm.Instance.KeyUp -= MainForm_KeyUp;
+		}
+
+		private static void MainForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
 			{
-				IsControlDown = false;
-				MainForm.Instance.Canvas.Invalidate();
+			// Escape from any unsupported keys
+			case Keys.None:
+			default:
+				return;
+
+			case Keys.ControlKey:
+				IsControlDown = true;
+				break;
 			}
+			MainForm.Instance.Canvas.Invalidate();
+		}
+
+		private static void MainForm_KeyUp(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+			case Keys.None:
+			default:
+				return;
+
+			case Keys.ControlKey:
+				IsControlDown = true;
+				break;
+			}
+			MainForm.Instance.Canvas.Invalidate();
+
 		}
 	}
 }
