@@ -5,7 +5,8 @@
 		None,
 		Resize,
 		Drag,
-		Delete,     // Todo
+		Delete,
+		ToggleTriangleAngle,
 		// Duplicate	// Todo
 	}
 }

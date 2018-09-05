@@ -17,10 +17,12 @@ namespace ShapeEditorAttempt
 			Length
 		}
 
-		public new const Shapes TYPE = Shapes.Triangle;
-		public new const string NAME = "Triangle";
-
-		public new const int EDGE_WIDTH = 12;
+		new public const string NAME = "Triangle";
+		new public const ShapeType TYPE = ShapeType.Triangle;
+		override public string Name { get { return NAME; } }
+		override public ShapeType Type { get { return TYPE; } }
+		
+		public new const int EDGE_WIDTH = 8;
 
 		private const Angle DEFAULT_ANGLE = Angle.TopCenter;
 
@@ -45,15 +47,15 @@ namespace ShapeEditorAttempt
 				return GetPointsByAngle(angle, position);
 			}
 		}
-		public void IncrementAngle()
-		{
-			angle = (Angle)Utils.WrapIncrement(angle, 1, 0, Angle.Length);
-			//angle = (Angle)(((int)angle + 1) % (int)Angle.Length);
-		}
 
 		public Triangle(int x, int y, int width, int height, Color color, Angle angle) : base(x, y, width, height, color)
 		{
 			this.angle = angle;
+		}
+
+		public void IncrementAngle()
+		{
+			angle = (Angle)Utils.WrapIncrement(angle, 1, 0, Angle.Length);
 		}
 
 		// Link any constructors without angles to the default angle
@@ -64,19 +66,19 @@ namespace ShapeEditorAttempt
 
 		public override void Draw(Canvas sender, Graphics graphics)
 		{
-			Rectangle pos;
-			if (sender.clickedShape == this)
-			{
-				pos = PreviewOffset(position, sender.clickedShapeAction);
-			}
-			else
-			{
-				pos = position;
-			}
-			var newPoints = GetPointsByAngle(angle, pos);
+			Point[] newPoints = (ClickData.Shape == this) ? GetPointsByAngle(angle, PreviewOffset(position, ClickData.Action)) : points;
 			graphics.FillPolygon(pen.Brush, newPoints);
-		}
 
+			// Create outline
+			if (KeyboardController.IsControlDown)
+			{
+				var prevColor = color;
+				color = Utils.ColorSetHsv(prevColor.GetHue(), prevColor.GetSaturation() + 10, prevColor.GetBrightness() + 10);
+				m_pen.Width = EDGE_WIDTH;
+				graphics.DrawPolygon(pen, GetPointsByAngle(angle, PreviewOffset(position.InflatedBy(-EDGE_WIDTH / 2, -EDGE_WIDTH / 2), ClickData.Action)));
+				color = prevColor;
+			}
+		}
 
 		static private Point[] GetPointsByAngle(Angle triangleAngle, Rectangle position)
 		{
@@ -119,12 +121,12 @@ namespace ShapeEditorAttempt
 					new Point(position.Right, position.Bottom)
 				};
 			default:
-				throw new NotImplementedException("Angle." + (Enum.GetNames(triangleAngle.GetType()))[(int)triangleAngle] + " Not yet implemented.");
+				throw new NotImplementedException(Utils.GetEnumName(triangleAngle) + " Not yet implemented.");
 			}
 		}
 
 
-		public override ShapeClickAction GetPointOverShapeAction(GraphicsPath path, Point point)
+		public override ShapeClickAction GetShapeActionByPoint(GraphicsPath path, Point point)
 		{
 			if (IsPointOverShape(path, point))
 			{
@@ -150,16 +152,6 @@ namespace ShapeEditorAttempt
 			path.AddPolygon(points);
 			path.Flatten();
 			return path.IsVisible(point);
-		}
-
-		public override string GetShapeName()
-		{
-			return NAME;
-		}
-
-		public override Shapes GetShapeType()
-		{
-			return TYPE;
 		}
 	}
 }

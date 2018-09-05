@@ -3,35 +3,35 @@ using System.Drawing;
 
 namespace ShapeEditorAttempt
 {
-	public class ShapesHelper
+	public partial class ShapeTypeHelper
 	{
-		static public Shape CreateNewShape(int x, int y, int width, int height, Color color, Shapes shape)
+		static public Shape CreateNewShape(int x, int y, int width, int height, Color color, ShapeType shape)
 		{
 			switch (shape)
 			{
-			case Shapes.Square:
+			case ShapeType.Square:
 				return new Square(x, y, width, height, color);
-			case Shapes.Circle:
+			case ShapeType.Circle:
 				return new Circle(x, y, width, height, color);
-			case Shapes.Triangle:
+			case ShapeType.Triangle:
 				return new Triangle(x, y, width * 2, height * 2, color); // Multiply twice to ensure reaches border
 			default:
-				throw new NotImplementedException("Shapes." + Enum.GetName(shape.GetType(), shape) + " not yet implemented");
+				throw new ShapeTypeNotSupportedException(shape);
 			}
 		}
 
-		static public string GetShapeName(Shapes shape)
+		static public string GetShapeName(ShapeType shape)
 		{
 			switch (shape)
 			{
-			case Shapes.Square:
+			case ShapeType.Square:
 				return Square.NAME;
-			case Shapes.Circle:
+			case ShapeType.Circle:
 				return Circle.NAME;
-			case Shapes.Triangle:
+			case ShapeType.Triangle:
 				return Triangle.NAME;
 			default:
-				throw new NotImplementedException("Shapes." + Enum.GetName(shape.GetType(), shape) + " not yet implemented");
+				throw new ShapeTypeNotSupportedException(shape);
 			}
 		}
 	}

@@ -6,19 +6,13 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-	public class Canvas : PictureBox, IInitializeComponent
+	public class Canvas : PictureBox, IInitializeMainFormComponent
 	{
-		static public List<Shape> ShapeCollection = new List<Shape>(new Shape[]{
-			new Square(10, 20, 30, 30, Color.Blue),
-			new Square(50, 60, 20, 10, Color.Red)
-		});
-
-		public Shape clickedShape = null;
-		Point clickedOrigin = Point.Empty;
-		public ShapeClickAction clickedShapeAction { get; private set; }
-
-		private SelectedShapeWidget selectedShapeWidget;
-		private SelectedColorWidget selectedColorWidget;
+		public static Canvas Instance;
+		public Layer layer = new Layer();
+		
+		private ShapeType GetSelectedShapeType() { return ParentMainForm.selectedShapeWidget.Value; }
+		private Color GetSelectedColor() { return ParentMainForm.selectedColorWidget.Value; }
 
 		public MainForm ParentMainForm { get; set; }
 
@@ -28,180 +22,172 @@ namespace ShapeEditorAttempt
 
 		public void InitializeComponent(MainForm parentMainForm)
 		{
+			ParentMainForm = parentMainForm;
+
 			this.Paint += this.Canvas_Paint;
 			this.MouseDown += this.Canvas_MouseDown;
 			this.MouseMove += this.Canvas_MouseMove;
 			this.MouseUp += this.Canvas_MouseUp;
 			this.MouseDoubleClick += Canvas_MouseDoubleClick;
-
-			ParentMainForm = parentMainForm;
-
-			selectedShapeWidget = parentMainForm.selectedShapeWidget;
-			selectedColorWidget = parentMainForm.selectedColorWidget;
 		}
 
 		public void UninitializeComponent() { }
+
+		private void ChangeTriangleAngle(Shape shape)
+		{
+			Triangle t = (Triangle)shape;
+			t.IncrementAngle();
+			Invalidate();
+		}
 
 		private void Canvas_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
 			{
 				var location = e.Location;
-				clickedOrigin = Grid.SnapToGrid(e.Location);
-
-				var shape = GetShapeByPoint(path, location);
+				ClickData.Origin = Grid.SnapToGrid(e.Location);
 
 				// Todo: Copy over the moving mechanics a little better.
+				var shape = layer.GetShapeByPoint(path, location);
 				if (shape == null)
 					return;
-
-				var shapeType = shape.GetShapeType();
-
-				if (shapeType == Shapes.Triangle)
+				
+				if (shape.Type == ShapeType.Triangle)
 				{
-					Triangle t = (Triangle)shape;
-					t.IncrementAngle();
-					// Trigger a resize
-					ParentMainForm.Invalidate(ClientRectangle);
+					ChangeTriangleAngle(shape);
 				}
 			}
-
 		}
 
 		internal void Canvas_Paint(object sender, PaintEventArgs e)
 		{
-			Grid.Draw(this, e);
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			foreach (var s in ShapeCollection)
-			{
-				s.Draw(this, e.Graphics);
-			}
-		}
+			e.Graphics.SmoothingMode = SmoothingMode.Default;
 
+			Grid.Draw(this, e);
+			layer.Draw(this, e);
+		}
+		
 		internal void Canvas_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (clickedShapeAction == ShapeClickAction.None)
+			if (ClickData.Action == ShapeClickAction.None)
 				return;
 
-			if (clickedShape != null)
-			{
-				clickedShape.ApplyOffset(clickedShapeAction);
-			}
+			ClickData.ShapeApplyOffset();
 
 			// Reset click data
-			//clickedShape = null;
-			clickedOrigin = Point.Empty;
-			clickedShapeAction = ShapeClickAction.None;
+			ClickData.Clear(false);
 
 			Invalidate();
 		}
 
 		internal void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			var location = e.Location;
-			if (e.Button == MouseButtons.None) return;
-
-			if (clickedShapeAction == ShapeClickAction.None)
+			if (e.Button == MouseButtons.None)
 				return;
-
+			
 			// Todo: Copy over the moving mechanics a little better.
-			if (clickedShape == null)
-				return;
-
-			Point moveTo = new Point(
-				clickedOrigin.X - Grid.SnapToGrid(location).X,
-				clickedOrigin.Y - Grid.SnapToGrid(location).Y
-			);
-
-			clickedShape.UpdateOffset(clickedShapeAction, moveTo);
+			ClickData.ShapeUpdateOffset(e.Location);
 			Invalidate();
 		}
 
 		internal void Canvas_MouseDown(object sender, MouseEventArgs e)
 		{
 			// Only run during initial press
-			if (clickedShapeAction != ShapeClickAction.None)
+			if (ClickData.Action != ShapeClickAction.None)
 				return;
 			
-			GraphicsPath path = new GraphicsPath(FillMode.Alternate);
-			var location = e.Location;
-			clickedOrigin = Grid.SnapToGrid(e.Location);
-
-			var shape = GetShapeByPoint(path, location);
-			switch (e.Button)
+			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
 			{
-			case MouseButtons.Right:
-				if (shape != null)
-				{
-					ShapeCollection.Remove(shape);
-					clickedShapeAction = ShapeClickAction.Delete;
-				}
-				else
-				{
-					clickedShape = null;
-				}
-				break;
-			case MouseButtons.Middle:
-				if (shape != null && shape.GetShapeType() == Shapes.Triangle)
-				{
-					Triangle t = (Triangle)shape;
-					t.IncrementAngle();
-				}
-				break;
-			case MouseButtons.Left:
-				if (shape != null)
-				{
-					var action = shape.GetPointOverShapeAction(path, location);
-					if (action != ShapeClickAction.None)
-					{
-						clickedShapeAction = action;
-						clickedShape = shape;
-						Canvas_MouseMove(sender, e);
-						break;
-					}
-				}
-				if (clickedShapeAction == ShapeClickAction.None)
-				{
-					GenerateShape(20);
-				}
-				break;
-			}
+				var location = e.Location;
+				ClickData.Origin = Grid.SnapToGrid(e.Location);
+				var shape = layer.GetShapeByPoint(path, location);
 
+				switch (e.Button)
+				{
+				case MouseButtons.Right:
+					if (shape != null)
+					{
+						layer.Remove(shape);
+						ClickData.Action = ShapeClickAction.Delete;
+					}
+					ClickData.Shape = null;
+					break;
+				case MouseButtons.Middle:
+					if (shape != null && shape.Type == ShapeType.Triangle)
+					{
+						Triangle t = (Triangle)shape;
+						t.IncrementAngle();
+					}
+					break;
+				case MouseButtons.Left:
+					bool createShape = true;
+					if (shape != null)
+					{
+						var action = shape.GetShapeActionByPoint(path, location);
+						if (action != ShapeClickAction.None)
+						{
+							ClickData.Set(shape, action);
+							createShape = false;
+							Canvas_MouseMove(sender, e);
+						}
+						else
+						{
+							throw new Exception("Shape was found under Point, but action wasn't - This shouldn't happen.");
+						}
+					}
+					if (createShape)
+					{
+						var sizeSnapped = Grid.SnapToGrid(new Size(20, 20), Grid.SnapSizeToGrid);
+						GenerateShape(sizeSnapped);
+					}
+					break;
+				}
+			}
+			Invalidate();
+		}
+		
+		private void GenerateShape(Size size)
+		{
+			var shape = layer.AddNewShape(ClickData.Origin, size, GetSelectedColor(), GetSelectedShapeType());
+			// Force new shape to go into resize mode.
+			ClickData.Set(shape, ShapeClickAction.Resize);
+		}
+
+		public void Clear()
+		{
+			layer.Clear();
 			Invalidate();
 		}
 
-		private Shape GetShapeByPoint(GraphicsPath path, Point point)
+		internal void SetShapeType(Shape shape, ShapeType value)
 		{
-			for (int i = ShapeCollection.Count - 1; i >= 0; i--)
+			if (shape.Type != value)
 			{
-				var shape = ShapeCollection[i];
-				if (shape.IsPointOverShape(path, point))
+				Shape newShape;
+				switch (value)
 				{
-					return shape;
+				case ShapeType.Square:
+					newShape = new Square(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					break;
+				case ShapeType.Circle:
+					newShape = new Circle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					break;
+				case ShapeType.Triangle:
+					newShape = new Triangle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					break;
+				default:
+					throw new NotSupportedException(Utils.GetEnumName(value) + " not supported");
 				}
+				layer.Replace(shape, newShape);
+				Invalidate();
 			}
-
-			return null;
 		}
 
-		private void GenerateShape(int size)
+		internal void SetShapeColor(Shape shape, Color color)
 		{
-			var sizeSnapped = Grid.SnapToGrid(new Size(size, size));
-
-			Shape shape = ShapesHelper.CreateNewShape(
-				clickedOrigin.X - (sizeSnapped.Width / 2),
-				clickedOrigin.Y - (sizeSnapped.Height / 2),
-				sizeSnapped.Width, sizeSnapped.Height, 
-				selectedColorWidget.SelectedColor,
-				selectedShapeWidget.SelectedShape
-			);
-			
-			// Insert at top of list.
-			ShapeCollection.Add(shape);
-
-			// Force new shape to go into resize mode.
-			clickedShapeAction = ShapeClickAction.Resize;
-			clickedShape = shape;
+			shape.color = color;
+			Invalidate();
 		}
+
 	}
 }

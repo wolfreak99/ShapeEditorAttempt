@@ -10,59 +10,89 @@ namespace ShapeEditorAttempt
 	public class Utils
 	{
 		static Random random = new Random();
-		/*
-		static public Point AddPoints(params Point[] points)
+		private static byte ClampValue(float value)
 		{
-			if (points.Length == 0)
-				return Point.Empty;
-
-			return points.Aggregate((source, next) =>
-			{
-				source.X += next.X;
-				source.Y += next.Y;
-				return source;
-			});
+			return (byte)(value * 255.0f);
 		}
 
-		static public Point SubtractPoints(params Point[] points)
+		public static Color ColorSetHsv(float hue, float saturation, float value)
 		{
-			if (points.Length == 0)
-				return Point.Empty;
+			int i;
+			float f, p, q, t;
+			byte r, g, b;
 
-			return points.Aggregate((source, next) =>
+			if (saturation == 0)
 			{
-				source.X -= next.X;
-				source.Y -= next.Y;
-				return source;
-			});
+				// achromatic (grey)
+				r = g = b = ClampValue(value);
+				return Color.FromArgb(r, g, b);
+			}
+
+			hue /= 60;              // Sector 0-5
+			i = (int)Math.Floor(hue);
+			f = hue - i;
+			p = value * (1 - saturation);
+			q = value * (1 - saturation * f);
+			t = value * (1 - saturation * (1 - f));
+
+			switch (i)
+			{
+			case 0:
+				{
+					r = ClampValue(value);
+					g = ClampValue(t);
+					b = ClampValue(p);
+					break;
+				}
+			case 1:
+				{
+					r = ClampValue(q);
+					g = ClampValue(t);
+					b = ClampValue(p);
+					break;
+				}
+			case 2:
+				{
+					r = ClampValue(p);
+					g = ClampValue(value);
+					b = ClampValue(t);
+					break;
+				}
+			case 3:
+				{
+					r = ClampValue(p);
+					g = ClampValue(q);
+					b = ClampValue(value);
+					break;
+				}
+			case 4:
+				{
+					r = ClampValue(t);
+					g = ClampValue(p);
+					b = ClampValue(value);
+					break;
+				}
+			default:
+				{
+					r = ClampValue(value);
+					g = ClampValue(p);
+					b = ClampValue(q);
+					break;
+				}
+			}
+
+			return Color.FromArgb(r, g, b);
 		}
 
-		static public Size AddSizes(params Size[] sizes)
+		/// <summary>
+		/// Returns "EnumType.EnumName"
+		/// </summary>
+		public static string GetEnumName<T>(T value)
 		{
-			if (sizes.Length == 0)
-				return Size.Empty;
-
-			return sizes.Aggregate((source, next) =>
-			{
-				source.Width += next.Width;
-				source.Height += next.Height;
-				return source;
-			});
+			var t = typeof(T);
+			return t.Name + "." + t.GetEnumName(value);
 		}
 
-		static public Size SubtractSizes(params Size[] sizes)
-		{
-			if (sizes.Length == 0)
-				return Size.Empty;
-
-			return sizes.Aggregate((source, next) =>
-			{
-				source.Width -= next.Width;
-				source.Height -= next.Height;
-				return source;
-			});
-		}
-		*/
 		static private Color m_previousRandomColor = new Color();
 		static public Color GetRandomColor()
 		{

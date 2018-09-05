@@ -5,8 +5,10 @@ namespace ShapeEditorAttempt
 {
 	public class Square : Shape
 	{
-		public new const string NAME = "Square";
-		public new const Shapes TYPE = Shapes.Square;
+		new public const string NAME = "Square";
+		new public const ShapeType TYPE = ShapeType.Square;
+		override public string Name { get { return NAME; } }
+		override public ShapeType Type { get { return TYPE; } }
 
 		public Square(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
 		{
@@ -14,20 +16,11 @@ namespace ShapeEditorAttempt
 
 		public override void Draw(Canvas sender, Graphics graphics)
 		{
-			Rectangle pos;
-			if (sender.clickedShape == this)
-			{
-				pos = PreviewOffset(position, sender.clickedShapeAction);
-			}
-			else
-			{
-				pos = position;
-			}
-
+			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(position, ClickData.Action) : position;
 			graphics.FillRectangle(pen.Brush, pos);
 		}
 
-		public override ShapeClickAction GetPointOverShapeAction(GraphicsPath path, Point point)
+		public override ShapeClickAction GetShapeActionByPoint(GraphicsPath path, Point point)
 		{
 			if (IsPointOverShape(path, point))
 			{
@@ -51,16 +44,6 @@ namespace ShapeEditorAttempt
 			path.Reset();
 			path.AddRectangle(position);
 			return path.IsVisible(point);
-		}
-		
-		public override string GetShapeName()
-		{
-			return NAME;
-		}
-
-		public override Shapes GetShapeType()
-		{
-			return TYPE;
 		}
 	}
 }

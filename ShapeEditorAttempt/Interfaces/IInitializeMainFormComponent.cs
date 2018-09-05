@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-	public interface IInitializeComponent
+	public interface IInitializeMainFormComponent
 	{
 		MainForm ParentMainForm { get; set; }
 

@@ -1,88 +1,75 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
+using System;
 
 namespace ShapeEditorAttempt
 {
-	public class SelectedShapeWidget : GroupBox, IInitializeComponent
+	public class SelectedShapeWidget : GroupBox, IInitializeMainFormComponent
 	{
-		private CheckBox buttonSquare,
-					   buttonCircle,
-					   buttonTriangle;
-		
-		public Shapes SelectedShape { get; set; }
+		private ShapeButton[] ShapeButtons;
+
+		public ShapeType Value = ShapeType.Square;
 
 		public MainForm ParentMainForm { get; set; }
 
+		public SelectedShapeWidget() : base() { }
+		
 		public void InitializeComponent(MainForm parentMainForm)
 		{
 			ParentMainForm = parentMainForm;
 
-			int left = Location.X, top = Location.Y, width = 100, height = 60, xspacing = 6, x = left, tab = 1;
-			
-			buttonSquare = new CheckBox();
-			buttonSquare.Appearance = Appearance.Button;
-			buttonSquare.Location = new Point(x, top);
-			buttonSquare.Size = new Size(width, height);
-			buttonSquare.Text = Square.NAME;
-			buttonSquare.TabIndex = tab++;
-			buttonSquare.MouseClick += ButtonSquare_MouseClick;
-			this.Controls.Add(buttonSquare);
+			int xspacing = 6, yspacing = 16;
+			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
 
-			x += width + xspacing;
+			ShapeButtons = new ShapeButton[3];
+			for (int i = 0; i < ShapeButtons.Length; i++)
+			{
+				var button = new ShapeButton()
+				{
+					Location = new Point(x, y),
+					Size = new Size(width, height),
+					Text = ShapeTypeHelper.GetShapeName((ShapeType)i),
+					TabIndex = tab++,
+					Checked = (Value == (ShapeType)i),
+					Type = (ShapeType)i
+				};
+				button.MouseClick += CheckBox_MouseClick;
 
-			buttonCircle = new CheckBox();
-			buttonCircle.Appearance = Appearance.Button;
-			buttonCircle.Location = new Point(x, top);
-			buttonCircle.Size = new Size(width, height);
-			buttonCircle.Text = Circle.NAME;
-			buttonCircle.TabIndex = tab++;
-			buttonCircle.MouseClick += ButtonCircle_MouseClick;
-			this.Controls.Add(buttonCircle);
+				ShapeButtons[i] = button;
+				this.Controls.Add(button);
 
-			x += width + xspacing;
-
-			buttonTriangle = new CheckBox();
-			buttonTriangle.Appearance = Appearance.Button;
-			buttonTriangle.Location = new Point(x, top);
-			buttonTriangle.Size = new Size(width, height);
-			buttonTriangle.Text = Triangle.NAME;
-			buttonTriangle.TabIndex = tab++;
-			buttonTriangle.MouseClick += ButtonTriangle_MouseClick;
-			this.Controls.Add(buttonTriangle);
-
-			x += width + xspacing;
-
+				x += width + xspacing;
+			}
 			this.Size = new Size(x - left + xspacing + xspacing, this.Size.Height);
 		}
 
-		public void UninitializeComponent() { }
-
-		private void ButtonTriangle_MouseClick(object sender, MouseEventArgs e)
+		private void CheckBox_MouseClick(object sender, MouseEventArgs e)
 		{
-			SelectedShape = Shapes.Triangle;
-			buttonTriangle.CheckState = CheckState.Checked;
-			buttonCircle.CheckState = CheckState.Unchecked;
-			buttonSquare.CheckState = CheckState.Unchecked;
+			ShapeButton button = (ShapeButton)sender;
+
+			// Set color to selected color button
+			Value = (ShapeType)button.Type;
+
+			// Mark selected color button
+			foreach (var b in ShapeButtons)
+			{
+				b.Checked = (Value == b.Type);
+			}
+
+			// Change last selected shapes color if control is held.
+			if (KeyboardController.IsControlDown)
+			{
+				ParentMainForm.Canvas.SetShapeType(ClickData.Shape, Value);
+			}
 		}
 
-		private void ButtonCircle_MouseClick(object sender, MouseEventArgs e)
+		public void UninitializeComponent()
 		{
-			SelectedShape = Shapes.Circle;
-			buttonCircle.CheckState = CheckState.Checked;
-			buttonTriangle.CheckState = CheckState.Unchecked;
-			buttonSquare.CheckState = CheckState.Unchecked;
+			foreach (ShapeButton s in ShapeButtons)
+			{
+				s.MouseClick -= CheckBox_MouseClick;
+			}
 		}
-
-		private void ButtonSquare_MouseClick(object sender, MouseEventArgs e)
-		{
-			SelectedShape = Shapes.Square;
-			buttonSquare.CheckState = CheckState.Checked;
-			buttonCircle.CheckState = CheckState.Unchecked;
-			buttonTriangle.CheckState = CheckState.Unchecked;
-		}
-
 		
-		public SelectedShapeWidget() : base() { }
-
 	}
 }

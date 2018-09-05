@@ -59,7 +59,7 @@ namespace ShapeEditorAttempt
 			this.selectedShapeWidget.Location = new System.Drawing.Point(13, 13);
 			this.selectedShapeWidget.Name = "selectedShapeWidget";
 			this.selectedShapeWidget.ParentMainForm = null;
-			this.selectedShapeWidget.SelectedShape = ShapeEditorAttempt.Shapes.Square;
+			this.selectedShapeWidget.Value = ShapeEditorAttempt.ShapeType.Square;
 			this.selectedShapeWidget.Size = new System.Drawing.Size(331, 80);
 			this.selectedShapeWidget.TabIndex = 1;
 			this.selectedShapeWidget.TabStop = false;

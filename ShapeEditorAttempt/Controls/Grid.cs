@@ -12,18 +12,19 @@ namespace ShapeEditorAttempt
 	static public class Grid
 	{
 		static public Size GridSize = new Size(10, 10);
+		static public bool DrawGrid = true;
+		static public bool SnapLocationToGrid = true;
+		static public bool SnapSizeToGrid = true;
 
-		static public void Draw(PictureBox picCanvas, PaintEventArgs e)
+		static public void Draw(Canvas canvas, PaintEventArgs e)
 		{
-			DrawBackgroundGrid(picCanvas, e);
-		}
+			if (!DrawGrid)
+				return;
 
-		static public void DrawBackgroundGrid(PictureBox canvas, PaintEventArgs e)
-		{
 			var w = canvas.ClientSize.Width;
 			var h = canvas.ClientSize.Height;
 			var pen = Pens.Gray;
-			
+
 			for (int x = GridSize.Width; x < w; x += GridSize.Width)
 			{
 				e.Graphics.DrawLine(pen, x, 0, x, h);
@@ -35,16 +36,23 @@ namespace ShapeEditorAttempt
 		}
 
 		// Snap to the nearest grid point.
-		static public Point SnapToGrid(Point point)
+		static public Point SnapToGrid(Point point, bool snap = true)
 		{
-			return new Point(SnapToGrid(point.X, GridSize.Width), SnapToGrid(point.Y, GridSize.Height));
-		}
-		static public Size SnapToGrid(Size size)
-		{
-			return new Size(SnapToGrid(size.Width, GridSize.Width), SnapToGrid(size.Height, GridSize.Height));
+			if (snap)
+				return new Point(SnapToGrid(point.X, GridSize.Width), SnapToGrid(point.Y, GridSize.Height));
+			else
+				return point;
 		}
 
-		static public int SnapToGrid(int num, int gridSize)
+		static public Size SnapToGrid(Size size, bool snap = true)
+		{
+			if (snap)
+				return new Size(SnapToGrid(size.Width, GridSize.Width), SnapToGrid(size.Height, GridSize.Height));
+			else
+				return size;
+		}
+
+		static private int SnapToGrid(int num, int gridSize)
 		{
 			return gridSize * (int)Math.Round((float)num / gridSize);
 		}

@@ -19,5 +19,14 @@ namespace ShapeEditorAttempt
 			return Rectangle.Inflate(rect, x, y);
 		}
 
+		/// <summary>
+		/// Returns rectangle.X + (rectangle.Width / 2);
+		/// </summary>
+		/// <param name="rectangle"></param>
+		/// <returns></returns>
+		static public Point Center(this Rectangle rectangle)
+		{
+			return new Point(rectangle.X + (rectangle.Width / 2), rectangle.Y + (rectangle.Height / 2));
+		}
 	}
 }

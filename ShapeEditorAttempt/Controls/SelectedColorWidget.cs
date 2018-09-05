@@ -3,65 +3,73 @@ using System.Drawing;
 
 namespace ShapeEditorAttempt
 {
-	public class SelectedColorWidget : GroupBox, IInitializeComponent
+	public class SelectedColorWidget : GroupBox, IInitializeMainFormComponent
 	{
-		private Color[] colors = new Color[6]{Color.Red, Color.Green, Color.Blue, Color.Black, Color.Gray, Color.White };
-		private CheckBox[] colorToggles;
-		public Color SelectedColor = Color.Black;
+		public Color Value = Color.Black;
 
+		private Color[] colors = new Color[6]{ Color.Red, Color.Green, Color.Blue, Color.Black, Color.Gray, Color.White };
+		private ColorButton[] colorToggles;
+		
 		public MainForm ParentMainForm { get; set; }
 		
+		public SelectedColorWidget() : base() { }
+
 		public void InitializeComponent(MainForm parentMainForm = null)
 		{
 			ParentMainForm = parentMainForm;
 			int xspacing = 6, yspacing = 16;
-			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 1;
+			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
 
-			colorToggles = new CheckBox[6];
+			colorToggles = new ColorButton[colors.Length];
 			for (int i = 0; i < colors.Length; i++)
 			{
-				var c = new CheckBox();
-				c.Appearance = Appearance.Button;
-				c.Location = new Point(x, y);
-				c.Size = new Size(width, height);
-				c.BackColor = colors[i];
-				c.ForeColor = colors[i];
-				c.TabIndex = tab++;
-				c.MouseClick += ((s, e) => {
-					colorToggle_MouseClick(i, s, e);
-				});
-				c.Checked = false;
-				colorToggles[i] = c;
-				this.Controls.Add(c);
+				var button = new ColorButton()
+				{
+					Location = new Point(x, y),
+					Size = new Size(width, height),
+					Color = colors[i],
+					TabIndex = tab++,
+					Checked = false
+				};
+				button.MouseClick += colorToggle_MouseClick;
+				
+				colorToggles[i] = button;
 
+				this.Controls.Add(button);
+				
 				x += width + xspacing;
 			}
-			this.Size = new Size(x - left + xspacing + xspacing, this.Size.Height);
+
+			this.Size = new Size((x - left) + xspacing + xspacing, this.Size.Height);
 			//Invalidate();
 		}
-		
-		public void UninitializeComponent() { }
-
-		private void colorToggle_MouseClick(int index, object sender, MouseEventArgs e)
+		public void UninitializeComponent()
 		{
-			CheckBox c = (CheckBox)sender;
-			SelectedColor = c.ForeColor;
-			for (int i = 0; i < colors.Length - 1; i++)
+			foreach (var c in colorToggles)
 			{
-				if (colorToggles[i].ForeColor == c.ForeColor)
-					colorToggles[i].Checked = true;
-				else
-					colorToggles[i].Checked = false;
-			}
-			
-			if (ParentMainForm.Canvas.clickedShape != null)
-			{
-				ParentMainForm.Canvas.clickedShape.color = SelectedColor;
-				ParentMainForm.Canvas.Invalidate();
+				c.MouseClick -= colorToggle_MouseClick;
 			}
 		}
-		
-		public SelectedColorWidget() : base() { }
+
+		private void colorToggle_MouseClick(object sender, MouseEventArgs e)
+		{
+			ColorButton checkbox = (ColorButton)sender;
+
+			// Set color to selected color button
+			Value = checkbox.Color;
+
+			// Mark selected color button
+			foreach (var b in colorToggles)
+			{
+				b.Checked = (b.Color == Value);
+			}
+
+			// Change last selected shapes color if control is held.
+			if (KeyboardController.IsControlDown)
+			{
+				ParentMainForm.Canvas.SetShapeColor(ClickData.Shape, Value);
+			}
+		}
 
 	}
 }
