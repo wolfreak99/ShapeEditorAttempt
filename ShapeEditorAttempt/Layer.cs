@@ -24,6 +24,11 @@ namespace ShapeEditorAttempt
 			shapes.Add(shape);
 		}
 
+		public Shape DuplicateShape(Shape shape, Point location)
+		{
+			return AddNewShape(location, shape.position.Size, shape.color, shape.Type);
+		}
+
 		/// <summary>
 		/// Creates a shape with the data, adds it to the layer, and returns it.
 		/// </summary>
@@ -33,8 +38,8 @@ namespace ShapeEditorAttempt
 		{
 			int x = location.X - (size.Width / 2),
 				y = location.Y - (size.Height / 2),
-				h = size.Width,
-				w = size.Height;
+				w = size.Width,
+				h = size.Height;
 
 			Shape shape = ShapeTypeHelper.CreateNewShape(
 				x, y, w, h,

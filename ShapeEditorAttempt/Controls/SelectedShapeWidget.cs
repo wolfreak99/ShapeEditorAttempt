@@ -15,7 +15,7 @@ namespace ShapeEditorAttempt
 		public void InitializeComponent()
 		{
 			int xspacing = 6, yspacing = 16;
-			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
+			int left = xspacing, top = yspacing, width = 70, height = 50, x = left, y = top, tab = 2;
 
 			ShapeButtons = new ShapeButton[3];
 			for (int i = 0; i < ShapeButtons.Length; i++)

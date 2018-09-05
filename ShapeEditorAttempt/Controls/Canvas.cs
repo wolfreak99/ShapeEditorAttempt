@@ -56,7 +56,7 @@ namespace ShapeEditorAttempt
 
 		internal void Canvas_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.SmoothingMode = SmoothingMode.Default;
+			e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
 
 			Grid.Draw(this, e);
 			layer.Draw(this, e);
@@ -143,7 +143,15 @@ namespace ShapeEditorAttempt
 		
 		private void GenerateShape(Size size)
 		{
-			var shape = layer.AddNewShape(ClickData.Origin, size, GetSelectedColor(), GetSelectedShapeType());
+			Shape shape;
+			if (ClickData.Shape != null && KeyboardController.IsControlDown)
+			{
+				shape = layer.DuplicateShape(ClickData.Shape, ClickData.Origin);
+			}
+			else
+			{
+				shape = layer.AddNewShape(ClickData.Origin, size, GetSelectedColor(), GetSelectedShapeType());
+			}
 			// Force new shape to go into resize mode.
 			ClickData.Set(shape, ShapeClickAction.Resize);
 		}
