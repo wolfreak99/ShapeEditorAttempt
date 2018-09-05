@@ -10,8 +10,8 @@ namespace ShapeEditorAttempt
 	{
 		public Layer layer = new Layer();
 		
-		private ShapeType GetSelectedShapeType() { return MainForm.Instance.selectedShapeWidget.Value; }
-		private Color GetSelectedColor() { return MainForm.Instance.selectedColorWidget.Value; }
+		private ShapeType GetSelectedShapeType() { return MainForm.Instance.SelectedShapeWidget.Value; }
+		private Color GetSelectedColor() { return MainForm.Instance.SelectedColorWidget.Value; }
 
 		public Canvas() : base()
 		{

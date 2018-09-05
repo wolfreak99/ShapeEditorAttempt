@@ -24,8 +24,8 @@ namespace ShapeEditorAttempt
 
 			// Initialize components
 			InitializeComponent();
-			selectedShapeWidget.InitializeComponent();
-			selectedColorWidget.InitializeComponent();
+			SelectedShapeWidget.InitializeComponent();
+			SelectedColorWidget.InitializeComponent();
 			Canvas.InitializeComponent();
 			KeyboardController.InitializeComponent();
 		}
@@ -44,7 +44,7 @@ namespace ShapeEditorAttempt
 			}
 		}
 
-		private void buttonClear_Click(object sender, EventArgs e)
+		private void ButtonClear_Click(object sender, EventArgs e)
 		{
 			Canvas.Clear();
 		}

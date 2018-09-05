@@ -34,9 +34,9 @@ namespace ShapeEditorAttempt
 		private void InitializeComponent()
 		{
 			this.Canvas = new ShapeEditorAttempt.Canvas();
-			this.selectedShapeWidget = new ShapeEditorAttempt.SelectedShapeWidget();
-			this.selectedColorWidget = new ShapeEditorAttempt.SelectedColorWidget();
-			this.buttonClear = new System.Windows.Forms.Button();
+			this.SelectedShapeWidget = new ShapeEditorAttempt.SelectedShapeWidget();
+			this.SelectedColorWidget = new ShapeEditorAttempt.SelectedColorWidget();
+			this.ButtonClear = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -53,35 +53,35 @@ namespace ShapeEditorAttempt
 			this.Canvas.TabIndex = 0;
 			this.Canvas.TabStop = false;
 			// 
-			// selectedShapeWidget
+			// SelectedShapeWidget
 			// 
-			this.selectedShapeWidget.Location = new System.Drawing.Point(13, 13);
-			this.selectedShapeWidget.Name = "selectedShapeWidget";
-			this.selectedShapeWidget.Value = ShapeEditorAttempt.ShapeType.Square;
-			this.selectedShapeWidget.Size = new System.Drawing.Size(331, 80);
-			this.selectedShapeWidget.TabIndex = 1;
-			this.selectedShapeWidget.TabStop = false;
-			this.selectedShapeWidget.Text = "Selected Shape";
+			this.SelectedShapeWidget.Location = new System.Drawing.Point(13, 13);
+			this.SelectedShapeWidget.Name = "SelectedShapeWidget";
+			this.SelectedShapeWidget.Value = ShapeEditorAttempt.ShapeType.Square;
+			this.SelectedShapeWidget.Size = new System.Drawing.Size(331, 80);
+			this.SelectedShapeWidget.TabIndex = 1;
+			this.SelectedShapeWidget.TabStop = false;
+			this.SelectedShapeWidget.Text = "Selected Shape";
 			// 
-			// selectedColorWidget
+			// SelectedColorWidget
 			// 
-			this.selectedColorWidget.Location = new System.Drawing.Point(350, 13);
-			this.selectedColorWidget.Name = "selectedColorWidget";
-			this.selectedColorWidget.Size = new System.Drawing.Size(302, 80);
-			this.selectedColorWidget.TabIndex = 1;
-			this.selectedColorWidget.TabStop = false;
-			this.selectedColorWidget.Text = "Selected Color";
+			this.SelectedColorWidget.Location = new System.Drawing.Point(350, 13);
+			this.SelectedColorWidget.Name = "SelectedColorWidget";
+			this.SelectedColorWidget.Size = new System.Drawing.Size(302, 80);
+			this.SelectedColorWidget.TabIndex = 1;
+			this.SelectedColorWidget.TabStop = false;
+			this.SelectedColorWidget.Text = "Selected Color";
 			// 
-			// buttonClear
+			// ButtonClear
 			// 
-			this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonClear.Location = new System.Drawing.Point(701, 13);
-			this.buttonClear.Name = "buttonClear";
-			this.buttonClear.Size = new System.Drawing.Size(87, 23);
-			this.buttonClear.TabIndex = 0;
-			this.buttonClear.Text = "Clear Shapes";
-			this.buttonClear.UseVisualStyleBackColor = true;
-			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+			this.ButtonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonClear.Location = new System.Drawing.Point(701, 13);
+			this.ButtonClear.Name = "ButtonClear";
+			this.ButtonClear.Size = new System.Drawing.Size(87, 23);
+			this.ButtonClear.TabIndex = 0;
+			this.ButtonClear.Text = "Clear Shapes";
+			this.ButtonClear.UseVisualStyleBackColor = true;
+			this.ButtonClear.Click += new System.EventHandler(this.ButtonClear_Click);
 			// 
 			// MainForm
 			// 
@@ -89,9 +89,9 @@ namespace ShapeEditorAttempt
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 560);
 			this.Controls.Add(this.Canvas);
-			this.Controls.Add(this.selectedShapeWidget);
-			this.Controls.Add(this.selectedColorWidget);
-			this.Controls.Add(this.buttonClear);
+			this.Controls.Add(this.SelectedShapeWidget);
+			this.Controls.Add(this.SelectedColorWidget);
+			this.Controls.Add(this.ButtonClear);
 			this.Name = "MainForm";
 			this.Text = "MainForm";
 			((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
@@ -102,9 +102,9 @@ namespace ShapeEditorAttempt
 		#endregion
 
 		public Canvas Canvas;
-		public SelectedShapeWidget selectedShapeWidget;
-		public SelectedColorWidget selectedColorWidget;
-		private Button buttonClear;
+		public SelectedShapeWidget SelectedShapeWidget;
+		public SelectedColorWidget SelectedColorWidget;
+		private Button ButtonClear;
 	}
 }
 
