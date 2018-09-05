@@ -19,10 +19,14 @@ namespace ShapeEditorAttempt
 		{
 		}
 
-		public override void Draw(Canvas sender, Graphics graphics)
+		public override void DrawShape(Graphics graphics, Rectangle position)
 		{
-			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(position, ClickData.Action) : position;
-			graphics.FillEllipse(pen.Brush, pos);
+			graphics.FillEllipse(pen.Brush, position);
+		}
+
+		public override void DrawBorder(Graphics graphics, Rectangle position)
+		{
+			graphics.DrawEllipse(pen, position);
 		}
 
 		public override ShapeClickAction GetShapeActionByPoint(GraphicsPath path, Point point)

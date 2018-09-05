@@ -19,34 +19,13 @@ namespace ShapeEditorAttempt
 
 		new public const string NAME = "Triangle";
 		new public const ShapeType TYPE = ShapeType.Triangle;
+		new public const int EDGE_WIDTH = 8;
 		override public string Name { get { return NAME; } }
 		override public ShapeType Type { get { return TYPE; } }
+		override public int EdgeWidth { get { return EDGE_WIDTH; } }
 		
-		public new const int EDGE_WIDTH = 8;
-
 		private const Angle DEFAULT_ANGLE = Angle.TopCenter;
-
-		private Angle m_angle = DEFAULT_ANGLE;
-
-		public Angle angle
-		{
-			get
-			{
-				return m_angle;
-			}
-			set
-			{
-				m_angle = value;
-			}
-		}
-
-		public Point[] points
-		{
-			get
-			{
-				return GetPointsByAngle(angle, position);
-			}
-		}
+		public Angle angle { get; set; } = DEFAULT_ANGLE;
 
 		public Triangle(int x, int y, int width, int height, Color color, Angle angle) : base(x, y, width, height, color)
 		{
@@ -64,20 +43,16 @@ namespace ShapeEditorAttempt
 			this.angle = DEFAULT_ANGLE;
 		}
 
-		public override void Draw(Canvas sender, Graphics graphics)
+		public override void DrawShape(Graphics graphics, Rectangle position)
 		{
-			Point[] newPoints = (ClickData.Shape == this) ? GetPointsByAngle(angle, PreviewOffset(position, ClickData.Action)) : points;
-			graphics.FillPolygon(pen.Brush, newPoints);
+			Point[] points = GetPointsByAngle(angle, position);
+			graphics.FillPolygon(pen.Brush, points);
+		}
 
-			// Create outline
-			if (KeyboardController.IsControlDown)
-			{
-				var prevColor = color;
-				color = Utils.ColorSetHsv(prevColor.GetHue(), prevColor.GetSaturation() + 10, prevColor.GetBrightness() + 10);
-				m_pen.Width = EDGE_WIDTH;
-				graphics.DrawPolygon(pen, GetPointsByAngle(angle, PreviewOffset(position.InflatedBy(-EDGE_WIDTH / 2, -EDGE_WIDTH / 2), ClickData.Action)));
-				color = prevColor;
-			}
+		public override void DrawBorder(Graphics graphics, Rectangle position)
+		{
+			Point[] points = GetPointsByAngle(angle, position);
+			graphics.DrawPolygon(pen, points);
 		}
 
 		static private Point[] GetPointsByAngle(Angle triangleAngle, Rectangle position)
@@ -149,6 +124,7 @@ namespace ShapeEditorAttempt
 		{
 			// Determine if overlapping border, and resize.
 			path.Reset();
+			Point[] points = GetPointsByAngle(angle, position);
 			path.AddPolygon(points);
 			path.Flatten();
 			return path.IsVisible(point);

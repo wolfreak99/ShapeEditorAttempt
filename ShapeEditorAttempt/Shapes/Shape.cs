@@ -11,13 +11,13 @@ namespace ShapeEditorAttempt
 {
 	public abstract class Shape
 	{
+		public const string NAME = "Null";
+		public const ShapeType TYPE = ShapeType.Null;
 		public const int EDGE_WIDTH = 6;
-
-		public const string NAME = "Square";
-		public const ShapeType TYPE = ShapeType.Square;
 		virtual public string Name { get { return NAME; } }
 		virtual public ShapeType Type { get { return TYPE; } }
-		
+		virtual public int EdgeWidth { get { return EDGE_WIDTH; } }
+
 		public Rectangle position;
 
 		public Point clickActionOffset;
@@ -29,6 +29,11 @@ namespace ShapeEditorAttempt
 			set
 			{
 				m_color = value;
+
+				if (m_pen != null)
+				{
+					m_pen.Dispose();
+				}
 				m_pen = new Pen(m_color, 1);
 			}
 		}
@@ -43,7 +48,7 @@ namespace ShapeEditorAttempt
 			{
 				if (m_pen == null)
 				{
-					throw new NullReferenceException("shape.pen is null because shape.color has not been set.");
+					throw new NullReferenceException("shape.pen is null (Use shape.color instead)");
 				}
 				return m_pen;
 			}
@@ -52,7 +57,7 @@ namespace ShapeEditorAttempt
 		public Shape(int x, int y, int width, int height, Color color)
 		{
 			this.position = new Rectangle(x, y, width, height);
-			this.color = color; 
+			this.color = color;
 		}
 
 		public Shape(Rectangle position, Color color)
@@ -61,7 +66,31 @@ namespace ShapeEditorAttempt
 			this.color = color;
 		}
 
-		public abstract void Draw(Canvas sender, Graphics graphics);
+		public virtual void Draw(Canvas sender, Graphics graphics)
+		{
+			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(position, ClickData.Action) : position;
+			DrawShape(graphics, pos);
+
+			// Create outline
+			if (KeyboardController.IsControlDown && ClickData.Shape == this)
+			{
+				var prevWidth = m_pen.Width;
+				var prevColor = color;
+
+				color = Utils.ColorSetHsv(prevColor.GetHue(), prevColor.GetSaturation() + 10, prevColor.GetBrightness() + 10);
+				m_pen.Width = EdgeWidth;
+
+				Rectangle borderPos = position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
+				pos = (ClickData.Shape == this) ? PreviewOffset(borderPos, ClickData.Action) : borderPos;
+				DrawBorder(graphics, pos);
+
+				color = prevColor;
+				m_pen.Width = prevWidth;
+			}
+		}
+
+		public abstract void DrawShape(Graphics graphics, Rectangle position);
+		public abstract void DrawBorder(Graphics graphics, Rectangle position);
 
 		/// <summary>
 		/// Helps determine if point is over shape or shape edge, and returns the appropriate action.
@@ -71,8 +100,8 @@ namespace ShapeEditorAttempt
 
 		public Rectangle PreviewOffset(Rectangle position, ShapeClickAction action)
 		{
-			if (ClickData.Shape != this)
-				return position;
+			//if (ClickData.Shape != this)
+			//	return position;
 
 			Rectangle value = position;
 
@@ -92,8 +121,8 @@ namespace ShapeEditorAttempt
 
 		public void ApplyOffset(ShapeClickAction action)
 		{
-			if (ClickData.Shape != this)
-				return;
+			//if (ClickData.Shape != this)
+			//	return;
 
 			switch (action)
 			{
@@ -110,8 +139,8 @@ namespace ShapeEditorAttempt
 
 		public void UpdateOffset(ShapeClickAction action, Point value)
 		{
-			if (ClickData.Shape != this)
-				return;
+			//if (ClickData.Shape != this)
+			//	return;
 
 			clickActionOffset = value;
 		}

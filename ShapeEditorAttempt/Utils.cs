@@ -10,6 +10,7 @@ namespace ShapeEditorAttempt
 	public class Utils
 	{
 		static Random random = new Random();
+
 		private static byte ClampValue(float value)
 		{
 			return (byte)(value * 255.0f);
@@ -38,50 +39,18 @@ namespace ShapeEditorAttempt
 			switch (i)
 			{
 			case 0:
-				{
-					r = ClampValue(value);
-					g = ClampValue(t);
-					b = ClampValue(p);
-					break;
-				}
+					return Color.FromArgb(ClampValue(value), ClampValue(t), ClampValue(p));
 			case 1:
-				{
-					r = ClampValue(q);
-					g = ClampValue(t);
-					b = ClampValue(p);
-					break;
-				}
+					return Color.FromArgb(ClampValue(q), ClampValue(t), ClampValue(p));
 			case 2:
-				{
-					r = ClampValue(p);
-					g = ClampValue(value);
-					b = ClampValue(t);
-					break;
-				}
+					return Color.FromArgb(ClampValue(p), ClampValue(value), ClampValue(t));
 			case 3:
-				{
-					r = ClampValue(p);
-					g = ClampValue(q);
-					b = ClampValue(value);
-					break;
-				}
+				return Color.FromArgb(ClampValue(p), ClampValue(q), ClampValue(value));
 			case 4:
-				{
-					r = ClampValue(t);
-					g = ClampValue(p);
-					b = ClampValue(value);
-					break;
-				}
+				return Color.FromArgb(ClampValue(t), ClampValue(p), ClampValue(value));
 			default:
-				{
-					r = ClampValue(value);
-					g = ClampValue(p);
-					b = ClampValue(q);
-					break;
-				}
+				return Color.FromArgb(ClampValue(value), ClampValue(p), ClampValue(q));
 			}
-
-			return Color.FromArgb(r, g, b);
 		}
 
 		/// <summary>
