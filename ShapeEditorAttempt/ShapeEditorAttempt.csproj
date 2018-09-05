@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClickedShapeData.cs" />
+    <Compile Include="ClickData.cs" />
     <Compile Include="Controls\Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
