@@ -13,23 +13,28 @@ namespace ShapeEditorAttempt
 {
 	public partial class MainForm : Form
 	{
-		public static MainForm Instance;
-
+		/// <summary>
+		/// The Singleton instance used to access the MainForm clas and components.
+		/// </summary>
+		public static MainForm Instance { get; private set; }
 
 		public MainForm()
 		{
 			Instance = this;
 
-			KeyPreview = true;
+			// Initialize components
 			InitializeComponent();
 			selectedShapeWidget.InitializeComponent();
 			selectedColorWidget.InitializeComponent();
 			Canvas.InitializeComponent();
+
+			// Initialize Keyboard Controller
+			KeyPreview = true;
 			KeyDown += KeyboardController.MainForm_KeyDown;
 			KeyUp += KeyboardController.MainForm_KeyUp;
 		}
 
-		//private Form
+		// Parent Form
 		private Form m_parentForm;
 		new public Form ParentForm
 		{

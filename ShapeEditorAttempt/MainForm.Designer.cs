@@ -88,10 +88,10 @@ namespace ShapeEditorAttempt
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 560);
-			this.Controls.Add(this.buttonClear);
+			this.Controls.Add(this.Canvas);
 			this.Controls.Add(this.selectedShapeWidget);
 			this.Controls.Add(this.selectedColorWidget);
-			this.Controls.Add(this.Canvas);
+			this.Controls.Add(this.buttonClear);
 			this.Name = "MainForm";
 			this.Text = "MainForm";
 			((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
