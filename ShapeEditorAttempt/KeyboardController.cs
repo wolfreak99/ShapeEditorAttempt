@@ -45,12 +45,13 @@ namespace ShapeEditorAttempt
 		{
 			switch (e.KeyCode)
 			{
+			// Escape from any unsupported keys
 			case Keys.None:
 			default:
 				return;
 
 			case Keys.ControlKey:
-				IsControlDown = true;
+				IsControlDown = false;
 				break;
 			}
 			MainForm.Instance.Canvas.Invalidate();
