@@ -14,7 +14,7 @@ namespace ShapeEditorAttempt
 			case ShapeType.Circle:
 				return new Circle(x, y, width, height, color);
 			case ShapeType.Triangle:
-				return new Triangle(x, y, width * 2, height * 2, color); // Multiply twice to ensure reaches border
+				return new Triangle(x, y, width, height, color); // Multiply twice to ensure reaches border
 			default:
 				throw new ShapeTypeNotSupportedException(shape);
 			}

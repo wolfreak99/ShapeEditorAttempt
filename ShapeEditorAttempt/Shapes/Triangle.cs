@@ -24,7 +24,7 @@ namespace ShapeEditorAttempt
 		override public ShapeType Type { get { return TYPE; } }
 		override public int EdgeWidth { get { return EDGE_WIDTH; } }
 		
-		private const Angle DEFAULT_ANGLE = Angle.TopCenter;
+		private const Angle DEFAULT_ANGLE = Angle.TopLeft;
 		public Angle angle { get; set; } = DEFAULT_ANGLE;
 
 		public Triangle(int x, int y, int width, int height, Color color, Angle angle) : base(x, y, width, height, color)
@@ -46,13 +46,13 @@ namespace ShapeEditorAttempt
 		public override void DrawShape(Graphics graphics, Rectangle position)
 		{
 			Point[] points = GetPointsByAngle(angle, position);
-			graphics.FillPolygon(pen.Brush, points);
+			graphics.FillPolygon(Pen.Brush, points);
 		}
 
 		public override void DrawBorder(Graphics graphics, Rectangle position)
 		{
 			Point[] points = GetPointsByAngle(angle, position);
-			graphics.DrawPolygon(pen, points);
+			graphics.DrawPolygon(Pen, points);
 		}
 
 		static private Point[] GetPointsByAngle(Angle triangleAngle, Rectangle position)
@@ -62,8 +62,8 @@ namespace ShapeEditorAttempt
 			case Angle.TopLeft:
 				return new Point[3] {
 					new Point(position.Left, position.Top),
-					new Point(position.Left, position.Bottom),
-					new Point(position.Right, position.Bottom)
+					new Point(position.Right, position.Top),
+					new Point(position.Left, position.Bottom)
 				};
 			case Angle.TopCenter:
 				return new Point[3] {
@@ -73,15 +73,15 @@ namespace ShapeEditorAttempt
 				};
 			case Angle.TopRight:
 				return new Point[3] {
+					new Point(position.Left, position.Top),
 					new Point(position.Right, position.Top),
-					new Point(position.Left, position.Bottom),
 					new Point(position.Right, position.Bottom)
 				};
 			case Angle.BottomLeft:
 				return new Point[3] {
 					new Point(position.Left, position.Top),
-					new Point(position.Right, position.Top),
-					new Point(position.Left, position.Bottom)
+					new Point(position.Left, position.Bottom),
+					new Point(position.Right, position.Bottom)
 				};
 			case Angle.BottomCenter:
 				return new Point[3] {
@@ -91,8 +91,8 @@ namespace ShapeEditorAttempt
 				};
 			case Angle.BottomRight:
 				return new Point[3] {
-					new Point(position.Left, position.Top),
 					new Point(position.Right, position.Top),
+					new Point(position.Left, position.Bottom),
 					new Point(position.Right, position.Bottom)
 				};
 			default:
@@ -107,7 +107,7 @@ namespace ShapeEditorAttempt
 			{
 				// Determine if not overlapping border, and drag. otherwise resize.
 				path.Reset();
-				path.AddPolygon(GetPointsByAngle(angle, Rectangle.Inflate(position, -EDGE_WIDTH, -EDGE_WIDTH)));
+				path.AddPolygon(GetPointsByAngle(angle, Rectangle.Inflate(Position, -EDGE_WIDTH, -EDGE_WIDTH)));
 				path.Flatten();
 				if (path.IsVisible(point))
 					return ShapeClickAction.Drag;
@@ -124,9 +124,8 @@ namespace ShapeEditorAttempt
 		{
 			// Determine if overlapping border, and resize.
 			path.Reset();
-			Point[] points = GetPointsByAngle(angle, position);
+			Point[] points = GetPointsByAngle(angle, Position);
 			path.AddPolygon(points);
-			path.Flatten();
 			return path.IsVisible(point);
 		}
 	}

@@ -170,13 +170,13 @@ namespace ShapeEditorAttempt
 				switch (value)
 				{
 				case ShapeType.Square:
-					newShape = new Square(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					newShape = new Square(shape.Position.X, shape.Position.Y, shape.Position.Width, shape.Position.Height, shape.Color);
 					break;
 				case ShapeType.Circle:
-					newShape = new Circle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					newShape = new Circle(shape.Position.X, shape.Position.Y, shape.Position.Width, shape.Position.Height, shape.Color);
 					break;
 				case ShapeType.Triangle:
-					newShape = new Triangle(shape.position.X, shape.position.Y, shape.position.Width, shape.position.Height, shape.color);
+					newShape = new Triangle(shape.Position.X, shape.Position.Y, shape.Position.Width, shape.Position.Height, shape.Color);
 					break;
 				default:
 					throw new NotSupportedException(Utils.GetEnumName(value) + " not supported");
@@ -188,7 +188,7 @@ namespace ShapeEditorAttempt
 
 		internal void SetShapeColor(Shape shape, Color color)
 		{
-			shape.color = color;
+			shape.Color = color;
 			Invalidate();
 		}
 

@@ -21,12 +21,12 @@ namespace ShapeEditorAttempt
 
 		public override void DrawShape(Graphics graphics, Rectangle position)
 		{
-			graphics.FillEllipse(pen.Brush, position);
+			graphics.FillEllipse(Pen.Brush, position);
 		}
 
 		public override void DrawBorder(Graphics graphics, Rectangle position)
 		{
-			graphics.DrawEllipse(pen, position);
+			graphics.DrawEllipse(Pen, position);
 		}
 
 		public override ShapeClickAction GetShapeActionByPoint(GraphicsPath path, Point point)
@@ -35,7 +35,7 @@ namespace ShapeEditorAttempt
 			{
 				// Determine if not overlapping border, and drag. otherwise resize.
 				path.Reset();
-				path.AddEllipse(Rectangle.Inflate(position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));
+				path.AddEllipse(Rectangle.Inflate(Position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));
 				if (path.IsVisible(point))
 					return ShapeClickAction.Drag;
 				else
@@ -51,7 +51,7 @@ namespace ShapeEditorAttempt
 		{
 			// Determine if overlapping border, and resize.
 			path.Reset();
-			path.AddEllipse(position);
+			path.AddEllipse(Position);
 			return path.IsVisible(point);
 		}
 	}

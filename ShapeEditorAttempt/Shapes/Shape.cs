@@ -18,12 +18,19 @@ namespace ShapeEditorAttempt
 		virtual public ShapeType Type { get { return TYPE; } }
 		virtual public int EdgeWidth { get { return EDGE_WIDTH; } }
 
-		public Rectangle position;
-
+		public Rectangle Position;
+		/// <summary>
+		/// Shortcode for Position.Location
+		/// </summary>
+		public Point Location { get { return Position.Location; } set { Position.Location = value; } }
+		/// <summary>
+		/// Shortcode for Position.Size
+		/// </summary>
+		public Size Size { get { return Position.Size; } set { Position.Size = value; } }
 		public Point clickActionOffset;
 
 		private Color m_color;
-		public Color color
+		public Color Color
 		{
 			get { return m_color; }
 			set
@@ -40,15 +47,15 @@ namespace ShapeEditorAttempt
 		
 		internal Pen m_pen;
 		/// <summary>
-		/// The pen, which is updated whenever "color" is changed.
+		/// The Pen, which is updated whenever "Color" is changed.
 		/// </summary>
-		public Pen pen
+		public Pen Pen
 		{
 			get
 			{
 				if (m_pen == null)
 				{
-					throw new NullReferenceException("shape.pen is null (Use shape.color instead)");
+					throw new NullReferenceException("shape.Pen is null (Have you set shape.Color yet?)");
 				}
 				return m_pen;
 			}
@@ -56,35 +63,35 @@ namespace ShapeEditorAttempt
 
 		public Shape(int x, int y, int width, int height, Color color)
 		{
-			this.position = new Rectangle(x, y, width, height);
-			this.color = color;
+			this.Position = new Rectangle(x, y, width, height);
+			this.Color = color;
 		}
 
 		public Shape(Rectangle position, Color color)
 		{
-			this.position = position;
-			this.color = color;
+			this.Position = position;
+			this.Color = color;
 		}
 
 		public virtual void Draw(Canvas sender, Graphics graphics)
 		{
-			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(position, ClickData.Action) : position;
+			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(Position, ClickData.Action) : Position;
 			DrawShape(graphics, pos);
 
 			// Create outline
 			if (KeyboardController.IsControlDown && ClickData.Shape == this)
 			{
 				var prevWidth = m_pen.Width;
-				var prevColor = color;
+				var prevColor = Color;
 
-				color = Utils.ColorSetHsv(prevColor.GetHue(), prevColor.GetSaturation() + 10, prevColor.GetBrightness() + 10);
+				Color = Utils.ColorSetHsv(prevColor.GetHue(), prevColor.GetSaturation() + 10, prevColor.GetBrightness() + 10);
 				m_pen.Width = EdgeWidth;
 
-				Rectangle borderPos = position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
+				Rectangle borderPos = Position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
 				pos = (ClickData.Shape == this) ? PreviewOffset(borderPos, ClickData.Action) : borderPos;
 				DrawBorder(graphics, pos);
 
-				color = prevColor;
+				Color = prevColor;
 				m_pen.Width = prevWidth;
 			}
 		}
@@ -100,8 +107,10 @@ namespace ShapeEditorAttempt
 
 		public Rectangle PreviewOffset(Rectangle position, ShapeClickAction action)
 		{
-			//if (ClickData.Shape != this)
-			//	return position;
+			if (ClickData.Shape != this)
+			{
+				throw new FieldAccessException("PreviewOffset attempted on unselected shape");
+			}
 
 			Rectangle value = position;
 
@@ -121,33 +130,38 @@ namespace ShapeEditorAttempt
 
 		public void ApplyOffset(ShapeClickAction action)
 		{
-			//if (ClickData.Shape != this)
-			//	return;
+			if (ClickData.Shape != this)
+			{
+				throw new FieldAccessException("ApplyOffset attempted on unselected shape");
+			}
 
+			Rectangle value = Position;
 			switch (action)
 			{
 			case ShapeClickAction.Drag:
-				position.X -= clickActionOffset.X;
-				position.Y -= clickActionOffset.Y;
+				Position.X -= clickActionOffset.X;
+				Position.Y -= clickActionOffset.Y;
 				break;
 			case ShapeClickAction.Resize:
-				position.Width -= clickActionOffset.X;
-				position.Height -= clickActionOffset.Y;
+				Position.Width -= clickActionOffset.X;
+				Position.Height -= clickActionOffset.Y;
 				break;
 			}
 		}
 
 		public void UpdateOffset(ShapeClickAction action, Point value)
 		{
-			//if (ClickData.Shape != this)
-			//	return;
+			if (ClickData.Shape != this)
+			{
+				throw new FieldAccessException("UpdateOffset attempted on unselected shape");
+			}
 
 			clickActionOffset = value;
 		}
 		
 		public override string ToString()
 		{
-			return Name + "(" + position.ToString() + ", " + color.ToString() + ")";
+			return Name + "(" + Position.ToString() + ", " + Color.ToString() + ")";
 		}
 	}
 }

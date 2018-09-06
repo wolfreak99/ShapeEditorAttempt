@@ -43,16 +43,16 @@ namespace ShapeEditorAttempt
 		{
 			ShapeButton button = (ShapeButton)sender;
 
-			// Set color to selected color button
+			// Set shape to selected shape button
 			Value = (ShapeType)button.Type;
 
-			// Mark selected color button
+			// Mark selected shape button
 			foreach (var b in ShapeButtons)
 			{
 				b.Checked = (Value == b.Type);
 			}
 
-			// Change last selected shapes color if control is held.
+			// Change last selected shapes shape if control is held.
 			if (KeyboardController.IsControlDown)
 			{
 				MainForm.Instance.Canvas.SetShapeType(ClickData.Shape, Value);

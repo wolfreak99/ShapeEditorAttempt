@@ -26,7 +26,20 @@ namespace ShapeEditorAttempt
 
 		public Shape DuplicateShape(Shape shape, Point location)
 		{
-			return AddNewShape(location, shape.position.Size, shape.color, shape.Type);
+			if (shape.Type == ShapeType.Triangle)
+			{
+				Triangle tri = (Triangle)shape;
+				var angle = tri.angle;
+
+				Triangle newTri = (Triangle)AddNewShape(location, new Size(tri.Size.Width / 2, tri.Size.Height / 2), shape.Color, shape.Type);
+				newTri.angle = angle;
+
+				return newTri;
+			}
+			else
+			{
+				return AddNewShape(location, shape.Size, shape.Color, shape.Type);
+			}
 		}
 
 		/// <summary>
@@ -58,7 +71,8 @@ namespace ShapeEditorAttempt
 
 		public void Draw(Canvas sender, PaintEventArgs e)
 		{
-			foreach (Shape s in shapes) {
+			foreach (Shape s in shapes)
+			{
 				s.Draw(sender, e.Graphics);
 			}
 		}
@@ -68,7 +82,8 @@ namespace ShapeEditorAttempt
 			for (int i = shapes.Count - 1; i >= 0; i--)
 			{
 				var s = shapes[i];
-				if (s.IsPointOverShape(path, point)) {
+				if (s.IsPointOverShape(path, point))
+				{
 					return s;
 				}
 			}
@@ -83,10 +98,17 @@ namespace ShapeEditorAttempt
 
 		internal void Replace(Shape shape, Shape newShape)
 		{
+			bool wasShapeCLicked = (ClickData.Shape == shape);
+
 			var index = shapes.IndexOf(shape);
+
 			shapes.Insert(index, newShape);
 			shapes.Remove(shape);
-			ClickData.Shape = newShape;
+
+			if (wasShapeCLicked)
+			{
+				ClickData.Shape = newShape;
+			}
 		}
 	}
 }
