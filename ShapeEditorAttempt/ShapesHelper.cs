@@ -5,7 +5,7 @@ namespace ShapeEditorAttempt
 {
 	public partial class ShapeTypeHelper
 	{
-		static public Shape CreateNewShape(int x, int y, int width, int height, Color color, ShapeType shape)
+		static public Shape CreateNewShape(int x, int y, int width, int height, Color color, ShapeType shape, bool stretchTriangle = true)
 		{
 			switch (shape)
 			{
@@ -14,7 +14,14 @@ namespace ShapeEditorAttempt
 			case ShapeType.Circle:
 				return new Circle(x, y, width, height, color);
 			case ShapeType.Triangle:
-				return new Triangle(x, y, width, height, color); // Multiply twice to ensure reaches border
+				if (stretchTriangle)
+				{
+					return new Triangle(x, y, width * 2, height * 2, color); // Multiply twice to ensure reaches border
+				}
+				else
+				{
+					return new Triangle(x, y, width, height, color);
+				}
 			default:
 				throw new ShapeTypeNotSupportedException(shape);
 			}

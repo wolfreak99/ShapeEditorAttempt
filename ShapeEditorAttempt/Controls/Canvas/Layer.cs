@@ -26,15 +26,14 @@ namespace ShapeEditorAttempt
 
 		public Shape DuplicateShape(Shape shape, Point location)
 		{
+			// Explicitly create triangles to add angle.
 			if (shape.Type == ShapeType.Triangle)
 			{
-				Triangle tri = (Triangle)shape;
-				var angle = tri.angle;
+				Triangle oldTriangle = (Triangle)shape;
+				Triangle newTriangle = (Triangle)AddNewShape(location, shape.Size, shape.Color, shape.Type);
+				newTriangle.angle = oldTriangle.angle;
 
-				Triangle newTri = (Triangle)AddNewShape(location, new Size(tri.Size.Width / 2, tri.Size.Height / 2), shape.Color, shape.Type);
-				newTri.angle = angle;
-
-				return newTri;
+				return newTriangle;
 			}
 			else
 			{
@@ -60,6 +59,7 @@ namespace ShapeEditorAttempt
 				type
 			);
 
+			// Add to list and return
 			Add(shape);
 			return shape;
 		}
@@ -98,10 +98,10 @@ namespace ShapeEditorAttempt
 
 		internal void Replace(Shape shape, Shape newShape)
 		{
+			// If the shape was selected, select replacement shape once created.
 			bool wasShapeCLicked = (ClickData.Shape == shape);
 
 			var index = shapes.IndexOf(shape);
-
 			shapes.Insert(index, newShape);
 			shapes.Remove(shape);
 
