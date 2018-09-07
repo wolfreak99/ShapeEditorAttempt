@@ -10,6 +10,7 @@ namespace ShapeEditorAttempt
 	public class KeyboardController
 	{
 		public static bool IsControlDown { get; private set; }
+		public static bool IsShiftDown { get; private set; }
 
 		internal static void InitializeComponent()
 		{
@@ -37,6 +38,9 @@ namespace ShapeEditorAttempt
 			case Keys.ControlKey:
 				IsControlDown = true;
 				break;
+			case Keys.ShiftKey:
+				IsShiftDown = true;
+				break;
 			}
 			MainForm.Instance.Canvas.Invalidate();
 		}
@@ -52,6 +56,21 @@ namespace ShapeEditorAttempt
 
 			case Keys.ControlKey:
 				IsControlDown = false;
+				break;
+			case Keys.ShiftKey:
+				IsShiftDown = false;
+				break;
+			case Keys.PageUp:
+				if (ClickData.Shape != null)
+				{
+					MainForm.Instance.Canvas.layer.MoveShapeUp(ClickData.Shape);
+				}
+				break;
+			case Keys.PageDown:
+				if (ClickData.Shape != null)
+				{
+					MainForm.Instance.Canvas.layer.MoveShapeDown(ClickData.Shape);
+				}
 				break;
 			}
 			MainForm.Instance.Canvas.Invalidate();

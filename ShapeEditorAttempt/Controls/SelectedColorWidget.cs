@@ -3,18 +3,22 @@ using System.Drawing;
 
 namespace ShapeEditorAttempt
 {
-	public class SelectedColorWidget : GroupBox, IInitializeComponent
+	public class SelectedColorWidget : GroupBoxPanel, IInitializeComponent
 	{
 		public Color Value = Color.Black;
 
-		private Color[] colors = new Color[6]{ Color.Red, Color.Green, Color.Blue, Color.Black, Color.Gray, Color.White };
+		private Color[] colors = ColorsArray.Array;
 		private ColorButton[] colorToggles;
 		
-		public SelectedColorWidget() : base() { }
+		public SelectedColorWidget() : base()
+		{
+			//AutoScroll = true;
+			Text = "Test";
+		}
 
 		public void InitializeComponent()
 		{
-			int xspacing = 6, yspacing = 16;
+			int xspacing = 6, yspacing = 0;
 			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
 
 			colorToggles = new ColorButton[colors.Length];
@@ -37,7 +41,7 @@ namespace ShapeEditorAttempt
 				x += width + xspacing;
 			}
 
-			this.Size = new Size((x - left) + xspacing + xspacing, this.Size.Height);
+			//this.Size = new Size((x - left) + xspacing + xspacing, this.Size.Height);
 			//Invalidate();
 		}
 		public void UninitializeComponent()

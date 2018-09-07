@@ -116,7 +116,7 @@ namespace ShapeEditorAttempt
 					break;
 				case MouseButtons.Left:
 					bool createShape = true;
-					if (shape != null)
+					if (!KeyboardController.IsShiftDown && shape != null)
 					{
 						var action = shape.GetShapeActionByPoint(path, location);
 						if (action != ShapeClickAction.None)

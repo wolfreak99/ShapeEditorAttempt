@@ -61,12 +61,25 @@ namespace ShapeEditorAttempt
 
 			// Add to list and return
 			Add(shape);
+
 			return shape;
 		}
 
 		public bool Remove(Shape shape)
 		{
 			return shapes.Remove(shape);
+		}
+
+		internal void MoveShapeUp(Shape shape)
+		{
+			var index = shapes.IndexOf(shape);
+			shapes.Swap(index, index - 1);
+		}
+
+		internal void MoveShapeDown(Shape shape)
+		{
+			var index = shapes.IndexOf(shape);
+			shapes.Swap(index, index + 1);
 		}
 
 		public void Draw(Canvas sender, PaintEventArgs e)
@@ -102,8 +115,7 @@ namespace ShapeEditorAttempt
 			bool wasShapeCLicked = (ClickData.Shape == shape);
 
 			var index = shapes.IndexOf(shape);
-			shapes.Insert(index, newShape);
-			shapes.Remove(shape);
+			shapes[index] = newShape;
 
 			if (wasShapeCLicked)
 			{

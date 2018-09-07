@@ -46,12 +46,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClickData.cs" />
+    <Compile Include="ColorsArray.cs" />
     <Compile Include="Controls\Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ColorButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\GroupBoxPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\RectOffset.cs" />
     <Compile Include="Controls\SelectedColorWidget.cs">
       <SubType>Component</SubType>
     </Compile>

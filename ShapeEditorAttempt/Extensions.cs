@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace ShapeEditorAttempt
@@ -27,6 +28,17 @@ namespace ShapeEditorAttempt
 		static public Point Center(this Rectangle rectangle)
 		{
 			return new Point(rectangle.X + (rectangle.Width / 2), rectangle.Y + (rectangle.Height / 2));
+		}
+
+		public static void Swap<T>(this List<T> items, int index, int newIndex)
+		{
+			if (items != null&& index != newIndex && 
+				index >= 0 && newIndex >= 0 && index < items.Count && newIndex < items.Count)
+			{
+				T tmp = items[newIndex];
+				items[newIndex] = items[index];
+				items[index] = tmp;
+			}
 		}
 	}
 }

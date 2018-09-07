@@ -67,7 +67,7 @@ namespace ShapeEditorAttempt
 			// 
 			this.SelectedColorWidget.Location = new System.Drawing.Point(350, 13);
 			this.SelectedColorWidget.Name = "SelectedColorWidget";
-			this.SelectedColorWidget.Size = new System.Drawing.Size(302, 80);
+			this.SelectedColorWidget.Size = new System.Drawing.Size(302, 82);
 			this.SelectedColorWidget.TabIndex = 1;
 			this.SelectedColorWidget.TabStop = false;
 			this.SelectedColorWidget.Text = "Selected Color";
