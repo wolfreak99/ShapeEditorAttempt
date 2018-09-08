@@ -30,7 +30,7 @@ namespace ShapeEditorAttempt
 			if (shape.Type == ShapeType.Triangle)
 			{
 				Triangle oldTriangle = (Triangle)shape;
-				Triangle newTriangle = (Triangle)AddNewShape(location, shape.Size, shape.Color, shape.Type);
+				Triangle newTriangle = (Triangle)AddNewShape(location, shape.Size, shape.Color, shape.Type, false);
 				newTriangle.angle = oldTriangle.angle;
 
 				return newTriangle;
@@ -46,7 +46,7 @@ namespace ShapeEditorAttempt
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public Shape AddNewShape(Point location, Size size, Color color, ShapeType type)
+		public Shape AddNewShape(Point location, Size size, Color color, ShapeType type, bool stretchTriangle = true)
 		{
 			int x = location.X - (size.Width / 2),
 				y = location.Y - (size.Height / 2),
@@ -56,7 +56,8 @@ namespace ShapeEditorAttempt
 			Shape shape = ShapeTypeHelper.CreateNewShape(
 				x, y, w, h,
 				color,
-				type
+				type, 
+				stretchTriangle
 			);
 
 			// Add to list and return
