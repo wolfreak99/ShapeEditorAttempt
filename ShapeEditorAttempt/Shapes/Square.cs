@@ -10,6 +10,13 @@ namespace ShapeEditorAttempt
 		override public string Name { get { return NAME; } }
 		override public ShapeType Type { get { return TYPE; } }
 
+		/// <summary>
+		/// For XML Serialization only
+		/// </summary>
+		public Square() : this(0, 0, 0, 0, DEFAULT_COLOR)
+		{
+		}
+
 		public Square(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
 		{
 		}

@@ -8,10 +8,19 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
+	/// <summary>
+	/// GroupBox with a Panel integrated inside.
+	/// </summary>
 	public class GroupBoxPanel : GroupBox
 	{
 		private Panel m_Panel;
 		private static readonly RectOffset GroupToPanelOffset = new RectOffset(4, 12, 4, 2);
+
+		public Panel Panel
+		{
+			get { return m_Panel; }
+		}
+
 		public new ControlCollection Controls
 		{
 			get
@@ -57,6 +66,33 @@ namespace ShapeEditorAttempt
 			}
 		}
 
+		public new Size MaximumSize
+		{
+			get
+			{
+				return base.MaximumSize;
+			}
+			set
+			{
+				base.MaximumSize = value;
+				m_Panel.MaximumSize = new Size(value.Width - (GroupToPanelOffset.Width), value.Height - (GroupToPanelOffset.Height));
+			}
+		}
+
+
+		public new AnchorStyles Anchor
+		{
+			get
+			{
+				return base.Anchor;
+			}
+			set
+			{
+				base.Anchor = value;
+				m_Panel.Anchor = value;
+			}
+		}
+            
 		public GroupBoxPanel()
 		{
 			m_Panel = new Panel();
@@ -64,7 +100,8 @@ namespace ShapeEditorAttempt
 			m_Panel.VerticalScroll.Visible = false;
 			m_Panel.HorizontalScroll.Enabled = true;
 			m_Panel.HorizontalScroll.Visible = true;
-			m_Panel.AutoScroll = true;
+			AutoScroll = true;
+			
 			MainForm.Instance.Controls.Add(m_Panel);
 		}
 	}

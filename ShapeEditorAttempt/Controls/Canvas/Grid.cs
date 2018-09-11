@@ -11,14 +11,16 @@ namespace ShapeEditorAttempt
 {
 	static public class Grid
 	{
-		static public Size GridSize = new Size(10, 10);
+		public const int DEFAULT_SIZE = 10;
+		static public Size GridSize = new Size(DEFAULT_SIZE, DEFAULT_SIZE);
+		
 		static public bool DrawGrid = true;
 		static public bool SnapLocationToGrid = true;
 		static public bool SnapSizeToGrid = true;
 
 		static public void Draw(Canvas canvas, PaintEventArgs e)
 		{
-			if (!DrawGrid)
+			if (!DrawGrid || GridSize.Width <= 0 || GridSize.Height <= 0)
 				return;
 
 			var w = canvas.ClientSize.Width;
@@ -54,6 +56,11 @@ namespace ShapeEditorAttempt
 
 		static private int SnapToGrid(int num, int gridSize)
 		{
+			if (gridSize == 0)
+			{
+				return num;
+			}
+			
 			return gridSize * (int)Math.Round((float)num / gridSize);
 		}
 	}

@@ -9,8 +9,20 @@ namespace ShapeEditorAttempt
 {
 	public class ClickData
 	{
+		static private Shape m_Shape = null;
 		static public Point Origin { get; internal set; }
-		static public Shape Shape { get; internal set; }
+		static public Shape Shape
+		{
+			get { return m_Shape; }
+			internal set
+			{
+				m_Shape = value;
+				if (m_Shape != null)
+				{
+					MainForm.Instance.selectedShapeNameTextBox.Text = m_Shape.Nickname;
+				}
+			}
+		}
 		static public ShapeClickAction Action { get; internal set; }
 		static public Point Offset { get; internal set; }
 

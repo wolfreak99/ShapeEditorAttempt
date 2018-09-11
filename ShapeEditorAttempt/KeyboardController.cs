@@ -11,6 +11,62 @@ namespace ShapeEditorAttempt
 	{
 		public static bool IsControlDown { get; private set; }
 		public static bool IsShiftDown { get; private set; }
+		public static bool IsMoveDown { get; private set; }
+
+		private static Keys m_prevKey = Keys.None;
+		private static bool m_prevIsDown = false;
+
+		private static void ProcessKeys(KeyEventArgs e, bool isDown)
+		{
+			switch (e.KeyCode)
+			{
+			// Escape from any unsupported keys
+			case Keys.None:
+			default:
+				break;
+			case Keys.R:
+				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				{
+					ClickData.Shape.Height = ClickData.Shape.Width;
+				}
+				break;
+			case Keys.PageUp:
+				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				{
+					Canvas.Instance.layer.MoveShapeUp(ClickData.Shape);
+				}
+				break;
+			case Keys.PageDown:
+				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				{
+					Canvas.Instance.layer.MoveShapeDown(ClickData.Shape);
+				}
+				break;
+			case Keys.M:
+				IsMoveDown = isDown && Canvas.Instance.Focused;
+				e.Handled = true;
+				break;
+			case Keys.Delete:
+				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				{
+					Canvas.Instance.layer.Remove(ClickData.Shape);
+				}
+				break;
+			case Keys.ControlKey:
+				IsControlDown = isDown;
+				break;
+			case Keys.ShiftKey:
+				IsShiftDown = isDown;
+				break;
+			}
+			if (!(m_prevKey == e.KeyCode && m_prevIsDown == isDown))
+			{
+				Canvas.Instance.Invalidate();
+			}
+
+			m_prevKey = e.KeyCode;
+			m_prevIsDown = isDown;
+		}
 
 		internal static void InitializeComponent()
 		{
@@ -28,53 +84,12 @@ namespace ShapeEditorAttempt
 
 		private static void MainForm_KeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-			// Escape from any unsupported keys
-			case Keys.None:
-			default:
-				return;
-
-			case Keys.ControlKey:
-				IsControlDown = true;
-				break;
-			case Keys.ShiftKey:
-				IsShiftDown = true;
-				break;
-			}
-			MainForm.Instance.Canvas.Invalidate();
+			ProcessKeys(e, true);
 		}
 
 		private static void MainForm_KeyUp(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-			// Escape from any unsupported keys
-			case Keys.None:
-			default:
-				return;
-
-			case Keys.ControlKey:
-				IsControlDown = false;
-				break;
-			case Keys.ShiftKey:
-				IsShiftDown = false;
-				break;
-			case Keys.PageUp:
-				if (ClickData.Shape != null)
-				{
-					MainForm.Instance.Canvas.layer.MoveShapeUp(ClickData.Shape);
-				}
-				break;
-			case Keys.PageDown:
-				if (ClickData.Shape != null)
-				{
-					MainForm.Instance.Canvas.layer.MoveShapeDown(ClickData.Shape);
-				}
-				break;
-			}
-			MainForm.Instance.Canvas.Invalidate();
-
+			ProcessKeys(e, false);
 		}
 	}
 }

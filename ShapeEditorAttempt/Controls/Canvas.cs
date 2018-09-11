@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace ShapeEditorAttempt
 {
 	public class Canvas : PictureBox, IInitializeComponent
 	{
+		public static Canvas Instance => MainForm.Instance.Canvas;
 		public Layer layer = new Layer();
 		
 		private ShapeType GetSelectedShapeType() { return MainForm.Instance.SelectedShapeWidget.Value; }
@@ -19,6 +22,8 @@ namespace ShapeEditorAttempt
 
 		public void InitializeComponent()
 		{
+			MainForm.Instance.gridSizeTextBox.Text = Grid.GridSize.Width.ToString();
+
 			this.Paint += this.Canvas_Paint;
 			this.MouseDown += this.Canvas_MouseDown;
 			this.MouseMove += this.Canvas_MouseMove;
@@ -27,14 +32,15 @@ namespace ShapeEditorAttempt
 		}
 
 		public void UninitializeComponent() { }
-
-		private void ChangeTriangleAngle(Shape shape)
+		
+		internal void Canvas_Paint(object sender, PaintEventArgs e)
 		{
-			Triangle t = (Triangle)shape;
-			t.IncrementAngle();
-			Invalidate();
-		}
+			e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
 
+			Grid.Draw(this, e);
+			layer.Draw(this, e);
+		}
+		
 		private void Canvas_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
@@ -49,19 +55,11 @@ namespace ShapeEditorAttempt
 				
 				if (shape.Type == ShapeType.Triangle)
 				{
-					ChangeTriangleAngle(shape);
+					Action_TriangleIncrmentAngle(shape);
 				}
 			}
 		}
 
-		internal void Canvas_Paint(object sender, PaintEventArgs e)
-		{
-			e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
-
-			Grid.Draw(this, e);
-			layer.Draw(this, e);
-		}
-		
 		internal void Canvas_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (ClickData.Action == ShapeClickAction.None)
@@ -79,7 +77,7 @@ namespace ShapeEditorAttempt
 		{
 			if (e.Button == MouseButtons.None)
 				return;
-			
+			Focus();
 			// Todo: Copy over the moving mechanics a little better.
 			ClickData.ShapeUpdateOffset(e.Location);
 			Invalidate();
@@ -100,18 +98,12 @@ namespace ShapeEditorAttempt
 				switch (e.Button)
 				{
 				case MouseButtons.Right:
-					if (shape != null)
-					{
-						layer.Remove(shape);
-						ClickData.Action = ShapeClickAction.Delete;
-					}
-					ClickData.Shape = null;
+					Action_RemoveShape(shape);
 					break;
 				case MouseButtons.Middle:
 					if (shape != null && shape.Type == ShapeType.Triangle)
 					{
-						Triangle t = (Triangle)shape;
-						t.IncrementAngle();
+						Action_TriangleIncrmentAngle(shape);
 					}
 					break;
 				case MouseButtons.Left:
@@ -127,7 +119,8 @@ namespace ShapeEditorAttempt
 						}
 						else
 						{
-							throw new Exception("Shape was found under Point, but action wasn't - This shouldn't happen.");
+							throw new Exception("Shape was found under Point, but action wasn't" +
+								" - This shouldn't happen.");
 						}
 					}
 					if (createShape)
@@ -140,7 +133,26 @@ namespace ShapeEditorAttempt
 			}
 			Invalidate();
 		}
-		
+
+		public void Action_RemoveShape(Shape shape)
+		{
+			if (shape != null)
+			{
+				layer.Remove(shape);
+				ClickData.Action = ShapeClickAction.Delete;
+			}
+			ClickData.Shape = null;
+		}
+
+		public void Action_TriangleIncrmentAngle(Shape shape)
+		{
+			if (shape.Type != ShapeType.Triangle)
+				return;
+
+			Triangle t = (Triangle)shape;
+			t.IncrementAngle();
+		}
+
 		private void GenerateShape(Size size)
 		{
 			Shape shape;
@@ -167,16 +179,17 @@ namespace ShapeEditorAttempt
 			if (shape.Type != value)
 			{
 				Shape newShape;
+				Rectangle pos = shape.Position;
 				switch (value)
 				{
 				case ShapeType.Square:
-					newShape = new Square(shape.Position.X, shape.Position.Y, shape.Position.Width, shape.Position.Height, shape.Color);
+					newShape = new Square(shape.X, shape.Y, shape.Width, shape.Height, shape.Color);
 					break;
 				case ShapeType.Circle:
-					newShape = new Circle(shape.Position.X, shape.Position.Y, shape.Position.Width, shape.Position.Height, shape.Color);
+					newShape = new Circle(shape.X, shape.Y, shape.Width, shape.Height, shape.Color);
 					break;
 				case ShapeType.Triangle:
-					newShape = new Triangle(shape.Position.X, shape.Position.Y, shape.Position.Width, shape.Position.Height, shape.Color);
+					newShape = new Triangle(shape.X, shape.Y, shape.Width, shape.Height, shape.Color);
 					break;
 				default:
 					throw new NotSupportedException(Utils.GetEnumName(value) + " not supported");
@@ -192,5 +205,30 @@ namespace ShapeEditorAttempt
 			Invalidate();
 		}
 
+		public void Save(string path)
+		{
+			var layer = MainForm.Instance.Canvas.layer;
+			var array = (Shape[])layer.GetShapes();
+
+			var serializer = new XmlSerializer(typeof(Shape[]));
+			using (var stream = new FileStream(path, FileMode.Create))
+			{
+				serializer.Serialize(stream, array);
+			}
+		}
+
+		public new void Load(string path)
+		{
+			var layer = MainForm.Instance.Canvas.layer;
+
+			layer.Clear();
+
+			var serializer = new XmlSerializer(typeof(Shape[]));
+			using (var stream = new FileStream(path, FileMode.Open))
+			{
+				var array = serializer.Deserialize(stream) as Shape[];
+				layer.ImportFromArray(array);
+			}
+		}
 	}
 }

@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace ShapeEditorAttempt
 {
+	[XmlInclude(typeof(Square)), XmlInclude(typeof(Circle)), XmlInclude(typeof(Triangle)), XmlInclude(typeof(ShapeType))]
 	public abstract class Shape
 	{
 		public const string NAME = "Null";
@@ -18,18 +23,27 @@ namespace ShapeEditorAttempt
 		virtual public ShapeType Type { get { return TYPE; } }
 		virtual public int EdgeWidth { get { return EDGE_WIDTH; } }
 
-		public Rectangle Position;
+		#region Properties
+		public string Nickname = "";
+		[XmlIgnore] internal Rectangle Position;
+
 		/// <summary>
 		/// Shortcode for Position.Location
 		/// </summary>
-		public Point Location { get { return Position.Location; } set { Position.Location = value; } }
+		[XmlIgnore] public Point Location { get { return Position.Location; } set { Position.Location = value; } }
 		/// <summary>
 		/// Shortcode for Position.Size
 		/// </summary>
-		public Size Size { get { return Position.Size; } set { Position.Size = value; } }
-		public Point clickActionOffset;
+		[XmlIgnore] public Size Size { get { return Position.Size; } set { Position.Size = value; } }
 
+		public int X { get { return Position.X; } set { Position.X = value; } }
+		public int Y { get { return Position.Y; } set { Position.Y = value; } }
+		public int Width { get { return Position.Width; } set { Position.Width = value; } }
+		public int Height { get { return Position.Height; } set { Position.Height = value; } }
+
+		internal protected static readonly Color DEFAULT_COLOR = Color.Black;
 		private Color m_color;
+		[XmlIgnore]
 		public Color Color
 		{
 			get { return m_color; }
@@ -44,7 +58,25 @@ namespace ShapeEditorAttempt
 				m_pen = new Pen(m_color, 1);
 			}
 		}
-		
+
+		/// <summary>
+		/// Used for xml serialization
+		/// </summary>
+		public ColorXml ColorAsXml
+		{
+			get
+			{
+				return ColorXml.FromColor(Color);
+			}
+			set
+			{
+				Color = value.ToColor();
+			}
+		}
+
+		[XmlIgnore()]
+		public Point clickActionOffset;
+
 		internal Pen m_pen;
 		/// <summary>
 		/// The Pen, which is updated whenever "Color" is changed.
@@ -60,6 +92,14 @@ namespace ShapeEditorAttempt
 				return m_pen;
 			}
 		}
+		#endregion
+
+		#region Constructors
+		public Shape()
+		{
+			this.Position = new Rectangle();
+			this.Color = DEFAULT_COLOR;
+		}
 
 		public Shape(int x, int y, int width, int height, Color color)
 		{
@@ -72,8 +112,20 @@ namespace ShapeEditorAttempt
 			this.Position = position;
 			this.Color = color;
 		}
+		#endregion
 
-		public virtual void Draw(Canvas sender, Graphics graphics)
+		#region Abstract functions
+		public abstract void DrawShape(Graphics graphics, Rectangle position);
+		public abstract void DrawBorder(Graphics graphics, Rectangle position);
+
+		/// <summary>
+		/// Helps determine if point is over shape or shape edge, and returns the appropriate action.
+		/// </summary>
+		public abstract ShapeClickAction GetShapeActionByPoint(GraphicsPath path, Point point);
+		public abstract bool IsPointOverShape(GraphicsPath path, Point point);
+		#endregion
+
+		public void Draw(Canvas sender, Graphics graphics)
 		{
 			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(Position, ClickData.Action) : Position;
 			DrawShape(graphics, pos);
@@ -84,7 +136,11 @@ namespace ShapeEditorAttempt
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;
 
-				Color = Utils.ColorSetHsv(prevColor.GetHue(), prevColor.GetSaturation() + 10, prevColor.GetBrightness() + 10);
+				Color = Utils.ColorSetHsv(
+					prevColor.GetHue(), 
+					prevColor.GetSaturation() + 10, 
+					prevColor.GetBrightness() + 10
+				);
 				m_pen.Width = EdgeWidth;
 
 				Rectangle borderPos = Position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
@@ -96,15 +152,7 @@ namespace ShapeEditorAttempt
 			}
 		}
 
-		public abstract void DrawShape(Graphics graphics, Rectangle position);
-		public abstract void DrawBorder(Graphics graphics, Rectangle position);
-
-		/// <summary>
-		/// Helps determine if point is over shape or shape edge, and returns the appropriate action.
-		/// </summary>
-		public abstract ShapeClickAction GetShapeActionByPoint(GraphicsPath path, Point point);
-		public abstract bool IsPointOverShape(GraphicsPath path, Point point);
-
+		#region Offset functions
 		public Rectangle PreviewOffset(Rectangle position, ShapeClickAction action)
 		{
 			if (ClickData.Shape != this)
@@ -158,7 +206,8 @@ namespace ShapeEditorAttempt
 
 			clickActionOffset = value;
 		}
-		
+		#endregion
+
 		public override string ToString()
 		{
 			return Name + "(" + Position.ToString() + ", " + Color.ToString() + ")";

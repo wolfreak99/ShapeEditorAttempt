@@ -15,6 +15,13 @@ namespace ShapeEditorAttempt
 		override public string Name { get { return NAME; } }
 		override public ShapeType Type { get { return TYPE; } }
 
+		/// <summary>
+		/// For XML Serialization only
+		/// </summary>
+		public Circle() : this(0, 0, 0, 0, DEFAULT_COLOR)
+		{
+		}
+
 		public Circle(int x, int y, int width, int height, Color color) : base(x, y, width, height, color)
 		{
 		}
@@ -33,6 +40,9 @@ namespace ShapeEditorAttempt
 		{
 			if (IsPointOverShape(path, point))
 			{
+				if (KeyboardController.IsMoveDown)
+					return ShapeClickAction.Drag;
+
 				// Determine if not overlapping border, and drag. otherwise resize.
 				path.Reset();
 				path.AddEllipse(Rectangle.Inflate(Position, -Shape.EDGE_WIDTH, -Shape.EDGE_WIDTH));

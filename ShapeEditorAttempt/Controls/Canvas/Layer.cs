@@ -12,7 +12,7 @@ namespace ShapeEditorAttempt
 	public class Layer
 	{
 		private List<Shape> shapes;
-
+		
 		public Layer()
 		{
 			shapes = new List<Shape>();
@@ -24,20 +24,26 @@ namespace ShapeEditorAttempt
 			shapes.Add(shape);
 		}
 
+		public Shape[] GetShapes()
+		{
+			return shapes.ToArray();
+		}
+
 		public Shape DuplicateShape(Shape shape, Point location)
 		{
+			var index = shapes.IndexOf(shape) + 1;
 			// Explicitly create triangles to add angle.
 			if (shape.Type == ShapeType.Triangle)
 			{
 				Triangle oldTriangle = (Triangle)shape;
-				Triangle newTriangle = (Triangle)AddNewShape(location, shape.Size, shape.Color, shape.Type, false);
-				newTriangle.angle = oldTriangle.angle;
+				Triangle newTriangle = (Triangle)AddNewShape(location, shape.Size, shape.Color, shape.Type, index, false);
+				newTriangle.Angle = oldTriangle.Angle;
 
 				return newTriangle;
 			}
 			else
 			{
-				return AddNewShape(location, shape.Size, shape.Color, shape.Type);
+				return AddNewShape(location, shape.Size, shape.Color, shape.Type, index);
 			}
 		}
 
@@ -46,7 +52,7 @@ namespace ShapeEditorAttempt
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public Shape AddNewShape(Point location, Size size, Color color, ShapeType type, bool stretchTriangle = true)
+		public Shape AddNewShape(Point location, Size size, Color color, ShapeType type, int index = -1, bool stretchTriangle = true)
 		{
 			int x = location.X - (size.Width / 2),
 				y = location.Y - (size.Height / 2),
@@ -61,7 +67,14 @@ namespace ShapeEditorAttempt
 			);
 
 			// Add to list and return
-			Add(shape);
+			if (index == -1 || index >= shapes.Count)
+			{
+				Add(shape);
+			}
+			else
+			{
+				shapes.Insert(index, shape);
+			}
 
 			return shape;
 		}
@@ -122,6 +135,12 @@ namespace ShapeEditorAttempt
 			{
 				ClickData.Shape = newShape;
 			}
+		}
+
+		internal void ImportFromArray(Shape[] array)
+		{
+			this.Clear();
+			this.shapes.AddRange(array);
 		}
 	}
 }
