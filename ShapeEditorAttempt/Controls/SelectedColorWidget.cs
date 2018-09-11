@@ -5,21 +5,22 @@ namespace ShapeEditorAttempt
 {
 	public class SelectedColorWidget : GroupBoxPanel, IInitializeComponent
 	{
+		public const int COLOR_BUTTON_WIDTH = 40;
+		public const int COLOR_BUTTON_HEIGHT = 50;
+		public const int COLOR_BUTTON_XSPACING = 3;
+
 		public Color Value = Color.Black;
 
-		private Color[] colors = ColorsArray.Array;
+		private Color[] colors = ColorsArray.FromPalettes();
 		private ColorButton[] colorToggles;
-		
-		public SelectedColorWidget() : base()
-		{
-			//AutoScroll = true;
-			Text = "Test";
-		}
 
 		public void InitializeComponent()
 		{
-			int xspacing = 6, yspacing = 0;
-			int left = xspacing, top = yspacing, width = 50, height = 50, x = left, y = top, tab = 2;
+			int xspacing = COLOR_BUTTON_XSPACING, yspacing = 0;
+			int left = xspacing, top = yspacing;
+			int width = COLOR_BUTTON_WIDTH, height = COLOR_BUTTON_HEIGHT;
+			int x = left, y = top;
+			int tab = 2;
 
 			colorToggles = new ColorButton[colors.Length];
 			for (int i = 0; i < colors.Length; i++)
@@ -41,8 +42,7 @@ namespace ShapeEditorAttempt
 				x += width + xspacing;
 			}
 
-			//this.Size = new Size((x - left) + xspacing + xspacing, this.Size.Height);
-			//Invalidate();
+			this.MaximumSize = new Size(left + (ColorsArray.COLORS_PER_PALETTE * (width + xspacing)), this.Size.Height);
 		}
 		public void UninitializeComponent()
 		{
