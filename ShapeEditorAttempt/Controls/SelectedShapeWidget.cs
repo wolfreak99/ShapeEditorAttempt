@@ -36,7 +36,7 @@ namespace ShapeEditorAttempt
 
 				x += width + xspacing;
 			}
-			this.Size = new Size(x - left + xspacing + xspacing, this.Size.Height);
+			this.Size = new Size(x - left + xspacing, this.Size.Height);
 		}
 
 		private void CheckBox_MouseClick(object sender, MouseEventArgs e)
