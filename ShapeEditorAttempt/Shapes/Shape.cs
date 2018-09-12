@@ -62,15 +62,25 @@ namespace ShapeEditorAttempt
 		/// <summary>
 		/// Used for xml serialization
 		/// </summary>
-		public ColorXml ColorAsXml
+		public string XmlColor
 		{
 			get
 			{
-				return ColorXml.FromColor(Color);
+				return string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", Color.A, Color.R, Color.G, Color.B);
 			}
 			set
 			{
-				Color = value.ToColor();
+				string str = value;
+				if (string.IsNullOrEmpty(str) || !str.StartsWith("#") || str.Length != 9)
+					return;
+
+				System.Globalization.NumberStyles styles = System.Globalization.NumberStyles.HexNumber;
+				int a, r, g, b;
+				if (!int.TryParse(str.Substring(1, 2), styles, null, out a)) a = 0xFF;
+				if (!int.TryParse(str.Substring(3, 2), styles, null, out r)) r = 0x00;
+				if (!int.TryParse(str.Substring(5, 2), styles, null, out g)) g = 0x00;
+				if (!int.TryParse(str.Substring(7, 2), styles, null, out b)) b = 0x00;
+				Color = Color.FromArgb(a, r, g, b);
 			}
 		}
 

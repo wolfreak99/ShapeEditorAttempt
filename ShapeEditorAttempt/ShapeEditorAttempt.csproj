@@ -80,7 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\Canvas\Grid.cs" />
     <Compile Include="Shapes\Angle.cs" />
-    <Compile Include="ColorXml.cs" />
     <Compile Include="Shapes\Shape.cs" />
     <Compile Include="Shapes\Circle.cs" />
     <Compile Include="ShapeClickAction.cs" />
