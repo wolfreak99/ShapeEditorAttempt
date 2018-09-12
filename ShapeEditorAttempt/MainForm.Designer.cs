@@ -40,6 +40,7 @@ namespace ShapeEditorAttempt
 			this.gridSizeSetButton = new System.Windows.Forms.Button();
 			this.gridSizeTextBox = new System.Windows.Forms.TextBox();
 			this.selectedShapeNameTextBox = new System.Windows.Forms.TextBox();
+			this.buttonSaveImage = new System.Windows.Forms.Button();
 			this.Canvas = new ShapeEditorAttempt.Canvas();
 			this.SelectedShapeWidget = new ShapeEditorAttempt.SelectedShapeWidget();
 			this.gridPropertiesGroupBox.SuspendLayout();
@@ -109,13 +110,23 @@ namespace ShapeEditorAttempt
 			this.gridSizeTextBox.TabIndex = 0;
 			this.gridSizeTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.gridSizeTextBox_PreviewKeyDown);
 			// 
-			// selectedShapeName
+			// selectedShapeNameTextBox
 			// 
 			this.selectedShapeNameTextBox.Location = new System.Drawing.Point(13, 100);
-			this.selectedShapeNameTextBox.Name = "selectedShapeName";
+			this.selectedShapeNameTextBox.Name = "selectedShapeNameTextBox";
 			this.selectedShapeNameTextBox.Size = new System.Drawing.Size(238, 20);
 			this.selectedShapeNameTextBox.TabIndex = 3;
 			this.selectedShapeNameTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.selectedShapeName_PreviewKeyDown);
+			// 
+			// buttonSaveImage
+			// 
+			this.buttonSaveImage.Location = new System.Drawing.Point(701, 85);
+			this.buttonSaveImage.Name = "buttonSaveImage";
+			this.buttonSaveImage.Size = new System.Drawing.Size(90, 23);
+			this.buttonSaveImage.TabIndex = 4;
+			this.buttonSaveImage.Text = "Save Image";
+			this.buttonSaveImage.UseVisualStyleBackColor = true;
+			this.buttonSaveImage.Click += new System.EventHandler(this.buttonSaveImage_Click);
 			// 
 			// Canvas
 			// 
@@ -144,6 +155,7 @@ namespace ShapeEditorAttempt
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 560);
+			this.Controls.Add(this.buttonSaveImage);
 			this.Controls.Add(this.selectedShapeNameTextBox);
 			this.Controls.Add(this.gridPropertiesGroupBox);
 			this.Controls.Add(this.Canvas);
@@ -152,7 +164,7 @@ namespace ShapeEditorAttempt
 			this.Controls.Add(this.ButtonLoad);
 			this.Controls.Add(this.ButtonSave);
 			this.Name = "MainForm";
-			this.Text = "MainForm";
+			this.Text = "Shape Designer (Alpha)";
 			this.gridPropertiesGroupBox.ResumeLayout(false);
 			this.gridPropertiesGroupBox.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
@@ -173,6 +185,7 @@ namespace ShapeEditorAttempt
 		private Button gridSizeSetButton;
 		public TextBox gridSizeTextBox;
 		public TextBox selectedShapeNameTextBox;
+		private Button buttonSaveImage;
 	}
 }
 

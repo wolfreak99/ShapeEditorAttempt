@@ -147,5 +147,10 @@ namespace ShapeEditorAttempt
 			}
 			m_prevSelectedShapeNameKey = e.KeyCode;
 		}
+
+		private void buttonSaveImage_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("Not implemented");
+		}
 	}
 }
