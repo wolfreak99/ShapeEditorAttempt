@@ -13,7 +13,7 @@ namespace ShapeEditorAttempt
 		public const int COLORS_PER_PALETTE = 15;
 		public const int PALLETTE_COUNT = 15;
 		
-		static private readonly Color[][] ColorPalettes = new Color[][COLORS_PER_PALETTE]
+		static private readonly Color[][] ColorPalettes = new Color[][]
 		{
 			new Color[COLORS_PER_PALETTE]{
 				Color.FromArgb(0, 0, 0),
