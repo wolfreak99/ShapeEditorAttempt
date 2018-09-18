@@ -150,5 +150,50 @@ namespace ShapeEditorAttempt
 		{
 			this.shapes.AddRange(array);
 		}
+
+		/// <summary>
+		/// Provides a boundary to help with exporting images
+		/// </summary>
+		private int GetShapeTypeBoundaryOffset(ShapeType shapeType)
+		{
+			// TODO find reasonable number to increase boundary by per shape.
+			// Use the right ear on "Examples/HappyFaceNoBG"
+			switch (shapeType)
+			{
+			case ShapeType.Circle:
+				return 4;
+			case ShapeType.Triangle:
+				return 4;
+			default:
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// Calculates the boundary fitting all of the layers shapes.
+		/// </summary>
+		/// <returns></returns>
+		public Rectangle GetAllShapesBoundary()
+		{
+			int l = 0, t = 0, r = 0, b = 0;
+
+			foreach (Shape shape in shapes)
+			{
+				var os = GetShapeTypeBoundaryOffset(shape.Type);
+				if (l > (shape.Left - os))
+					l = shape.Left - os;
+				if (l > (shape.Top - os))
+					l = shape.Top - os;
+				if (r < (shape.Right + os))
+					r = shape.Right + os;
+				if (b < (shape.Bottom + os))
+					b = shape.Bottom + os;
+			}
+			if (l < 0)
+				l = 0;
+			if (t < 0)
+				t = 0;
+			return Rectangle.FromLTRB(l, t, r, b);
+		}
 	}
 }

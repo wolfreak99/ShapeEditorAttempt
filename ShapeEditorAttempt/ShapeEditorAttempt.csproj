@@ -56,7 +56,7 @@
     <Compile Include="Controls\GroupBoxPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\RectOffset.cs" />
+    <Compile Include="Classes\RectOffset.cs" />
     <Compile Include="Controls\SelectedColorWidget.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -64,6 +64,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ShapeButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />

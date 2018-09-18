@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -77,9 +78,11 @@ namespace ShapeEditorAttempt
 		{
 			if (e.Button == MouseButtons.None)
 				return;
+
 			Focus();
 			// Todo: Copy over the moving mechanics a little better.
 			ClickData.ShapeUpdateOffset(e.Location);
+
 			Invalidate();
 		}
 
@@ -125,7 +128,8 @@ namespace ShapeEditorAttempt
 					}
 					if (createShape)
 					{
-						var sizeSnapped = Grid.SnapToGrid(new Size(20, 20), Grid.SnapSizeToGrid);
+						var newSize = new Size(20, 20);
+						var sizeSnapped = Grid.SnapToGrid(newSize, Grid.SnapSizeToGrid);
 						GenerateShape(sizeSnapped);
 					}
 					break;
@@ -207,8 +211,7 @@ namespace ShapeEditorAttempt
 
 		public void Save(string path)
 		{
-			var layer = MainForm.Instance.Canvas.layer;
-			var array = (Shape[])layer.GetShapes();
+			Shape[] array = layer.GetShapes();
 
 			var serializer = new XmlSerializer(typeof(Shape[]));
 			using (var stream = new FileStream(path, FileMode.Create))
@@ -219,8 +222,6 @@ namespace ShapeEditorAttempt
 
 		public new void Load(string path)
 		{
-			var layer = MainForm.Instance.Canvas.layer;
-
 			layer.Clear();
 
 			var serializer = new XmlSerializer(typeof(Shape[]));
@@ -228,6 +229,19 @@ namespace ShapeEditorAttempt
 			{
 				var array = serializer.Deserialize(stream) as Shape[];
 				layer.ImportFromArray(array);
+			}
+		}
+		
+		public void SaveToImage(string path)
+		{
+			var layer = Canvas.Instance.layer;
+			var bounds = layer.GetAllShapesBoundary();
+			ImageFormat imageFormat = Utils.GetImageFormatByExtension(path);
+			
+			using (var bitmap = new Bitmap(bounds.Width, bounds.Height))
+			{
+				DrawToBitmap(bitmap, bounds);
+				bitmap.Save(path, imageFormat);
 			}
 		}
 	}

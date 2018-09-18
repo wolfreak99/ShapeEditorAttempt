@@ -73,6 +73,9 @@ namespace ShapeEditorAttempt
 			}
 		}
 
+		/// <summary>
+		/// Clears focus from all controls and focuses on the Canvas (does not clear ClickData)
+		/// </summary>
 		private void ClearFocus()
 		{
 			Canvas.Focus();
@@ -83,25 +86,31 @@ namespace ShapeEditorAttempt
 			Canvas.Clear();
 		}
 
-		private OpenFileDialog openFileDialog = new OpenFileDialog();
-		private SaveFileDialog saveFileDialog = new SaveFileDialog();
+		private static OpenFileDialog openFileDialog;
+		private static SaveFileDialog saveFileDialog;
 
 		private void ButtonLoad_Click(object sender, EventArgs e)
 		{
+			openFileDialog = new OpenFileDialog();
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
 				Canvas.Load(openFileDialog.FileName);
 				Canvas.Invalidate();
 			}
+			openFileDialog.Dispose();
+			openFileDialog = null;
 		}
 		
 		private void ButtonSave_Click(object sender, EventArgs e)
 		{
+			saveFileDialog = new SaveFileDialog();
 			if (saveFileDialog.ShowDialog() == DialogResult.OK)
 			{
 				Canvas.Save(saveFileDialog.FileName);
 				Canvas.Invalidate();
 			}
+			saveFileDialog.Dispose();
+			saveFileDialog = null;
 		}
 
 		private void gridSizeSetButton_Click(object sender, EventArgs e)
@@ -137,6 +146,7 @@ namespace ShapeEditorAttempt
 		private Keys m_prevSelectedShapeNameKey = Keys.None;
 		private void selectedShapeName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
+			// When enter is pressed, set shape name and clear textbox focus
 			if (e.KeyCode == Keys.Enter && m_prevSelectedShapeNameKey != e.KeyCode)
 			{
 				if (ClickData.Shape != null)
@@ -150,7 +160,16 @@ namespace ShapeEditorAttempt
 
 		private void buttonSaveImage_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Not implemented");
+			saveFileDialog = new SaveFileDialog();
+			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				ClickData.Clear();
+				Canvas.Invalidate();
+				Canvas.SaveToImage(saveFileDialog.FileName);
+				Canvas.Invalidate();
+			}
+			saveFileDialog.Dispose();
+			saveFileDialog = null;
 		}
 	}
 }
