@@ -32,7 +32,7 @@ namespace ShapeEditorAttempt
 
 		public static void Swap<T>(this List<T> items, int index, int newIndex)
 		{
-			if (items != null&& index != newIndex && 
+			if (items != null && index != newIndex &&
 				index >= 0 && newIndex >= 0 && index < items.Count && newIndex < items.Count)
 			{
 				T tmp = items[newIndex];
