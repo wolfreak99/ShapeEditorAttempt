@@ -41,6 +41,12 @@ namespace ShapeEditorAttempt
 		public int Width { get { return Position.Width; } set { Position.Width = value; } }
 		public int Height { get { return Position.Height; } set { Position.Height = value; } }
 
+		[XmlIgnore]
+		public int Left { get { return Position.Left; } }
+		public int Top { get { return Position.Top; } }
+		public int Right { get { return Position.Right; } }
+		public int Bottom { get { return Position.Bottom; } }
+
 		internal protected static readonly Color DEFAULT_COLOR = Color.Black;
 		private Color m_color;
 		[XmlIgnore]
@@ -141,16 +147,17 @@ namespace ShapeEditorAttempt
 			DrawShape(graphics, pos);
 
 			// Create outline
-			if (KeyboardController.IsControlDown && ClickData.Shape == this)
+			if (KeyboardController.IsControlDown && (ClickData.Shape == this || KeyboardController.IsAltDown))
 			{
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;
 
 				Color = Utils.ColorSetHsv(
-					prevColor.GetHue(), 
-					prevColor.GetSaturation() + 10, 
-					prevColor.GetBrightness() + 10
+					255 - prevColor.GetHue(), 
+					255 - prevColor.GetSaturation(), 
+					255 - prevColor.GetBrightness()
 				);
+
 				m_pen.Width = EdgeWidth;
 
 				Rectangle borderPos = Position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
