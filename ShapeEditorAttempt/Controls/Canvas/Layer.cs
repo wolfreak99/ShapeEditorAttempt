@@ -24,7 +24,7 @@ namespace ShapeEditorAttempt
 			shapes.Add(shape);
 		}
 
-		public Shape[] GetShapes()
+		public Shape[] ToArray()
 		{
 			return shapes.ToArray();
 		}

@@ -211,7 +211,7 @@ namespace ShapeEditorAttempt
 
 		public void Save(string path)
 		{
-			Shape[] array = layer.GetShapes();
+			Shape[] array = layer.ToArray();
 
 			var serializer = new XmlSerializer(typeof(Shape[]));
 			using (var stream = new FileStream(path, FileMode.Create))
