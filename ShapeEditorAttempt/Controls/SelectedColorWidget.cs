@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
+using System;
 
 namespace ShapeEditorAttempt
 {
@@ -11,48 +12,100 @@ namespace ShapeEditorAttempt
 
 		public Color Value = Color.Black;
 
-		private Color[] colors = ColorsArray.FromPalettes();
 		private ColorButton[] colorToggles;
+		private int PaletteIndex = 0;
+
+		public SelectedColorWidget() : base(MainForm.Instance) { }
+
+		private T CreateButton<T>(ref ButtonRect btnRect, int tabIndex, string text, 
+			EventHandler clickFunc, int colorIndex = -1)
+			where T : Control, new()
+		{
+			Control button = new T()
+			{
+				Location = new Point(btnRect.x, btnRect.y),
+				Size = new Size(btnRect.width, btnRect.height),
+				TabIndex = tabIndex,
+				Text = text,
+			};
+
+			if (typeof(T) == typeof(ColorButton))
+			{
+				((ColorButton)button).Text = null;
+				((ColorButton)button).Color = ColorsArray.GetColorFromPalette(PaletteIndex, colorIndex);
+			}
+
+			button.Click += clickFunc;
+
+			Controls.Add(button);
+			btnRect.x += btnRect.width + btnRect.xSpacing;
+
+			return (T)button;
+		}
 
 		public void InitializeComponent()
 		{
-			int xspacing = COLOR_BUTTON_XSPACING, yspacing = 0;
-			int left = xspacing, top = yspacing;
-			int width = COLOR_BUTTON_WIDTH, height = COLOR_BUTTON_HEIGHT;
-			int x = left, y = top;
+			SelectedColorWidget.ButtonRect btnRect = new SelectedColorWidget.ButtonRect(COLOR_BUTTON_WIDTH, COLOR_BUTTON_HEIGHT, COLOR_BUTTON_XSPACING, 0);
+			int left = btnRect.x;
 			int tab = 2;
 
-			colorToggles = new ColorButton[colors.Length];
-			for (int i = 0; i < colors.Length; i++)
+			colorToggles = new ColorButton[ColorsArray.COLORS_PER_PALETTE];
+			
+			// Left button to create Scrolling
+			CreateButton<Button>(ref btnRect, tab++, "<", LeftButton_Click);
+			for (int i = 0; i < ColorsArray.COLORS_PER_PALETTE; i++)
 			{
-				var button = new ColorButton()
-				{
-					Location = new Point(x, y),
-					Size = new Size(width, height),
-					Color = colors[i],
-					TabIndex = tab++,
-					Checked = false
-				};
-				button.MouseClick += colorToggle_MouseClick;
-				
+				var button = CreateButton<ColorButton>(ref btnRect, tab++, null, colorToggle_Click, i);
 				colorToggles[i] = button;
-
-				this.Controls.Add(button);
-				
-				x += width + xspacing;
 			}
-
-			this.MaximumSize = new Size(left + (ColorsArray.COLORS_PER_PALETTE * (width + xspacing)), this.Size.Height);
+			// Right button to create Scrolling
+			CreateButton<Button>(ref btnRect, tab++, ">", RightButton_Click);
+			
+			const int buttonCount = ColorsArray.COLORS_PER_PALETTE + 2;
+			int rightOffset = btnRect.xSpacing * 2;
+			this.MaximumSize = new Size(
+				left + (buttonCount * (btnRect.width + btnRect.xSpacing)) + rightOffset, 
+				this.Size.Height
+			);
 		}
+
+		private void SwitchToPalette(int paletteIndex)
+		{
+			if (paletteIndex >= ColorsArray.PALLETTE_COUNT || paletteIndex < 0)
+				throw new IndexOutOfRangeException("paletteIndex out of range");
+
+			this.PaletteIndex = paletteIndex;
+			for (int i = 0; i < ColorsArray.COLORS_PER_PALETTE; i++)
+			{
+				colorToggles[i].Color = ColorsArray.GetColorFromPalette(this.PaletteIndex, i);
+			}
+		}
+
+		private void LeftButton_Click(object sender, System.EventArgs e)
+		{
+			var newPaletteIndex = Utils.WrapIncrement(PaletteIndex, -1, 0, ColorsArray.PALLETTE_COUNT);
+
+			SwitchToPalette(newPaletteIndex);
+			PaletteIndex = newPaletteIndex;
+		}
+
+		private void RightButton_Click(object sender, System.EventArgs e)
+		{
+			var newPaletteIndex = Utils.WrapIncrement(PaletteIndex, 1, 0, ColorsArray.PALLETTE_COUNT);
+
+			SwitchToPalette(newPaletteIndex);
+			PaletteIndex = newPaletteIndex;
+		}
+
 		public void UninitializeComponent()
 		{
 			foreach (var c in colorToggles)
 			{
-				c.MouseClick -= colorToggle_MouseClick;
+				c.MouseClick -= colorToggle_Click;
 			}
 		}
 
-		private void colorToggle_MouseClick(object sender, MouseEventArgs e)
+		private void colorToggle_Click(object sender, System.EventArgs e)
 		{
 			ColorButton checkbox = (ColorButton)sender;
 
@@ -66,11 +119,31 @@ namespace ShapeEditorAttempt
 			}
 
 			// Change last selected shapes color if control is held.
-			if (KeyboardController.IsControlDown)
+			if (KeyboardController.IsControlDown && ClickData.Shape != null)
 			{
 				MainForm.Instance.Canvas.SetShapeColor(ClickData.Shape, Value);
 			}
 		}
 
+		private class ButtonRect
+		{
+			public int x;
+			public int y;
+			public int width { get; private set; }
+			public int height { get; private set; }
+			public int xSpacing { get; private set; }
+			public int ySpacing { get; private set; }
+			public int left { get; private set; }
+			public int top { get; private set; }
+			public ButtonRect(int width, int height, int xSpacing, int ySpacing)
+			{
+				this.width = width;
+				this.height = height;
+				this.xSpacing = xSpacing;
+				this.ySpacing = ySpacing;
+				this.x = xSpacing;
+				this.y = ySpacing;
+			}
+		}
 	}
 }
