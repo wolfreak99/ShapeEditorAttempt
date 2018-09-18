@@ -53,7 +53,7 @@ namespace ShapeEditorAttempt
 			}
 
 			// Change last selected shapes shape if control is held.
-			if (KeyboardController.IsControlDown)
+			if (KeyboardController.IsControlDown && ClickData.Shape != null)
 			{
 				MainForm.Instance.Canvas.SetShapeType(ClickData.Shape, Value);
 			}
