@@ -2,7 +2,7 @@
 
 namespace ShapeEditorAttempt
 {
-	public class ShapeButton : CheckBox
+	public class ShapeButton : ToggleButton
 	{
 		private ShapeType m_type;
 		public ShapeType Type
@@ -17,9 +17,8 @@ namespace ShapeEditorAttempt
 			}
 		}
 
-		public ShapeButton(ShapeType type) : base()
+		public ShapeButton(ShapeType type = ShapeType.Null) : base()
 		{
-			Appearance = Appearance.Button;
 			this.Type = type;
 		}
 

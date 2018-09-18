@@ -8,7 +8,10 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-	public class ColorButton : CheckBox
+	/// <summary>
+	/// ColorButton
+	/// </summary>
+	public class ColorButton : ToggleButton
 	{
 		private Color m_color;
 		public Color Color
@@ -27,8 +30,8 @@ namespace ShapeEditorAttempt
 
 		public ColorButton(Color color) : base()
 		{
-			Appearance = Appearance.Button;
 			Color = color;
+			Checked = false;
 		}
 
 		public ColorButton() : this(Color.Black)
