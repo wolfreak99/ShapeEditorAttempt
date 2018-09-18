@@ -16,6 +16,12 @@ namespace ShapeEditorAttempt
 	[XmlInclude(typeof(Square)), XmlInclude(typeof(Circle)), XmlInclude(typeof(Triangle)), XmlInclude(typeof(ShapeType))]
 	public abstract class Shape
 	{
+		/// <summary>
+		/// Set to true during Canvas.SaveToImage
+		/// </summary>
+		[XmlIgnore]
+		public static bool HideBorder = false;
+
 		public const string NAME = "Null";
 		public const ShapeType TYPE = ShapeType.Null;
 		public const int EDGE_WIDTH = 6;
@@ -147,7 +153,7 @@ namespace ShapeEditorAttempt
 			DrawShape(graphics, pos);
 
 			// Create outline
-			if (KeyboardController.IsControlDown && (ClickData.Shape == this || KeyboardController.ShowAllBordersDown))
+			if (!HideBorder && KeyboardController.IsControlDown && (ClickData.Shape == this || KeyboardController.ShowAllBordersDown))
 			{
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;

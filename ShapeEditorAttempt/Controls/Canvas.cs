@@ -234,22 +234,25 @@ namespace ShapeEditorAttempt
 		
 		public void SaveToImage(string path)
 		{
-			// Hide border when saving image
+			// Hide canvas border when saving image
 			var prevBorder = BorderStyle;
 			BorderStyle = BorderStyle.None;
+			// Hide selected shape borders
+			Shape.HideBorder = true;
 
 			var layer = Canvas.Instance.layer;
 			var bounds = layer.GetAllShapesBoundary();
 			ImageFormat imageFormat = Utils.GetImageFormatByExtension(path);
-			
+
 			using (var bitmap = new Bitmap(bounds.Width, bounds.Height))
 			{
 				DrawToBitmap(bitmap, bounds);
 				bitmap.Save(path, imageFormat);
 			}
-
+			
 			// Restore border
 			BorderStyle = prevBorder;
+			Shape.HideBorder = false;
 		}
 	}
 }
