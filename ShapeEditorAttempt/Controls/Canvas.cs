@@ -234,6 +234,10 @@ namespace ShapeEditorAttempt
 		
 		public void SaveToImage(string path)
 		{
+			// Hide border when saving image
+			var prevBorder = BorderStyle;
+			BorderStyle = BorderStyle.None;
+
 			var layer = Canvas.Instance.layer;
 			var bounds = layer.GetAllShapesBoundary();
 			ImageFormat imageFormat = Utils.GetImageFormatByExtension(path);
@@ -243,6 +247,9 @@ namespace ShapeEditorAttempt
 				DrawToBitmap(bitmap, bounds);
 				bitmap.Save(path, imageFormat);
 			}
+
+			// Restore border
+			BorderStyle = prevBorder;
 		}
 	}
 }
