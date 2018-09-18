@@ -13,30 +13,38 @@ namespace ShapeEditorAttempt
 	/// </summary>
 	public class GroupBoxPanel : GroupBox
 	{
-		private Panel m_Panel;
 		private static readonly RectOffset GroupToPanelOffset = new RectOffset(4, 12, 4, 2);
 
-		public Panel Panel
+		public Panel Panel { get; }
+
+		public GroupBoxPanel(Form form)
 		{
-			get { return m_Panel; }
+			Panel = new Panel();
+			Panel.VerticalScroll.Enabled = false;
+			Panel.VerticalScroll.Visible = false;
+			Panel.HorizontalScroll.Enabled = true;
+			Panel.HorizontalScroll.Visible = true;
+			AutoScroll = true;
+
+			form.Controls.Add(Panel);
 		}
 
 		public new ControlCollection Controls
 		{
 			get
 			{
-				return m_Panel.Controls;
+				return Panel.Controls;
 			}
 		}
 
 		public bool AutoScroll
 		{
 			get {
-				return m_Panel.AutoScroll;
+				return Panel.AutoScroll;
 			}
 			set
 			{
-				m_Panel.AutoScroll = value;
+				Panel.AutoScroll = value;
 			}
 		}
 
@@ -49,7 +57,10 @@ namespace ShapeEditorAttempt
 			set
 			{
 				base.Location = value;
-				m_Panel.Location = new Point(value.X + GroupToPanelOffset.Left, value.Y + GroupToPanelOffset.Top);
+				Panel.Location = new Point(
+					value.X + GroupToPanelOffset.Left, 
+					value.Y + GroupToPanelOffset.Top
+				);
 			}
 		}
 
@@ -62,7 +73,10 @@ namespace ShapeEditorAttempt
 			set
 			{
 				base.Size = value;
-				m_Panel.Size = new Size(value.Width - (GroupToPanelOffset.Width), value.Height - (GroupToPanelOffset.Height));
+				Panel.Size = new Size(
+					value.Width - (GroupToPanelOffset.AdditiveWidth), 
+					value.Height - (GroupToPanelOffset.AdditiveHeight)
+				);
 			}
 		}
 
@@ -75,7 +89,10 @@ namespace ShapeEditorAttempt
 			set
 			{
 				base.MaximumSize = value;
-				m_Panel.MaximumSize = new Size(value.Width - (GroupToPanelOffset.Width), value.Height - (GroupToPanelOffset.Height));
+				Panel.MaximumSize = new Size(
+					value.Width - (GroupToPanelOffset.AdditiveWidth), 
+					value.Height - (GroupToPanelOffset.AdditiveHeight)
+				);
 			}
 		}
 
@@ -89,20 +106,14 @@ namespace ShapeEditorAttempt
 			set
 			{
 				base.Anchor = value;
-				m_Panel.Anchor = value;
+				Panel.Anchor = value;
 			}
 		}
-            
-		public GroupBoxPanel()
+        
+		public void ScrollControlIntoView(Control control)
 		{
-			m_Panel = new Panel();
-			m_Panel.VerticalScroll.Enabled = false;
-			m_Panel.VerticalScroll.Visible = false;
-			m_Panel.HorizontalScroll.Enabled = true;
-			m_Panel.HorizontalScroll.Visible = true;
-			AutoScroll = true;
-			
-			MainForm.Instance.Controls.Add(m_Panel);
+			Panel.ScrollControlIntoView(control);
 		}
+		
 	}
 }
