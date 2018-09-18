@@ -120,6 +120,7 @@ namespace ShapeEditorAttempt
 			// 
 			// buttonSaveImage
 			// 
+			this.buttonSaveImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonSaveImage.Location = new System.Drawing.Point(701, 85);
 			this.buttonSaveImage.Name = "buttonSaveImage";
 			this.buttonSaveImage.Size = new System.Drawing.Size(90, 23);
