@@ -12,6 +12,7 @@ namespace ShapeEditorAttempt
 		public static bool IsControlDown { get; private set; }
 		public static bool IsShiftDown { get; private set; }
 		public static bool IsMoveDown { get; private set; }
+		public static bool ShowAllBordersDown { get; internal set; }
 
 		private static Keys m_prevKey = Keys.None;
 		private static bool m_prevIsDown = false;
@@ -44,7 +45,6 @@ namespace ShapeEditorAttempt
 				break;
 			case Keys.M:
 				IsMoveDown = isDown && Canvas.Instance.Focused;
-				e.Handled = true;
 				break;
 			case Keys.Delete:
 				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
@@ -55,10 +55,15 @@ namespace ShapeEditorAttempt
 			case Keys.ControlKey:
 				IsControlDown = isDown;
 				break;
+			case Keys.A:
+				ShowAllBordersDown = isDown;
+				break;
 			case Keys.ShiftKey:
 				IsShiftDown = isDown;
 				break;
 			}
+
+			// Invalidate Canvas if it was a new key input
 			if (!(m_prevKey == e.KeyCode && m_prevIsDown == isDown))
 			{
 				Canvas.Instance.Invalidate();

@@ -147,7 +147,7 @@ namespace ShapeEditorAttempt
 			DrawShape(graphics, pos);
 
 			// Create outline
-			if (KeyboardController.IsControlDown && (ClickData.Shape == this || KeyboardController.IsAltDown))
+			if (KeyboardController.IsControlDown && (ClickData.Shape == this || KeyboardController.ShowAllBordersDown))
 			{
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;
