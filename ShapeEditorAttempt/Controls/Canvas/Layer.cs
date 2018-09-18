@@ -87,13 +87,21 @@ namespace ShapeEditorAttempt
 		internal void MoveShapeUp(Shape shape)
 		{
 			var index = shapes.IndexOf(shape);
-			shapes.Swap(index, index - 1);
+			var newIndex = index - 1;
+			if (newIndex <= 0)
+				return;
+
+			shapes.Swap(index, newIndex);
 		}
 
 		internal void MoveShapeDown(Shape shape)
 		{
 			var index = shapes.IndexOf(shape);
-			shapes.Swap(index, index + 1);
+			var newIndex = index + 1;
+			if (newIndex >= shapes.Count)
+				return;
+
+			shapes.Swap(index, newIndex);
 		}
 
 		public void Draw(Canvas sender, PaintEventArgs e)
@@ -126,12 +134,13 @@ namespace ShapeEditorAttempt
 		internal void Replace(Shape shape, Shape newShape)
 		{
 			// If the shape was selected, select replacement shape once created.
-			bool wasShapeCLicked = (ClickData.Shape == shape);
+			bool wasShapeClicked = (ClickData.Shape == shape);
 
+			// Replace old shape with new shape
 			var index = shapes.IndexOf(shape);
 			shapes[index] = newShape;
 
-			if (wasShapeCLicked)
+			if (wasShapeClicked)
 			{
 				ClickData.Shape = newShape;
 			}
@@ -139,7 +148,6 @@ namespace ShapeEditorAttempt
 
 		internal void ImportFromArray(Shape[] array)
 		{
-			this.Clear();
 			this.shapes.AddRange(array);
 		}
 	}
