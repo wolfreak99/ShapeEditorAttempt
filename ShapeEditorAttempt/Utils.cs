@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,52 +63,43 @@ namespace ShapeEditorAttempt
 			return t.Name + "." + t.GetEnumName(value);
 		}
 
-		static private Color m_previousRandomColor = new Color();
-		static public Color GetRandomColor()
-		{
-			Color color;
-			do
-			{
-				// These are modifiable
-				int randomSeed = random.Next(100, 1000),
-				scale = 2;
-
-				// Core cache content
-				int maxValue = 255,
-				divider = maxValue / scale,
-				saturation = divider;
-
-				Random r = new Random(random.Next(randomSeed));
-				color = Color.FromArgb(
-					r.Next(maxValue / divider) * saturation,
-					r.Next(maxValue / divider) * saturation,
-					r.Next(maxValue / divider) * saturation
-				);
-			}
-			while (color == m_previousRandomColor);
-
-			m_previousRandomColor = color;
-
-			return color;
-		}
-
-
+		/// <summary>
+		/// This is useful for incrementing/decrementing through an enum. 
+		/// </summary>
+		/// <param name="current">The current value or position.</param>
+		/// <param name="increment">Can be a positive or a negative number.</param>
+		/// <param name="min">Can be an enum, object, or an int.</param>
+		/// <param name="max">Can be an enum, object, or an int.</param>
 		static public int WrapIncrement(int current, int increment, int min, int max)
 		{
-			return (current + increment) % max;
+			return ((max + (current + increment)) % max);
 		}
 
 		/// <summary>
 		/// This is useful for incrementing/decrementing through an enum. 
 		/// </summary>
-		/// <param name="current"></param>
-		/// <param name="increment"></param>
-		/// <param name="min">Can be an enum or an int</param>
-		/// <param name="max"></param>
-		/// <returns></returns>
+		/// <param name="current">Can be an enum value, object, or an int.</param>
+		/// <param name="increment">Can be a positive or a negative number.</param>
+		/// <param name="min">Can be an enum, object, or an int.</param>
+		/// <param name="max">Can be an enum, object, or an int.</param>
 		static public object WrapIncrement(object current, int increment, object min, object max)
 		{
-			return WrapIncrement((int)current, (int)increment, (int)min, (int)max);
+			return WrapIncrement((int)current, increment, (int)min, (int)max);
+		}
+
+		static public ImageFormat GetImageFormatByExtension(string path)
+		{
+			var extension = System.IO.Path.GetExtension(path);
+
+			switch (extension)
+			{
+			case ".bmp": return ImageFormat.Bmp;
+			case ".png": return ImageFormat.Png;
+			case ".jpeg":
+			case ".jpg": return ImageFormat.Jpeg;
+			case ".gif": return ImageFormat.Gif;
+			default: throw new NotSupportedException("File extension is not supported");
+			}
 		}
 	}
 }
