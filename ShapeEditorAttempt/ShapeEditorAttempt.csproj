@@ -71,9 +71,9 @@
     </Compile>
     <Compile Include="Exceptions\EnumNotImplementedException.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Functionality\LoadSaveController.cs" />
     <Compile Include="KeyboardController.cs" />
     <Compile Include="Controls\Canvas\Layer.cs" />
-    <Compile Include="LoadSave.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

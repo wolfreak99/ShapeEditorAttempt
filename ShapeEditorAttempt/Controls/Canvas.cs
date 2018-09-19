@@ -20,7 +20,7 @@ namespace ShapeEditorAttempt
 		/// The layer containing the shapes.
 		/// </summary>
 		public Layer layer = new Layer();
-		
+
 		private ShapeType GetSelectedShapeType() { return MainForm.Instance.SelectedShapeWidget.Value; }
 		private Color GetSelectedColor() { return MainForm.Instance.SelectedColorWidget.Value; }
 
@@ -48,7 +48,7 @@ namespace ShapeEditorAttempt
 			Grid.Draw(this, e);
 			layer.Draw(this, e);
 		}
-		
+
 		private void Canvas_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
@@ -60,7 +60,7 @@ namespace ShapeEditorAttempt
 				var shape = layer.GetShapeByPoint(path, location);
 				if (shape == null)
 					return;
-				
+
 				if (shape.Type == ShapeType.Triangle)
 				{
 					Action_TriangleIncrmentAngle(shape);
@@ -98,7 +98,7 @@ namespace ShapeEditorAttempt
 			// Only run during initial press
 			if (ClickData.Action != ShapeClickAction.None)
 				return;
-			
+
 			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
 			{
 				var location = e.Location;
@@ -179,6 +179,9 @@ namespace ShapeEditorAttempt
 			ClickData.Set(shape, ShapeClickAction.Resize);
 		}
 
+		/// <summary>
+		/// Clears the layers from the canvas and invalidates it
+		/// </summary>
 		public void Clear()
 		{
 			layer.Clear();
@@ -190,7 +193,7 @@ namespace ShapeEditorAttempt
 			if (shape.Type != value)
 			{
 				Shape newShape;
-				Rectangle pos = shape.Position;
+
 				switch (value)
 				{
 				case ShapeType.Square:
@@ -203,8 +206,9 @@ namespace ShapeEditorAttempt
 					newShape = new Triangle(shape.X, shape.Y, shape.Width, shape.Height, shape.Color);
 					break;
 				default:
-					throw new NotSupportedException(Utils.GetEnumName(value) + " not supported");
+					throw new EnumNotSupportedException(value);
 				}
+
 				layer.Replace(shape, newShape);
 				Invalidate();
 			}
@@ -214,52 +218,6 @@ namespace ShapeEditorAttempt
 		{
 			shape.Color = color;
 			Invalidate();
-		}
-
-		public void Save(string path)
-		{
-			Shape[] array = layer.ToArray();
-
-			var serializer = new XmlSerializer(typeof(Shape[]));
-			using (var stream = new FileStream(path, FileMode.Create))
-			{
-				serializer.Serialize(stream, array);
-			}
-		}
-
-		public new void Load(string path)
-		{
-			layer.Clear();
-
-			var serializer = new XmlSerializer(typeof(Shape[]));
-			using (var stream = new FileStream(path, FileMode.Open))
-			{
-				var array = serializer.Deserialize(stream) as Shape[];
-				layer.ImportFromArray(array);
-			}
-		}
-		
-		public void SaveToImage(string path)
-		{
-			// Hide canvas border when saving image
-			var prevBorder = BorderStyle;
-			BorderStyle = BorderStyle.None;
-			// Hide selected shape borders
-			Shape.HideBorder = true;
-
-			var layer = Canvas.Instance.layer;
-			var bounds = layer.GetAllShapesBoundary();
-			ImageFormat imageFormat = Utils.GetImageFormatByExtension(path);
-
-			using (var bitmap = new Bitmap(bounds.Width, bounds.Height))
-			{
-				DrawToBitmap(bitmap, bounds);
-				bitmap.Save(path, imageFormat);
-			}
-			
-			// Restore border
-			BorderStyle = prevBorder;
-			Shape.HideBorder = false;
 		}
 	}
 }

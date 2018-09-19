@@ -86,31 +86,19 @@ namespace ShapeEditorAttempt
 			Canvas.Clear();
 		}
 
-		private static OpenFileDialog openFileDialog;
-		private static SaveFileDialog saveFileDialog;
-
 		private void ButtonLoad_Click(object sender, EventArgs e)
 		{
-			openFileDialog = new OpenFileDialog();
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
-			{
-				Canvas.Load(openFileDialog.FileName);
-				Canvas.Invalidate();
-			}
-			openFileDialog.Dispose();
-			openFileDialog = null;
+			LoadSaveController.ShowFileDialog(LoadSaveController.LoadSaveAction.LoadProject);
 		}
 		
 		private void ButtonSave_Click(object sender, EventArgs e)
 		{
-			saveFileDialog = new SaveFileDialog();
-			if (saveFileDialog.ShowDialog() == DialogResult.OK)
-			{
-				Canvas.Save(saveFileDialog.FileName);
-				Canvas.Invalidate();
-			}
-			saveFileDialog.Dispose();
-			saveFileDialog = null;
+			LoadSaveController.ShowFileDialog(LoadSaveController.LoadSaveAction.SaveProject);
+		}
+
+		private void buttonSaveImage_Click(object sender, EventArgs e)
+		{
+			LoadSaveController.ShowFileDialog(LoadSaveController.LoadSaveAction.ExportToImage);
 		}
 
 		private void gridSizeSetButton_Click(object sender, EventArgs e)
@@ -156,20 +144,6 @@ namespace ShapeEditorAttempt
 				}
 			}
 			m_prevSelectedShapeNameKey = e.KeyCode;
-		}
-
-		private void buttonSaveImage_Click(object sender, EventArgs e)
-		{
-			saveFileDialog = new SaveFileDialog();
-			if (saveFileDialog.ShowDialog() == DialogResult.OK)
-			{
-				ClickData.Clear();
-				Canvas.Invalidate();
-				Canvas.SaveToImage(saveFileDialog.FileName);
-				Canvas.Invalidate();
-			}
-			saveFileDialog.Dispose();
-			saveFileDialog = null;
 		}
 	}
 }
