@@ -53,13 +53,19 @@ namespace ShapeEditorAttempt
 			else
 				return size;
 		}
+		
+		static public int SnapToGrid(int num, bool snap = true)
+		{
+			if (snap)
+				return SnapToGrid(num, GridSize.Width);
+			else
+				return num;
+		}
 
 		static private int SnapToGrid(int num, int gridSize)
 		{
 			if (gridSize == 0)
-			{
 				return num;
-			}
 			
 			return gridSize * (int)Math.Round((float)num / gridSize);
 		}

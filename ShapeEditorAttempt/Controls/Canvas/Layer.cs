@@ -54,10 +54,14 @@ namespace ShapeEditorAttempt
 		/// <returns></returns>
 		public Shape AddNewShape(Point location, Size size, Color color, ShapeType type, int index = -1, bool stretchTriangle = true)
 		{
-			int x = location.X - (size.Width / 2),
-				y = location.Y - (size.Height / 2),
+			int x = location.X,
+				y = location.Y,
 				w = size.Width,
 				h = size.Height;
+			
+			// Move to center of cursor, while still snapping to grid
+			x = Grid.SnapToGrid(x - (w / 2));
+			y = Grid.SnapToGrid(y - (h / 2));
 
 			Shape shape = ShapeTypeHelper.CreateNewShape(
 				x, y, w, h,
@@ -126,6 +130,9 @@ namespace ShapeEditorAttempt
 			return null;
 		}
 
+		/// <summary>
+		/// Clears all shapes in the layer
+		/// </summary>
 		public void Clear()
 		{
 			shapes.Clear();
@@ -174,6 +181,7 @@ namespace ShapeEditorAttempt
 				l = 0;
 			if (t < 0)
 				t = 0;
+
 			return Rectangle.FromLTRB(l, t, r, b);
 		}
 	}
