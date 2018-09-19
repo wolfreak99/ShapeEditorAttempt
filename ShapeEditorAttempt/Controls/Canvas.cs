@@ -11,7 +11,14 @@ namespace ShapeEditorAttempt
 {
 	public class Canvas : PictureBox, IInitializeComponent
 	{
-		public static Canvas Instance => MainForm.Instance.Canvas;
+		/// <summary>
+		/// Shortkey to MainForm.Instance.Canvas
+		/// </summary>
+		public static Canvas Instance { get { return MainForm.Instance.Canvas; } }
+
+		/// <summary>
+		/// The layer containing the shapes.
+		/// </summary>
 		public Layer layer = new Layer();
 		
 		private ShapeType GetSelectedShapeType() { return MainForm.Instance.SelectedShapeWidget.Value; }

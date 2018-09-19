@@ -69,9 +69,11 @@
     <Compile Include="Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Exceptions\EnumNotImplementedException.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="KeyboardController.cs" />
     <Compile Include="Controls\Canvas\Layer.cs" />
+    <Compile Include="LoadSave.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,12 +87,12 @@
     <Compile Include="Shapes\Angle.cs" />
     <Compile Include="Shapes\Shape.cs" />
     <Compile Include="Shapes\Circle.cs" />
-    <Compile Include="ShapeClickAction.cs" />
-    <Compile Include="ShapeType.cs" />
-    <Compile Include="ShapesHelper.cs" />
+    <Compile Include="Enums\ShapeClickAction.cs" />
+    <Compile Include="Enums\ShapeType.cs" />
+    <Compile Include="ShapeTypeHelper.cs" />
     <Compile Include="Shapes\Square.cs" />
     <Compile Include="Shapes\Triangle.cs" />
-    <Compile Include="ShapeTypeNotImplementedException.cs" />
+    <Compile Include="Exceptions\ShapeTypeNotImplementedException.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

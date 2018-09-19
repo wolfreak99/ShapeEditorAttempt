@@ -13,6 +13,9 @@ using System.Xml.Serialization;
 
 namespace ShapeEditorAttempt
 {
+	/// <summary>
+	/// Base class for all shapes.
+	/// </summary>
 	[XmlInclude(typeof(Square)), XmlInclude(typeof(Circle)), XmlInclude(typeof(Triangle)), XmlInclude(typeof(ShapeType))]
 	public abstract class Shape
 	{
@@ -25,6 +28,7 @@ namespace ShapeEditorAttempt
 		public const string NAME = "Null";
 		public const ShapeType TYPE = ShapeType.Null;
 		public const int EDGE_WIDTH = 6;
+
 		virtual public string Name { get { return NAME; } }
 		virtual public ShapeType Type { get { return TYPE; } }
 		virtual public int EdgeWidth { get { return EDGE_WIDTH; } }
