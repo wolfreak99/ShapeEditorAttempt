@@ -19,6 +19,8 @@ namespace ShapeEditorAttempt
 			SaveProject,
 			ExportToImage
 		}
+
+		public static bool IsExportingImage { get; private set; }
 		
 		public static bool ShowFileDialog(LoadSaveAction action)
 		{
@@ -100,6 +102,7 @@ namespace ShapeEditorAttempt
 
 		private static bool ExportToImage(string path)
 		{
+			bool result = true;
 			ClickData.Clear();
 
 			Canvas canvas = Canvas.Instance;
@@ -107,7 +110,7 @@ namespace ShapeEditorAttempt
 			// Hide borders when saving image
 			var prevBorder = canvas.BorderStyle;
 			canvas.BorderStyle = BorderStyle.None;
-			Shape.HideBorder = true;	// TODO Make hiding borders not so hack-ish
+			IsExportingImage = true;
 			canvas.Invalidate();
 
 			var bounds = canvas.layer.GetAllShapesBoundary();
@@ -116,7 +119,7 @@ namespace ShapeEditorAttempt
 			if (bounds.Width == 0 && bounds.Height == 0)
 			{
 				MessageBox.Show("Nothing to save. Try placing some shapes before exporting to image.");
-				return false;
+				result = false;
 			}
 			using (var bitmap = new Bitmap(bounds.Width, bounds.Height))
 			{
@@ -126,10 +129,10 @@ namespace ShapeEditorAttempt
 
 			// Restore border
 			canvas.BorderStyle = prevBorder;
-			Shape.HideBorder = false;
+			IsExportingImage = false;
 			canvas.Invalidate();
 
-			return true;
+			return result;
 		}
 	}
 }

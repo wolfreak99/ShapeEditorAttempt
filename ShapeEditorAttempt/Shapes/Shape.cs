@@ -19,12 +19,6 @@ namespace ShapeEditorAttempt
 	[XmlInclude(typeof(Square)), XmlInclude(typeof(Circle)), XmlInclude(typeof(Triangle)), XmlInclude(typeof(ShapeType))]
 	public abstract class Shape
 	{
-		/// <summary>
-		/// Set to true during Canvas.SaveToImage
-		/// </summary>
-		[XmlIgnore]
-		public static bool HideBorder = false;
-
 		public const string NAME = "Null";
 		public const ShapeType TYPE = ShapeType.Null;
 		public const int EDGE_WIDTH = 6;
@@ -118,6 +112,8 @@ namespace ShapeEditorAttempt
 				return m_pen;
 			}
 		}
+
+		[XmlIgnore] public bool BorderVisible;
 		#endregion
 
 		#region Constructors
@@ -157,7 +153,8 @@ namespace ShapeEditorAttempt
 			DrawShape(graphics, pos);
 
 			// Create outline
-			if (!HideBorder && KeyboardController.IsControlDown && (ClickData.Shape == this || KeyboardController.ShowAllBordersDown))
+			if (!LoadSaveController.IsExportingImage && 
+				(BorderVisible || (KeyboardController.IsControlDown && ClickData.Shape == this)))
 			{
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;
@@ -165,9 +162,10 @@ namespace ShapeEditorAttempt
 				Color = Utils.ColorSetHsv(
 					255 - prevColor.GetHue(), 
 					255 - prevColor.GetSaturation(), 
-					255 - prevColor.GetBrightness()
+					255 - prevColor.GetBrightness(),
+					200
 				);
-
+				
 				m_pen.Width = EdgeWidth;
 
 				Rectangle borderPos = Position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);

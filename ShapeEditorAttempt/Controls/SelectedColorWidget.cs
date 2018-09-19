@@ -18,7 +18,7 @@ namespace ShapeEditorAttempt
 		public SelectedColorWidget() : base(MainForm.Instance) { }
 
 		private T CreateButton<T>(ref ButtonRect btnRect, int tabIndex, string text, 
-			EventHandler clickFunc, int colorIndex = -1)
+			EventHandler clickFunc, EventHandler dblClickFunc = null, int colorIndex = -1)
 			where T : Control, new()
 		{
 			Control button = new T()
@@ -45,7 +45,7 @@ namespace ShapeEditorAttempt
 
 		public void InitializeComponent()
 		{
-			SelectedColorWidget.ButtonRect btnRect = new SelectedColorWidget.ButtonRect(COLOR_BUTTON_WIDTH, COLOR_BUTTON_HEIGHT, COLOR_BUTTON_XSPACING, 0);
+			ButtonRect btnRect = new ButtonRect(COLOR_BUTTON_WIDTH, COLOR_BUTTON_HEIGHT, COLOR_BUTTON_XSPACING, 0);
 			int left = btnRect.x;
 			int tab = 2;
 
@@ -55,7 +55,7 @@ namespace ShapeEditorAttempt
 			CreateButton<Button>(ref btnRect, tab++, "<", LeftButton_Click);
 			for (int i = 0; i < ColorsArray.COLORS_PER_PALETTE; i++)
 			{
-				var button = CreateButton<ColorButton>(ref btnRect, tab++, null, colorToggle_Click, i);
+				var button = CreateButton<ColorButton>(ref btnRect, tab++, null, colorToggle_Click, colorToggle_DoubleClick, i);
 				colorToggles[i] = button;
 			}
 			// Right button to create Scrolling
@@ -67,6 +67,14 @@ namespace ShapeEditorAttempt
 				left + (buttonCount * (btnRect.width + btnRect.xSpacing)) + rightOffset, 
 				this.Size.Height
 			);
+		}
+
+		public void UninitializeComponent()
+		{
+			foreach (var c in colorToggles)
+			{
+				c.MouseClick -= colorToggle_Click;
+			}
 		}
 
 		private void SwitchToPalette(int paletteIndex)
@@ -97,32 +105,36 @@ namespace ShapeEditorAttempt
 			PaletteIndex = newPaletteIndex;
 		}
 
-		public void UninitializeComponent()
+		private void SelectColor(ColorButton button, bool setSelectedShapeColor)
 		{
-			foreach (var c in colorToggles)
-			{
-				c.MouseClick -= colorToggle_Click;
-			}
-		}
-
-		private void colorToggle_Click(object sender, System.EventArgs e)
-		{
-			ColorButton checkbox = (ColorButton)sender;
-
 			// Set color to selected color button
-			Value = checkbox.Color;
+			if (button.Color == Value)
+			{
+				Canvas.Instance.SetShapeColor(ClickData.Shape, Value);
+			}
+
+			Value = button.Color;
 
 			// Mark selected color button
 			foreach (var b in colorToggles)
 			{
 				b.Checked = (b.Color == Value);
 			}
-
-			// Change last selected shapes color if control is held.
-			if (KeyboardController.IsControlDown && ClickData.Shape != null)
+			// Set selected shape to color
+			if (setSelectedShapeColor)
 			{
-				MainForm.Instance.Canvas.SetShapeColor(ClickData.Shape, Value);
+				Canvas.Instance.SetShapeColor(ClickData.Shape, Value);
 			}
+		}
+
+		private void colorToggle_Click(object sender, System.EventArgs e)
+		{
+			SelectColor((ColorButton)sender, KeyboardController.IsControlDown);
+		}
+
+		private void colorToggle_DoubleClick(object sender, EventArgs e)
+		{
+			SelectColor((ColorButton)sender, true);
 		}
 
 		private class ButtonRect

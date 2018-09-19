@@ -46,11 +46,17 @@ namespace ShapeEditorAttempt
 			case Keys.M:
 				IsMoveDown = isDown && Canvas.Instance.Focused;
 				break;
-			case Keys.Delete:
-				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
-				{
-					Canvas.Instance.layer.Remove(ClickData.Shape);
-				}
+			case Keys.P:
+				if (isDown)
+					ToolBase.Current = MainTool.Instance;
+				break;
+			case Keys.E:
+				if (isDown)
+					ToolBase.Current = EraserTool.Instance;
+				break;
+			case Keys.S:
+				if (isDown)
+					ToolBase.Current = SelectorTool.Instance;
 				break;
 			case Keys.ControlKey:
 				IsControlDown = isDown;
@@ -62,6 +68,8 @@ namespace ShapeEditorAttempt
 				IsShiftDown = isDown;
 				break;
 			}
+
+			ToolBase.Current.ProcessKeys(e, isDown);
 
 			// Invalidate Canvas if it was a new key input
 			if (!(m_prevKey == e.KeyCode && m_prevIsDown == isDown))

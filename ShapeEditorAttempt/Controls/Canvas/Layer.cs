@@ -130,6 +130,20 @@ namespace ShapeEditorAttempt
 			return null;
 		}
 
+		public Shape[] GetShapesByRectangle(Rectangle rectangle)
+		{
+			List<Shape> result = new List<Shape>();
+
+			for (int i = shapes.Count - 1; i >= 0; i--)
+			{
+				var s = shapes[i];
+				if (rectangle.IntersectsWith(s.Position))
+					result.Add(shapes[i]);
+			}
+
+			return result.ToArray();
+		}
+
 		/// <summary>
 		/// Clears all shapes in the layer
 		/// </summary>

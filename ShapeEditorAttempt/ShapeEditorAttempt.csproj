@@ -96,6 +96,7 @@
     <Compile Include="Tools\EraserTool.cs" />
     <Compile Include="Tools\MainTool.cs" />
     <Compile Include="Tools\SelectorTool.cs" />
+    <Compile Include="Tools\SharedActions.cs" />
     <Compile Include="Tools\ToolBase.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="MainForm.resx">

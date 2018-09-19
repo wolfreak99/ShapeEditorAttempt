@@ -82,6 +82,9 @@ namespace ShapeEditorAttempt
 
 		internal void SetShapeType(Shape shape, ShapeType value)
 		{
+			if (shape == null)
+				return;
+
 			if (shape.Type != value)
 			{
 				Shape newShape;
@@ -108,8 +111,16 @@ namespace ShapeEditorAttempt
 
 		internal void SetShapeColor(Shape shape, Color color)
 		{
+			if (shape == null)
+				return;
+
 			shape.Color = color;
 			Invalidate();
+		}
+
+		internal Shape[] GetShapesByRectangle(Rectangle rectangle)
+		{
+			return layer.GetShapesByRectangle(rectangle);
 		}
 	}
 }

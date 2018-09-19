@@ -48,7 +48,7 @@ namespace ShapeEditorAttempt
 				switch (e.Button)
 				{
 				case MouseButtons.Right:
-					Action_RemoveShape(shape);
+					SharedActions.RemoveShape(shape);
 					break;
 				case MouseButtons.Middle:
 					if (shape != null && shape.Type == ShapeType.Triangle)
@@ -91,7 +91,8 @@ namespace ShapeEditorAttempt
 			if (e.Button == MouseButtons.None)
 				return;
 
-			// Focus();		// Not sure if this is needed or not
+			// Needed for KeyboardController
+			Canvas.Instance.Focus();
 
 			// Todo: Copy over the moving mechanics a little better.
 			ClickData.ShapeUpdateOffset(e.Location);
@@ -112,6 +113,19 @@ namespace ShapeEditorAttempt
 			Canvas.Instance.Invalidate();
 		}
 
+		public override void OnProcessKeys(KeyEventArgs e, bool isDown)
+		{
+			switch (e.KeyCode)
+			{
+			case Keys.Delete:
+				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				{
+					SharedActions.RemoveShape(ClickData.Shape);
+				}
+				break;
+			}
+		}
+
 		private void Action_TriangleIncrmentAngle(Shape shape)
 		{
 			if (shape.Type == ShapeType.Triangle)
@@ -121,17 +135,7 @@ namespace ShapeEditorAttempt
 			}
 			Canvas.Instance.Invalidate();
 		}
-		
-		public void Action_RemoveShape(Shape shape)
-		{
-			if (shape != null)
-			{
-				Canvas.Instance.layer.Remove(shape);
-				ClickData.Action = ShapeClickAction.Delete;
-			}
-			ClickData.Shape = null;
-		}
-		
+
 		private void GenerateShape(Size size)
 		{
 			var layer = Canvas.Instance.layer;

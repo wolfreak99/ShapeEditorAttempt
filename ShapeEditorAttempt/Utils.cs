@@ -17,7 +17,7 @@ namespace ShapeEditorAttempt
 			return (byte)(value * 255.0f);
 		}
 
-		public static Color ColorSetHsv(float hue, float saturation, float value)
+		public static Color ColorSetHsv(float hue, float saturation, float value, int alpha = 255)
 		{
 			int i;
 			float f, p, q, t;
@@ -40,19 +40,36 @@ namespace ShapeEditorAttempt
 			switch (i)
 			{
 			case 0:
-					return Color.FromArgb(ClampValue(value), ClampValue(t), ClampValue(p));
+					return Color.FromArgb(alpha, ClampValue(value), ClampValue(t), ClampValue(p));
 			case 1:
-					return Color.FromArgb(ClampValue(q), ClampValue(t), ClampValue(p));
+					return Color.FromArgb(alpha, ClampValue(q), ClampValue(t), ClampValue(p));
 			case 2:
-					return Color.FromArgb(ClampValue(p), ClampValue(value), ClampValue(t));
+					return Color.FromArgb(alpha, ClampValue(p), ClampValue(value), ClampValue(t));
 			case 3:
-				return Color.FromArgb(ClampValue(p), ClampValue(q), ClampValue(value));
+				return Color.FromArgb(alpha, ClampValue(p), ClampValue(q), ClampValue(value));
 			case 4:
-				return Color.FromArgb(ClampValue(t), ClampValue(p), ClampValue(value));
+				return Color.FromArgb(alpha, ClampValue(t), ClampValue(p), ClampValue(value));
 			default:
-				return Color.FromArgb(ClampValue(value), ClampValue(p), ClampValue(q));
+				return Color.FromArgb(alpha, ClampValue(value), ClampValue(p), ClampValue(q));
 			}
 		}
+
+		internal static Point Min(Point beginPoint, Point endPoint)
+		{
+			return new Point(
+				Math.Min(beginPoint.X, endPoint.X), 
+				Math.Min(beginPoint.Y, endPoint.Y)
+			);
+		}
+
+		internal static Point Max(Point beginPoint, Point endPoint)
+		{
+			return new Point(
+				Math.Max(beginPoint.X, endPoint.X), 
+				Math.Max(beginPoint.Y, endPoint.Y)
+			);
+		}
+
 
 		/// <summary>
 		/// Returns "EnumType.EnumName"
