@@ -21,8 +21,8 @@ namespace ShapeEditorAttempt
 		/// </summary>
 		public Layer layer = new Layer();
 
-		private ShapeType GetSelectedShapeType() { return MainForm.Instance.SelectedShapeWidget.Value; }
-		private Color GetSelectedColor() { return MainForm.Instance.SelectedColorWidget.Value; }
+		public ShapeType GetSelectedShapeType() { return MainForm.Instance.SelectedShapeWidget.Value; }
+		public Color GetSelectedColor() { return MainForm.Instance.SelectedColorWidget.Value; }
 
 		public Canvas() : base()
 		{
@@ -47,136 +47,28 @@ namespace ShapeEditorAttempt
 
 			Grid.Draw(this, e);
 			layer.Draw(this, e);
+
+			ToolBase.Current.Paint(sender, e);
 		}
 
 		private void Canvas_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
-			{
-				var location = e.Location;
-				ClickData.Origin = Grid.SnapToGrid(e.Location);
-
-				// Todo: Copy over the moving mechanics a little better.
-				var shape = layer.GetShapeByPoint(path, location);
-				if (shape == null)
-					return;
-
-				if (shape.Type == ShapeType.Triangle)
-				{
-					Action_TriangleIncrmentAngle(shape);
-				}
-			}
+			ToolBase.Current.MouseDoubleClick(sender, e);
 		}
 
 		internal void Canvas_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (ClickData.Action == ShapeClickAction.None)
-				return;
-
-			ClickData.ShapeApplyOffset();
-
-			// Reset click data
-			ClickData.Clear(false);
-
-			Invalidate();
+			ToolBase.Current.MouseUp(sender, e);
 		}
 
 		internal void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.None)
-				return;
-
-			Focus();
-			// Todo: Copy over the moving mechanics a little better.
-			ClickData.ShapeUpdateOffset(e.Location);
-
-			Invalidate();
+			ToolBase.Current.MouseMove(sender, e);
 		}
 
 		internal void Canvas_MouseDown(object sender, MouseEventArgs e)
 		{
-			// Only run during initial press
-			if (ClickData.Action != ShapeClickAction.None)
-				return;
-
-			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
-			{
-				var location = e.Location;
-				ClickData.Origin = Grid.SnapToGrid(e.Location);
-				var shape = layer.GetShapeByPoint(path, location);
-
-				switch (e.Button)
-				{
-				case MouseButtons.Right:
-					Action_RemoveShape(shape);
-					break;
-				case MouseButtons.Middle:
-					if (shape != null && shape.Type == ShapeType.Triangle)
-					{
-						Action_TriangleIncrmentAngle(shape);
-					}
-					break;
-				case MouseButtons.Left:
-					bool createShape = true;
-					if (!KeyboardController.IsShiftDown && shape != null)
-					{
-						var action = shape.GetShapeActionByPoint(path, location);
-						if (action != ShapeClickAction.None)
-						{
-							ClickData.Set(shape, action);
-							createShape = false;
-							Canvas_MouseMove(sender, e);
-						}
-						else
-						{
-							throw new Exception("Shape was found under Point, but action wasn't" +
-								" - This shouldn't happen.");
-						}
-					}
-					if (createShape)
-					{
-						var newSize = new Size(20, 20);
-						var sizeSnapped = Grid.SnapToGrid(newSize, Grid.SnapSizeToGrid);
-						GenerateShape(sizeSnapped);
-					}
-					break;
-				}
-			}
-			Invalidate();
-		}
-
-		public void Action_RemoveShape(Shape shape)
-		{
-			if (shape != null)
-			{
-				layer.Remove(shape);
-				ClickData.Action = ShapeClickAction.Delete;
-			}
-			ClickData.Shape = null;
-		}
-
-		public void Action_TriangleIncrmentAngle(Shape shape)
-		{
-			if (shape.Type != ShapeType.Triangle)
-				return;
-
-			Triangle t = (Triangle)shape;
-			t.IncrementAngle();
-		}
-
-		private void GenerateShape(Size size)
-		{
-			Shape shape;
-			if (ClickData.Shape != null && KeyboardController.IsControlDown)
-			{
-				shape = layer.DuplicateShape(ClickData.Shape, ClickData.Origin);
-			}
-			else
-			{
-				shape = layer.AddNewShape(ClickData.Origin, size, GetSelectedColor(), GetSelectedShapeType());
-			}
-			// Force new shape to go into resize mode.
-			ClickData.Set(shape, ShapeClickAction.Resize);
+			ToolBase.Current.MouseDown(sender, e);
 		}
 
 		/// <summary>
