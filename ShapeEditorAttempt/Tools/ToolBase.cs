@@ -6,14 +6,25 @@ namespace ShapeEditorAttempt
 {
 	public abstract class ToolBase
 	{
+		/// <summary>
+		/// The current tool being used. To set this, use "ToolBase.SwitchToTool(ToolBase newTool)"
+		/// </summary>
 		public static ToolBase Current { get; private set; } = new MainTool();
 
 		public bool MouseIsDown { get; private set; } = false;
 		public bool MouseWasDown { get; private set; } = false;
 
+		/// <summary>
+		/// Unloads the current tool and switches to the new tool
+		/// </summary>
+		/// <param name="newTool">The tool to switch to. Usually "new SomeToolDerivedFromToolBase()"</param>
 		internal static void SwitchToTool(ToolBase newTool)
 		{
-			Current.UnloadTool();
+			if (Current != null)
+			{
+				Current.UnloadTool();
+				Current = null;
+			}
 			Current = newTool;
 		}
 

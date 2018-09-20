@@ -88,7 +88,7 @@ namespace ShapeEditorAttempt
 
 		public override void OnMouseMove(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.None)
+			if (e.Button != MouseButtons.Left)
 				return;
 
 			// Needed for KeyboardController
@@ -130,6 +130,7 @@ namespace ShapeEditorAttempt
 		{
 			var layer = Canvas.Instance.layer;
 
+			// Generate shape based on either a duplicate or a new shape
 			Shape shape;
 			if (ClickData.Shape != null && KeyboardController.IsControlDown)
 			{

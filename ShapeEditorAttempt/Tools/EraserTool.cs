@@ -14,7 +14,7 @@ namespace ShapeEditorAttempt
 
 		public override void OnMouseDown(object sender, MouseEventArgs e)
 		{
-			if (MouseWasDown)
+			if (MouseWasDown || (e.Button != MouseButtons.Left && e.Button != MouseButtons.Right))
 				return;
 
 			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
@@ -22,18 +22,15 @@ namespace ShapeEditorAttempt
 				var location = e.Location;
 				ClickData.Origin = Grid.SnapToGrid(e.Location);
 				var shape = Canvas.Instance.layer.GetShapeByPoint(path, location);
-
-				if (e.Button == MouseButtons.Left)
-				{
-					SharedActions.RemoveShape(shape);
-				}
+				
+				SharedActions.RemoveShape(shape);
 			}
 			Canvas.Instance.Invalidate();
 		}
 
 		public override void OnMouseMove(object sender, MouseEventArgs e)
 		{
-			if (!MouseIsDown)
+			if (e.Button != MouseButtons.Right)
 				return;
 
 			using (GraphicsPath path = new GraphicsPath(FillMode.Alternate))
@@ -42,12 +39,7 @@ namespace ShapeEditorAttempt
 				ClickData.Origin = Grid.SnapToGrid(e.Location);
 				var shape = Canvas.Instance.layer.GetShapeByPoint(path, location);
 
-				switch (e.Button)
-				{
-				case MouseButtons.Left:
-					SharedActions.RemoveShape(shape);
-					break;
-				}
+				SharedActions.RemoveShape(shape);
 			}
 			Canvas.Instance.Invalidate();
 		}

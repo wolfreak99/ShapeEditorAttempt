@@ -11,8 +11,11 @@ namespace ShapeEditorAttempt
 			{
 				Canvas.Instance.layer.Remove(shape);
 				ClickData.Action = ShapeClickAction.Delete;
+				if (ClickData.Shape == shape)
+				{
+					ClickData.Shape = null;
+				}
 			}
-			ClickData.Shape = null;
 		}
 
 		internal static void TriangleIncrementAngle(Shape shape)

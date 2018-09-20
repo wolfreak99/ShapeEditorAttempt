@@ -66,7 +66,7 @@ namespace ShapeEditorAttempt
 
 		public override void OnMouseMove(object sender, MouseEventArgs e)
 		{
-			if (!MouseIsDown)
+			if (e.Button != MouseButtons.Left)
 				return;
 
 			SetSelectedRectangle(mouseDownLocation, e.Location);
