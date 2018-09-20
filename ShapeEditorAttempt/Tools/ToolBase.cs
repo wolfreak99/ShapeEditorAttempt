@@ -9,43 +9,50 @@ namespace ShapeEditorAttempt
 {
 	public abstract class ToolBase
 	{
-		private static ToolBase mCurrent = MainTool.Instance;
-		public static ToolBase Current
-		{
-			get { return mCurrent; }
-			set
-			{
-				mCurrent.UnloadTool();
-				mCurrent.MouseIsDown = false;
-				mCurrent.MouseWasDown = false;
-				mCurrent = value;
-			}
-		}
+		public static ToolBase Current { get; private set; } = new MainTool();
 
 		public bool MouseIsDown { get; private set; } = false;
 		public bool MouseWasDown { get; private set; } = false;
+
+		internal static void SwitchToTool(ToolBase newTool)
+		{
+			Current.UnloadTool();
+			Current = newTool;
+		}
+
+		public ToolBase()
+		{
+
+		}
 
 		public void MouseUp(object sender, MouseEventArgs e)
 		{
 			MouseWasDown = MouseIsDown;
 			MouseIsDown = false;
+
 			OnMouseUp(sender, e);
 		}
+
 		public void MouseDown(object sender, MouseEventArgs e)
 		{
 			MouseWasDown = MouseIsDown;
 			MouseIsDown = true;
+
 			OnMouseDown(sender, e);
 		}
+
 		public void MouseMove(object sender, MouseEventArgs e)
 		{
 			MouseWasDown = MouseIsDown;
+
 			OnMouseMove(sender, e);
 		}
+
 		public void MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			OnMouseDoubleClick(sender, e);
 		}
+
 		public void Paint(object sender, PaintEventArgs e)
 		{
 			OnPaint(sender, e);

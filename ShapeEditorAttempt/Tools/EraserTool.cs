@@ -10,8 +10,10 @@ namespace ShapeEditorAttempt
 {
 	public class EraserTool : ToolBase
 	{
-		public static EraserTool Instance = new EraserTool();
-		private EraserTool() { }
+		public EraserTool() : base()
+		{
+
+		}
 
 		public override void OnMouseDown(object sender, MouseEventArgs e)
 		{

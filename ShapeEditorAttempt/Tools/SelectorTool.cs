@@ -10,22 +10,21 @@ namespace ShapeEditorAttempt
 {
 	public class SelectorTool : ToolBase
 	{
-		public static SelectorTool Instance = new SelectorTool();
 		private Pen OutlinePen;
-		private SelectorTool()
+		
+		private Rectangle selectedRectangle = new Rectangle();
+		private Shape[] selectedShapes = null;
+		private Point mouseDownLocation = new Point();
+
+		public SelectorTool() : base()
 		{
 			OutlinePen = new Pen(Brushes.Blue);
 			OutlinePen.Width = 2;
 			OutlinePen.Color = Color.FromArgb(128, OutlinePen.Color.R, OutlinePen.Color.G, OutlinePen.Color.B);
 			OutlinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 		}
-
-		public Rectangle selectedRectangle = new Rectangle();
-		public Shape[] selectedShapes = null;
-
-		Point mouseDownLocation = new Point();
-
-		void UpdateSelectedRectangle(Point beginPoint, Point endPoint)
+		
+		private void SetSelectedRectangle(Point beginPoint, Point endPoint)
 		{
 			Point a = Utils.Min(beginPoint, endPoint);
 			Point b = Utils.Max(beginPoint, endPoint);
@@ -48,14 +47,24 @@ namespace ShapeEditorAttempt
 			{
 				s.BorderVisible = true;
 			}
+
+			// This may be needed
+			//Canvas.Instance.Invalidate();
+		}
+
+		private void ClearSelectedRectangle()
+		{
+			selectedRectangle = Rectangle.Empty;
+			mouseDownLocation = Point.Empty;
 		}
 
 		public override void OnMouseDown(object sender, MouseEventArgs e)
 		{
+			// Set initial press
 			if (!MouseWasDown)
 				mouseDownLocation = e.Location;
 
-			UpdateSelectedRectangle(mouseDownLocation, e.Location);
+			SetSelectedRectangle(mouseDownLocation, e.Location);
 		}
 
 		public override void OnMouseMove(object sender, MouseEventArgs e)
@@ -63,8 +72,7 @@ namespace ShapeEditorAttempt
 			if (!MouseIsDown)
 				return;
 
-			UpdateSelectedRectangle(mouseDownLocation, e.Location);
-			Canvas.Instance.Invalidate();
+			SetSelectedRectangle(mouseDownLocation, e.Location);
 		}
 
 		public override void OnMouseUp(object sender, MouseEventArgs e)
@@ -74,7 +82,8 @@ namespace ShapeEditorAttempt
 
 		public override void OnMouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			selectedRectangle = Rectangle.Empty;
+			ClearSelectedRectangle();
+
 			Canvas.Instance.Invalidate();
 		}
 
@@ -109,7 +118,7 @@ namespace ShapeEditorAttempt
 
 		public override void OnUnloadTool()
 		{
-			selectedRectangle = Rectangle.Empty;
+			ClearSelectedRectangle();
 			selectedShapes = null;
 		}
 	}

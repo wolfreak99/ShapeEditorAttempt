@@ -11,8 +11,10 @@ namespace ShapeEditorAttempt
 {
 	public class MainTool : ToolBase
 	{
-		public static MainTool Instance = new MainTool();
-		private MainTool() { }
+		public MainTool() : base()
+		{
+
+		}
 
 		public override void OnMouseDoubleClick(object sender, MouseEventArgs e)
 		{
@@ -28,7 +30,7 @@ namespace ShapeEditorAttempt
 
 				if (shape.Type == ShapeType.Triangle)
 				{
-					Action_TriangleIncrmentAngle(shape);
+					SharedActions.TriangleIncrementAngle(shape);
 				}
 			}
 		}
@@ -53,7 +55,7 @@ namespace ShapeEditorAttempt
 				case MouseButtons.Middle:
 					if (shape != null && shape.Type == ShapeType.Triangle)
 					{
-						Action_TriangleIncrmentAngle(shape);
+						SharedActions.TriangleIncrementAngle(shape);
 					}
 					break;
 				case MouseButtons.Left:
@@ -69,8 +71,9 @@ namespace ShapeEditorAttempt
 						}
 						else
 						{
-							throw new Exception("Shape was found under Point, but action wasn't" +
-								" - This shouldn't happen.");
+							throw new InvalidOperationException(
+								"Shape was found under Point, but action wasn't - This shouldn't happen."
+							);
 						}
 					}
 					if (createShape)
@@ -82,8 +85,8 @@ namespace ShapeEditorAttempt
 					break;
 				}
 			}
-			Canvas.Instance.Invalidate();
 
+			Canvas.Instance.Invalidate();
 		}
 
 		public override void OnMouseMove(object sender, MouseEventArgs e)
@@ -124,16 +127,6 @@ namespace ShapeEditorAttempt
 				}
 				break;
 			}
-		}
-
-		private void Action_TriangleIncrmentAngle(Shape shape)
-		{
-			if (shape.Type == ShapeType.Triangle)
-			{
-				Triangle t = (Triangle)shape;
-				t.IncrementAngle();
-			}
-			Canvas.Instance.Invalidate();
 		}
 
 		private void GenerateShape(Size size)

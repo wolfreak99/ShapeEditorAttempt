@@ -48,15 +48,21 @@ namespace ShapeEditorAttempt
 				break;
 			case Keys.P:
 				if (isDown)
-					ToolBase.Current = MainTool.Instance;
+				{
+					ToolBase.SwitchToTool(new MainTool());
+				}
 				break;
 			case Keys.E:
 				if (isDown)
-					ToolBase.Current = EraserTool.Instance;
+				{
+					ToolBase.SwitchToTool(new EraserTool());
+				}
 				break;
 			case Keys.S:
 				if (isDown)
-					ToolBase.Current = SelectorTool.Instance;
+				{
+					ToolBase.SwitchToTool(new SelectorTool());
+				}
 				break;
 			case Keys.ControlKey:
 				IsControlDown = isDown;

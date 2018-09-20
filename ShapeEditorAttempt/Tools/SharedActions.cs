@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ShapeEditorAttempt
 {
-	public static class SharedActions
+	internal static class SharedActions
 	{
-		public static void RemoveShape(Shape shape)
+		internal static void RemoveShape(Shape shape)
 		{
 			if (shape != null)
 			{
@@ -16,6 +16,15 @@ namespace ShapeEditorAttempt
 				ClickData.Action = ShapeClickAction.Delete;
 			}
 			ClickData.Shape = null;
+		}
+
+		internal static void TriangleIncrementAngle(Shape shape)
+		{
+			if (shape.Type == ShapeType.Triangle)
+			{
+				Triangle t = (Triangle)shape;
+				t.IncrementAngle();
+			}
 		}
 	}
 }
