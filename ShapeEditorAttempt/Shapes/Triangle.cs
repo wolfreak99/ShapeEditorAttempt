@@ -122,7 +122,7 @@ namespace ShapeEditorAttempt
 					new Point(position.Right, position.Bottom)
 				};
 			default:
-				throw new NotImplementedException(Utils.GetEnumName(triangleAngle) + " Not yet implemented.");
+				throw new EnumNotImplementedException(triangleAngle, EnumNotImplementedException.MESSAGESUFFIX_NOT_YET_IMPLEMENTED);
 			}
 		}
 	}
