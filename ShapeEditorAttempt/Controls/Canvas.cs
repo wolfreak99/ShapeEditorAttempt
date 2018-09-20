@@ -23,6 +23,7 @@ namespace ShapeEditorAttempt
 
 		public Canvas() : base()
 		{
+
 		}
 
 		public void InitializeComponent()
@@ -36,7 +37,10 @@ namespace ShapeEditorAttempt
 			this.MouseDoubleClick += Canvas_MouseDoubleClick;
 		}
 
-		public void UninitializeComponent() { }
+		public void UninitializeComponent()
+		{
+
+		}
 		
 		internal void Canvas_Paint(object sender, PaintEventArgs e)
 		{

@@ -10,7 +10,10 @@ namespace ShapeEditorAttempt
 
 		public ShapeType Value = ShapeType.Square;
 		
-		public SelectedShapeWidget() : base() { }
+		public SelectedShapeWidget() : base()
+		{
+
+		}
 		
 		public void InitializeComponent()
 		{

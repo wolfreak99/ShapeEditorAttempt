@@ -15,7 +15,10 @@ namespace ShapeEditorAttempt
 		private ColorButton[] colorToggles;
 		private int PaletteIndex = 0;
 
-		public SelectedColorWidget() : base(MainForm.Instance) { }
+		public SelectedColorWidget() : base(MainForm.Instance)
+		{
+
+		}
 
 		private T CreateButton<T>(ref ButtonRect btnRect, int tabIndex, string text, 
 			EventHandler clickFunc, EventHandler dblClickFunc = null, int colorIndex = -1)

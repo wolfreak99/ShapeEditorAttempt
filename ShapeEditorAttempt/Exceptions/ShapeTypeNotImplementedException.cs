@@ -6,7 +6,10 @@ namespace ShapeEditorAttempt
 	{
 		public class ShapeTypeNotSupportedException : EnumNotSupportedException
 		{
-			public ShapeTypeNotSupportedException(ShapeType shapeType) : base(shapeType) { }
+			public ShapeTypeNotSupportedException(ShapeType shapeType) : base(shapeType)
+			{
+
+			}
 		}
 	}
 }
