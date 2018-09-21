@@ -140,7 +140,8 @@ namespace ShapeEditorAttempt
 			{
 				shape = layer.AddNewShape(ClickData.Origin, size, 
 					Canvas.Instance.GetSelectedColor(),
-					Canvas.Instance.GetSelectedShapeType());
+					Canvas.Instance.GetSelectedShapeType()
+				);
 			}
 
 			// Force new shape to go into resize mode.

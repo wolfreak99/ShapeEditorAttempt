@@ -7,11 +7,24 @@ namespace ShapeEditorAttempt
 {
 	public class SelectorTool : ToolBase
 	{
+		private enum SelectorAction
+		{
+			None = -1,
+			BeginSelectionRectangle,
+			EndSelectionRectangle,
+			MoveSelectedShapes,
+			// ResizeSelectedShapes,
+		}
+
+		private SelectorAction action;
+
 		private Pen OutlinePen;
 		
 		private Rectangle selectedRectangle = new Rectangle();
 		private Shape[] selectedShapes = null;
+
 		private Point mouseDownLocation = new Point();
+		private Point mouseDownMovingLocation = new Point();
 
 		public SelectorTool() : base()
 		{
@@ -23,10 +36,12 @@ namespace ShapeEditorAttempt
 		
 		private void SetSelectedRectangle(Point beginPoint, Point endPoint)
 		{
+			// Make sure x/y are top-left, and width/height is bottom-right
 			Point a = Utils.Min(beginPoint, endPoint);
 			Point b = Utils.Max(beginPoint, endPoint);
 
 			var newRect = Rectangle.FromLTRB(a.X, a.Y, b.X, b.Y);
+
 			// Determine if there is a need to update shapes
 			if (selectedRectangle == newRect)
 				return;
@@ -53,15 +68,31 @@ namespace ShapeEditorAttempt
 		{
 			selectedRectangle = Rectangle.Empty;
 			mouseDownLocation = Point.Empty;
+			action = SelectorAction.None;
 		}
 
 		public override void OnMouseDown(object sender, MouseEventArgs e)
 		{
-			// Set initial press
-			if (!MouseWasDown)
-				mouseDownLocation = e.Location;
-
-			SetSelectedRectangle(mouseDownLocation, e.Location);
+			var mouseLocation = e.Location;
+			switch (action)
+			{
+			case SelectorAction.EndSelectionRectangle:
+				if (selectedRectangle.Contains(mouseLocation))
+				{
+					action = SelectorAction.MoveSelectedShapes;
+				}
+				break;
+			case SelectorAction.None:
+				if (!MouseWasDown)
+				{
+					action = SelectorAction.BeginSelectionRectangle;
+					mouseDownLocation = mouseLocation;
+					SetSelectedRectangle(mouseDownLocation, e.Location);
+				}
+				break;
+			default:
+				throw new EnumNotImplementedException(action, EnumNotImplementedException.MSG_NOT_YET_IMPLEMENTED);
+			}
 		}
 
 		public override void OnMouseMove(object sender, MouseEventArgs e)
@@ -69,12 +100,31 @@ namespace ShapeEditorAttempt
 			if (e.Button != MouseButtons.Left)
 				return;
 
+			switch (action)
+			{
+			case SelectorAction.BeginSelectionRectangle:
+			case SelectorAction.EndSelectionRectangle:
+				break;
+			case SelectorAction.MoveSelectedShapes:
+				break;
+			}
 			SetSelectedRectangle(mouseDownLocation, e.Location);
 		}
 
 		public override void OnMouseUp(object sender, MouseEventArgs e)
 		{
-			
+			var mouseLocation = e.Location;
+			switch (action)
+			{
+			case SelectorAction.BeginSelectionRectangle:
+				SetSelectedRectangle(mouseDownLocation, mouseLocation);
+				action = SelectorAction.EndSelectionRectangle;
+				break;
+			case SelectorAction.EndSelectionRectangle:
+				break;
+			case SelectorAction.MoveSelectedShapes:
+				break;
+			}
 		}
 
 		public override void OnMouseDoubleClick(object sender, MouseEventArgs e)
@@ -91,9 +141,13 @@ namespace ShapeEditorAttempt
 
 			Pen p = new Pen(Brushes.Blue);
 			p.Width = 2;
-			p.Color = Color.FromArgb(128, p.Color.R, p.Color.G, p.Color.B);
 			p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
+			p.Color = Color.FromArgb(32, p.Color);
+			var inflated = Rectangle.Inflate(selectedRectangle, ((int)p.Width) * -1, ((int)p.Width) * -1);
+			e.Graphics.FillRectangle(p.Brush, inflated);
+
+			p.Color = Color.FromArgb(128, p.Color);
 			e.Graphics.DrawRectangle(p, selectedRectangle);
 		}
 
