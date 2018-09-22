@@ -91,7 +91,7 @@ namespace ShapeEditorAttempt
 				}
 				break;
 			default:
-				throw new EnumNotImplementedException(action, EnumNotImplementedException.MSG_NOT_YET_IMPLEMENTED);
+				throw EnumNotImplementedException.Throw(action, ExceptionMessages.MSG_NOT_YET_IMPLEMENTED);
 			}
 		}
 

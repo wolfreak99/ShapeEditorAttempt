@@ -23,7 +23,7 @@ namespace ShapeEditorAttempt
 					return new Triangle(x, y, width, height, color);
 				}
 			default:
-				throw new ShapeTypeNotSupportedException(shape);
+				throw ShapeTypeNotSupportedException.Throw(shape);
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace ShapeEditorAttempt
 			case ShapeType.Triangle:
 				return Triangle.NAME;
 			default:
-				throw new ShapeTypeNotSupportedException(shape);
+				throw ShapeTypeNotSupportedException.Throw(shape);
 			}
 		}
 	}

@@ -102,7 +102,7 @@ namespace ShapeEditorAttempt
 					newShape = new Triangle(shape.X, shape.Y, shape.Width, shape.Height, shape.Color);
 					break;
 				default:
-					throw new EnumNotSupportedException(value);
+					throw EnumNotSupportedException.Throw(value);
 				}
 
 				layer.Replace(shape, newShape);

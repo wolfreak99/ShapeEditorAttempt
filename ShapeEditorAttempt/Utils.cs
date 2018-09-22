@@ -74,7 +74,10 @@ namespace ShapeEditorAttempt
 		public static string GetEnumName<T>(T value)
 		{
 			var t = typeof(T);
-			return t.Name + "." + t.GetEnumName(value);
+			if (t.IsEnum)
+				return t.Name + "." + t.GetEnumName(value);
+			else
+				return null;
 		}
 
 		/// <summary>

@@ -40,7 +40,7 @@ namespace ShapeEditorAttempt
 				fileAction = ExportToImage;
 				break;
 			default:
-				throw new EnumNotImplementedException(action);
+				throw EnumNotImplementedException.Throw(action);
 			}
 
 			if (d.ShowDialog() == DialogResult.OK)
