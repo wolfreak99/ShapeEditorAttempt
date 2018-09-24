@@ -7,6 +7,11 @@ namespace ShapeEditorAttempt
 {
 	public class EraserTool : ToolBase
 	{
+		public override ToolType GetToolType()
+		{
+			return ToolType.EraserTool;
+		}
+		
 		public EraserTool() : base()
 		{
 

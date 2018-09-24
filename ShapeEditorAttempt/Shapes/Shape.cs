@@ -141,14 +141,19 @@ namespace ShapeEditorAttempt
 		public abstract bool IsPointOverShape(GraphicsPath path, Point point);
 		#endregion
 
+		public bool ShapeIsSelected()
+		{
+			return ClickData.Shape == this || SelectorTool.ShapeIsSelected(this);
+		}
+
 		public void Draw(Canvas sender, Graphics graphics)
 		{
-			Rectangle pos = (ClickData.Shape == this) ? PreviewOffset(Position, ClickData.Action) : Position;
+			Rectangle pos = ShapeIsSelected() ? PreviewOffset(Position, ClickData.Action) : Position;
 			DrawShape(graphics, pos);
 
 			// Create outline
 			if (!LoadSaveController.IsExportingImage && 
-				(BorderVisible || (KeyboardController.IsControlDown && ClickData.Shape == this)))
+				(BorderVisible || (KeyboardController.IsControlDown && ShapeIsSelected())))
 			{
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;
@@ -163,7 +168,7 @@ namespace ShapeEditorAttempt
 				m_pen.Width = EdgeWidth;
 
 				Rectangle borderPos = Position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
-				pos = (ClickData.Shape == this) ? PreviewOffset(borderPos, ClickData.Action) : borderPos;
+				pos = ShapeIsSelected() ? PreviewOffset(borderPos, ClickData.Action) : borderPos;
 				DrawBorder(graphics, pos);
 
 				Color = prevColor;
@@ -174,7 +179,7 @@ namespace ShapeEditorAttempt
 		#region Offset functions
 		public Rectangle PreviewOffset(Rectangle position, ShapeClickAction action)
 		{
-			if (ClickData.Shape != this)
+			if (!ShapeIsSelected())
 			{
 				throw new FieldAccessException("PreviewOffset attempted on unselected shape");
 			}
@@ -197,7 +202,7 @@ namespace ShapeEditorAttempt
 
 		public void ApplyOffset(ShapeClickAction action)
 		{
-			if (ClickData.Shape != this)
+			if (!ShapeIsSelected())
 			{
 				throw new FieldAccessException("ApplyOffset attempted on unselected shape");
 			}
@@ -218,7 +223,7 @@ namespace ShapeEditorAttempt
 
 		public void UpdateOffset(ShapeClickAction action, Point value)
 		{
-			if (ClickData.Shape != this)
+			if (!ShapeIsSelected())
 			{
 				throw new FieldAccessException("UpdateOffset attempted on unselected shape");
 			}

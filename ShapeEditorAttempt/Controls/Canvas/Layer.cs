@@ -8,7 +8,7 @@ namespace ShapeEditorAttempt
 {
 	public class Layer
 	{
-		private List<Shape> shapes;
+		internal List<Shape> shapes;
 		
 		public Layer()
 		{
@@ -194,6 +194,18 @@ namespace ShapeEditorAttempt
 				t = 0;
 
 			return Rectangle.FromLTRB(l, t, r, b);
+		}
+		
+		public void ShowSelectedShapesBorders(Shape[] selectedShapes)
+		{
+			foreach (var s in this.shapes)
+			{
+				s.BorderVisible = false;
+			}
+			foreach (var s in selectedShapes)
+			{
+				s.BorderVisible = true;
+			}
 		}
 	}
 }

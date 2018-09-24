@@ -15,11 +15,16 @@ namespace ShapeEditorAttempt
 			MoveSelectedShapes,
 			// ResizeSelectedShapes,
 		}
+		
+		private SelectorAction action = SelectorAction.None;
 
-		private SelectorAction action;
+		public override ToolType GetToolType()
+		{
+			return ToolType.SelectorTool;
+		}
 
 		private Pen OutlinePen;
-		
+
 		private Rectangle selectedRectangle = new Rectangle();
 		private Shape[] selectedShapes = null;
 
@@ -33,7 +38,24 @@ namespace ShapeEditorAttempt
 			OutlinePen.Color = Color.FromArgb(128, OutlinePen.Color.R, OutlinePen.Color.G, OutlinePen.Color.B);
 			OutlinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 		}
-		
+
+		internal static bool ShapeIsSelected(Shape shape)
+		{
+			if (ToolBase.Current.GetToolType() == ToolType.SelectorTool)
+			{
+				var selectedShapes = (ToolBase.Current as SelectorTool).selectedShapes;
+				if (selectedShapes == null)
+					return false;
+
+				foreach (var s in selectedShapes)
+				{
+					if (s == shape)
+						return true;
+				}
+			}
+			return false;
+		}
+
 		private void SetSelectedRectangle(Point beginPoint, Point endPoint)
 		{
 			// Make sure x/y are top-left, and width/height is bottom-right
@@ -61,7 +83,7 @@ namespace ShapeEditorAttempt
 			}
 
 			// This may be needed
-			//Canvas.Instance.Invalidate();
+			Canvas.Instance.Invalidate();
 		}
 
 		private void ClearSelectedRectangle()
@@ -69,17 +91,28 @@ namespace ShapeEditorAttempt
 			selectedRectangle = Rectangle.Empty;
 			mouseDownLocation = Point.Empty;
 			action = SelectorAction.None;
+			selectedShapes = null;
 		}
 
 		public override void OnMouseDown(object sender, MouseEventArgs e)
 		{
 			var mouseLocation = e.Location;
+
 			switch (action)
 			{
+			case SelectorAction.BeginSelectionRectangle:
+				mouseDownLocation = mouseLocation;
+				SetSelectedRectangle(mouseDownLocation, e.Location);
+				break;
 			case SelectorAction.EndSelectionRectangle:
 				if (selectedRectangle.Contains(mouseLocation))
 				{
 					action = SelectorAction.MoveSelectedShapes;
+					mouseDownMovingLocation = mouseLocation;
+				}
+				else
+				{
+					action = SelectorAction.None;
 				}
 				break;
 			case SelectorAction.None:
@@ -93,38 +126,74 @@ namespace ShapeEditorAttempt
 			default:
 				throw EnumNotImplementedException.Throw(action, ExceptionMessages.MSG_NOT_YET_IMPLEMENTED);
 			}
-		}
 
+			Canvas.Instance.Invalidate();
+		}
+		private ShapeClickAction oldShapeClickAction = ShapeClickAction.None;
 		public override void OnMouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
 				return;
 
+			var mouseLocation = e.Location;
 			switch (action)
 			{
 			case SelectorAction.BeginSelectionRectangle:
+				SetSelectedRectangle(mouseDownLocation, mouseLocation);
+				break;
 			case SelectorAction.EndSelectionRectangle:
+				SetSelectedRectangle(mouseDownLocation, mouseLocation);
 				break;
 			case SelectorAction.MoveSelectedShapes:
+			{
+				//Canvas.Instance.Focus();
+				oldShapeClickAction = ClickData.Action;
+				ClickData.Action = ShapeClickAction.Drag;
+				// Todo: Copy over the moving mechanics a little better.
+				Point moveTo = new Point(
+					mouseDownMovingLocation.X - Grid.SnapToGrid(mouseLocation).X,
+					mouseDownMovingLocation.Y - Grid.SnapToGrid(mouseLocation).Y
+				);
+				foreach (var s in selectedShapes)
+				{
+					s.UpdateOffset(ShapeClickAction.Drag, moveTo);
+				}
 				break;
 			}
-			SetSelectedRectangle(mouseDownLocation, e.Location);
+			default:
+				break;
+				//throw EnumNotImplementedException.Throw(action, ExceptionMessages.MSG_NOT_YET_IMPLEMENTED);
+			}
+
+			Canvas.Instance.Invalidate();
 		}
 
 		public override void OnMouseUp(object sender, MouseEventArgs e)
 		{
 			var mouseLocation = e.Location;
+
 			switch (action)
 			{
 			case SelectorAction.BeginSelectionRectangle:
 				SetSelectedRectangle(mouseDownLocation, mouseLocation);
 				action = SelectorAction.EndSelectionRectangle;
 				break;
-			case SelectorAction.EndSelectionRectangle:
-				break;
 			case SelectorAction.MoveSelectedShapes:
+				foreach (var s in selectedShapes)
+				{
+					//s.ApplyOffset(ShapeClickAction.Drag);
+				}
+				action = SelectorAction.None;
+				ClickData.Action = oldShapeClickAction;
+				Canvas.Instance.Invalidate();
 				break;
+			case SelectorAction.None:
+				break;
+			default:
+				throw EnumNotImplementedException.Throw(action, ExceptionMessages.MSG_NOT_YET_IMPLEMENTED);
 			}
+
+			Canvas.Instance.Invalidate();
 		}
 
 		public override void OnMouseDoubleClick(object sender, MouseEventArgs e)

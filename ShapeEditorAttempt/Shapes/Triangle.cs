@@ -31,9 +31,10 @@ namespace ShapeEditorAttempt
 		}
 
 		// Link any constructors without angles to the default angle
-		public Triangle(int x, int y, int width, int height, Color color) : base (x, y, width, height, color)
+		public Triangle(int x, int y, int width, int height, Color color)
+			: this(x, y, width, height, color, DEFAULT_ANGLE)
 		{
-			this.Angle = DEFAULT_ANGLE;
+
 		}
 
 		public override void DrawShape(Graphics graphics, Rectangle position)
@@ -54,7 +55,8 @@ namespace ShapeEditorAttempt
 			{
 				// Determine if not overlapping border, and drag. otherwise resize.
 				path.Reset();
-				path.AddPolygon(GetPointsByAngle(Angle, Rectangle.Inflate(Position, -EDGE_WIDTH, -EDGE_WIDTH)));
+				var p = GetPointsByAngle(Angle, Position.InflatedBy(-EDGE_WIDTH));
+				path.AddPolygon(p);
 				path.Flatten();
 				if (path.IsVisible(point))
 					return ShapeClickAction.Drag;
@@ -122,7 +124,8 @@ namespace ShapeEditorAttempt
 					new Point(position.Right, position.Bottom)
 				};
 			default:
-				throw EnumNotImplementedException.Throw(triangleAngle, ExceptionMessages.MSG_NOT_YET_IMPLEMENTED);
+				throw EnumNotImplementedException.Throw(triangleAngle, 
+					ExceptionMessages.MSG_NOT_YET_IMPLEMENTED);
 			}
 		}
 	}

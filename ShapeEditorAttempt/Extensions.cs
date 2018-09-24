@@ -20,6 +20,11 @@ namespace ShapeEditorAttempt
 			return Rectangle.Inflate(rect, x, y);
 		}
 
+		static public Rectangle InflatedBy(this Rectangle rect, int x_y)
+		{
+			return InflatedBy(rect, x_y, x_y);
+		}
+
 		/// <summary>
 		/// Returns rectangle.X + (rectangle.Width / 2);
 		/// </summary>

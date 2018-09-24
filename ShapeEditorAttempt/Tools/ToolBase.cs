@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-	public abstract class ToolBase
+	public abstract partial class ToolBase
 	{
 		/// <summary>
 		/// The current tool being used. To set this, use "ToolBase.SwitchToTool(ToolBase newTool)"
@@ -13,6 +13,8 @@ namespace ShapeEditorAttempt
 
 		public bool MouseIsDown { get; private set; } = false;
 		public bool MouseWasDown { get; private set; } = false;
+
+		public abstract ToolType GetToolType();
 
 		/// <summary>
 		/// Unloads the current tool and switches to the new tool

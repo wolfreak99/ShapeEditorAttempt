@@ -16,6 +16,7 @@ namespace ShapeEditorAttempt
 					ClickData.Shape = null;
 				}
 			}
+			Canvas.Instance.Invalidate();
 		}
 
 		internal static void TriangleIncrementAngle(Shape shape)
@@ -25,6 +26,7 @@ namespace ShapeEditorAttempt
 				Triangle t = (Triangle)shape;
 				t.IncrementAngle();
 			}
+			Canvas.Instance.Invalidate();
 		}
 	}
 }

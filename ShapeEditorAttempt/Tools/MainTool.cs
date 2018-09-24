@@ -8,6 +8,11 @@ namespace ShapeEditorAttempt
 {
 	public class MainTool : ToolBase
 	{
+		public override ToolType GetToolType()
+		{
+			return ToolType.MainTool;
+		}
+
 		public MainTool() : base()
 		{
 

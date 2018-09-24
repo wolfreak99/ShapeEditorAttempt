@@ -100,6 +100,7 @@
     <Compile Include="Tools\SelectorTool.cs" />
     <Compile Include="Tools\SharedActions.cs" />
     <Compile Include="Tools\ToolBase.cs" />
+    <Compile Include="Tools\ToolBase.ToolType.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
