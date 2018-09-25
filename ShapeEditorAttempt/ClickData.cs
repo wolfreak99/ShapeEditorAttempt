@@ -20,9 +20,10 @@ namespace ShapeEditorAttempt
 				}
 			}
 		}
+		
 		static public ShapeClickAction Action { get; internal set; }
 		static public Point Offset { get; internal set; }
-
+		
 		public ClickData(Point clickOrigin, Shape shape, ShapeClickAction action)
 		{
 			Set(clickOrigin, shape, action);
@@ -51,7 +52,7 @@ namespace ShapeEditorAttempt
 			Origin = origin;
 			Action = action;
 		}
-
+		
 		static public void Set(Point origin, Shape shape)
 		{
 			Origin = origin;
@@ -75,9 +76,10 @@ namespace ShapeEditorAttempt
 		{
 			if (Shape != null && Action != ShapeClickAction.None)
 			{
+				var locationSnapped = Grid.SnapToGrid(location);
 				Point moveTo = new Point(
-					Origin.X - Grid.SnapToGrid(location).X,
-					Origin.Y - Grid.SnapToGrid(location).Y
+					Origin.X - locationSnapped.X,
+					Origin.Y - locationSnapped.Y
 				);
 
 				Shape.UpdateOffset(Action, moveTo);
