@@ -31,6 +31,8 @@ namespace ShapeEditorAttempt
 		private Point mouseDownLocation = new Point();
 		private Point mouseDownMovingLocation = new Point();
 
+		private ShapeClickAction oldShapeClickAction = ShapeClickAction.None;
+
 		public SelectorTool() : base()
 		{
 			OutlinePen = new Pen(Brushes.Blue);
@@ -129,7 +131,7 @@ namespace ShapeEditorAttempt
 
 			Canvas.Instance.Invalidate();
 		}
-		private ShapeClickAction oldShapeClickAction = ShapeClickAction.None;
+
 		public override void OnMouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
@@ -149,10 +151,12 @@ namespace ShapeEditorAttempt
 				//Canvas.Instance.Focus();
 				oldShapeClickAction = ClickData.Action;
 				ClickData.Action = ShapeClickAction.Drag;
+				
+				var mouseLocationSnapped = Grid.SnapToGrid(mouseLocation);
 				// Todo: Copy over the moving mechanics a little better.
 				Point moveTo = new Point(
-					mouseDownMovingLocation.X - Grid.SnapToGrid(mouseLocation).X,
-					mouseDownMovingLocation.Y - Grid.SnapToGrid(mouseLocation).Y
+					mouseDownMovingLocation.X - mouseLocationSnapped.X,
+					mouseDownMovingLocation.Y - mouseLocationSnapped.Y
 				);
 				foreach (var s in selectedShapes)
 				{
@@ -208,16 +212,17 @@ namespace ShapeEditorAttempt
 			if (selectedRectangle.IsEmpty)
 				return;
 
-			Pen p = new Pen(Brushes.Blue);
-			p.Width = 2;
-			p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+			var inflated = Rectangle.Inflate(
+				selectedRectangle,
+				((int)OutlinePen.Width) * -1,
+				((int)OutlinePen.Width) * -1
+			);
 
-			p.Color = Color.FromArgb(32, p.Color);
-			var inflated = Rectangle.Inflate(selectedRectangle, ((int)p.Width) * -1, ((int)p.Width) * -1);
-			e.Graphics.FillRectangle(p.Brush, inflated);
+			OutlinePen.Color = Color.FromArgb(32, OutlinePen.Color);
+			e.Graphics.FillRectangle(OutlinePen.Brush, inflated);
 
-			p.Color = Color.FromArgb(128, p.Color);
-			e.Graphics.DrawRectangle(p, selectedRectangle);
+			OutlinePen.Color = Color.FromArgb(128, OutlinePen.Color);
+			e.Graphics.DrawRectangle(OutlinePen, selectedRectangle);
 		}
 
 		public override void OnProcessKeys(KeyEventArgs e, bool isDown)
