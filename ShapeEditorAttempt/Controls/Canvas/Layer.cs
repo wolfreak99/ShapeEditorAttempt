@@ -160,7 +160,7 @@ namespace ShapeEditorAttempt
 
 			if (wasShapeClicked)
 			{
-				ClickData.Set(shape);
+				ClickData.Set(newShape);
 			}
 		}
 
