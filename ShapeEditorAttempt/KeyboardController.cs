@@ -79,6 +79,9 @@ namespace ShapeEditorAttempt
 			case Keys.ShiftKey:
 				IsShiftDown = isDown;
 				break;
+			case Keys.OemQuestion:
+				Debug.Show();
+				break;
 			}
 
 			ToolBase.Current.ProcessKeys(e, isDown);

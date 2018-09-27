@@ -69,6 +69,9 @@
     <Compile Include="Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DebugForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Exceptions\EnumNotImplementedException.cs" />
     <Compile Include="Exceptions\EnumNotSupportedException.cs" />
     <Compile Include="Exceptions\ExceptionMessages.cs" />
