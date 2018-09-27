@@ -123,7 +123,7 @@ namespace ShapeEditorAttempt
 			switch (e.KeyCode)
 			{
 			case Keys.Delete:
-				if (!isDown && !ClickData.ShapesEmpty() && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
 					foreach (Shape s in ClickData.Shapes)
 					{
@@ -140,7 +140,7 @@ namespace ShapeEditorAttempt
 
 			// Generate shape based on either a duplicate or a new shape
 			Shape shape;
-			if (!ClickData.ShapesEmpty() && KeyboardController.IsControlDown)
+			if (!ClickData.IsShapesEmpty() && KeyboardController.IsControlDown)
 			{
 				shape = layer.DuplicateShape(ClickData.Shapes[0], ClickData.Origin);
 			}

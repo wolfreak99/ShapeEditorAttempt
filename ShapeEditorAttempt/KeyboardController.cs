@@ -23,7 +23,7 @@ namespace ShapeEditorAttempt
 			default:
 				break;
 			case Keys.R:
-				if (!isDown && !ClickData.ShapesEmpty() && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
 					foreach (var s in ClickData.Shapes)
 					{
@@ -32,7 +32,7 @@ namespace ShapeEditorAttempt
 				}
 				break;
 			case Keys.PageUp:
-				if (!isDown && !ClickData.ShapesEmpty() && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
 					foreach (var s in ClickData.Shapes)
 					{
@@ -41,7 +41,7 @@ namespace ShapeEditorAttempt
 				}
 				break;
 			case Keys.PageDown:
-				if (!isDown && !ClickData.ShapesEmpty() && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
 					foreach (var s in ClickData.Shapes)
 					{

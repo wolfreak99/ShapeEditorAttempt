@@ -56,7 +56,7 @@ namespace ShapeEditorAttempt
 			}
 
 			// Change last selected shapes shape if control is held.
-			if (KeyboardController.IsControlDown && !ClickData.ShapesEmpty())
+			if (KeyboardController.IsControlDown && !ClickData.IsShapesEmpty())
 			{
 				foreach (Shape s in ClickData.Shapes)
 				{

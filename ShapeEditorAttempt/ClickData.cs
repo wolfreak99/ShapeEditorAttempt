@@ -6,23 +6,8 @@ namespace ShapeEditorAttempt
 {
 	public class ClickData
 	{
-		static private Shape m_Shape = null;
 		static private Shape[] m_Shapes = new Shape[0];
 		static public Point Origin { get; internal set; }
-
-		[Obsolete]
-		static public Shape Shape
-		{
-			get { return m_Shape; }
-			internal set
-			{
-				m_Shape = value;
-				if (m_Shape != null)
-				{
-					MainForm.Instance.selectedShapeNameTextBox.Text = m_Shape.Nickname;
-				}
-			}
-		}
 		
 		static public Shape[] Shapes
 		{
@@ -43,51 +28,8 @@ namespace ShapeEditorAttempt
 				}
 			}
 		}
-		
 		static public ShapeClickAction Action { get; internal set; }
 		static public Point Offset { get; internal set; }
-
-		#region Obsolete data
-		/*[Obsolete]
-		public ClickData(Point clickOrigin, Shape shape, ShapeClickAction action)
-		{
-			Set(clickOrigin, shape, action);
-		}
-
-		[Obsolete]
-		public ClickData() : this(Point.Empty, null, ShapeClickAction.None)
-		{
-
-		}
-		*/
-		[Obsolete]
-		static public void Set(Point origin, Shape shape, ShapeClickAction action)
-		{
-			Origin = origin;
-			Shape = shape;
-			Action = action;
-		}
-
-		[Obsolete]
-		static public void Set(Shape shape, ShapeClickAction action)
-		{
-			Shape = shape;
-			Action = action;
-		}
-		
-		[Obsolete]
-		static public void Set(Point origin, Shape shape)
-		{
-			Origin = origin;
-			Shape = shape;
-		}
-
-		/*[Obsolete]
-		static public void Clear(bool clearShape = true)
-		{
-			Set(Point.Empty, clearShape ? null : Shape, ShapeClickAction.None);
-		}*/
-		#endregion
 
 		#region New data
 		public ClickData(Point clickOrigin, ShapeClickAction action, params Shape[] shapes)
@@ -191,9 +133,29 @@ namespace ShapeEditorAttempt
 			return true;
 		}
 
-		static public bool ShapesEmpty()
+		static public bool IsShapesEmpty()
 		{
 			return Shapes.Length == 0;
+		}
+
+		static public bool IsShapesSingle()
+		{
+			return Shapes.Length == 1;
+		}
+
+		static public Shape ShapeSingle
+		{
+			get
+			{
+				if (IsShapesSingle())
+				{
+					return Shapes[0];
+				}
+				else
+				{
+					throw new UnauthorizedAccessException("ShapeSingle is accessed when Shapes.Length != 1");
+				}
+			}
 		}
 	}
 }
