@@ -6,11 +6,11 @@ namespace ShapeEditorAttempt
 {
 	public class SelectedColorWidget : GroupBoxPanel, IInitializeComponent
 	{
-		public const int COLOR_BUTTON_WIDTH = 40;
-		public const int COLOR_BUTTON_HEIGHT = 50;
-		public const int COLOR_BUTTON_XSPACING = 3;
+		public const int BUTTON_WIDTH = 40;
+		public const int BUTTON_HEIGHT = 50;
+		public const int BUTTON_XSPACING = 3;
 
-		public Color Value = Color.Black;
+		public Color Value { get; private set; } = Color.Black;
 
 		private ColorButton[] colorToggles;
 		private int PaletteIndex = 0;
@@ -49,8 +49,8 @@ namespace ShapeEditorAttempt
 
 		public void InitializeComponent()
 		{
-			ButtonRect btnRect = new ButtonRect(COLOR_BUTTON_WIDTH, COLOR_BUTTON_HEIGHT, COLOR_BUTTON_XSPACING, 0);
-			int left = btnRect.x;
+			ButtonRect btnRect = new ButtonRect(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_XSPACING, 0);
+			btnRect.left = btnRect.x;
 			int tab = 2;
 
 			// Create an array to store the amount of colors per palette
@@ -73,7 +73,7 @@ namespace ShapeEditorAttempt
 			const int buttonCount = ColorsArray.COLORS_PER_PALETTE + 2;
 			int rightOffset = btnRect.xSpacing * 2;
 			this.MaximumSize = new Size(
-				left + (buttonCount * (btnRect.width + btnRect.xSpacing)) + rightOffset, 
+				btnRect.left + (buttonCount * (btnRect.width + btnRect.xSpacing)) + rightOffset, 
 				this.Size.Height
 			);
 		}
@@ -116,6 +116,12 @@ namespace ShapeEditorAttempt
 
 		private void SelectColor(ColorButton button, bool setSelectedShapeColor)
 		{
+			// If button was already selected, change selected shape
+			if (!setSelectedShapeColor && Value == button.Color)
+			{
+				setSelectedShapeColor = true;
+			}
+
 			// Set color to selected color button
 			Value = button.Color;
 			
@@ -137,32 +143,30 @@ namespace ShapeEditorAttempt
 
 		private void ColorButton_Click(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			bool setToColor = false;
 
-			// Set color if mouse was double clicked
-			var mouseArgs = e as MouseEventArgs;
-			if (mouseArgs != null && mouseArgs.Button == MouseButtons.Left && mouseArgs.Clicks > 1)
+			// Set color if control was held down
+			if (KeyboardController.IsControlDown)
 			{
 				setToColor = true;
 			}
-
-			// If control is down, set to color.
-			if (KeyboardController.IsControlDown)
-				setToColor = true;
-
+			
 			SelectColor((ColorButton)sender, setToColor);
 		}
 		
 		private class ButtonRect
 		{
-			public int x;
-			public int y;
+			public int x { get; internal set; }
+			public int y { get; internal set; }
 			public int width { get; private set; }
 			public int height { get; private set; }
 			public int xSpacing { get; private set; }
 			public int ySpacing { get; private set; }
-			public int left { get; private set; }
-			public int top { get; private set; }
+			public int left { get; internal set; }
+			public int top { get; internal set; }
 			public ButtonRect(int width, int height, int xSpacing, int ySpacing)
 			{
 				this.width = width;
