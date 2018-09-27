@@ -152,7 +152,7 @@ namespace ShapeEditorAttempt
 		internal void Replace(Shape shape, Shape newShape)
 		{
 			// If the shape was selected, select replacement shape once created.
-			bool wasShapeClicked = (ClickData.Shape == shape);
+			bool wasShapeClicked = ClickData.ContainsShapes(shape);
 
 			// Replace old shape with new shape
 			var index = shapes.IndexOf(shape);
@@ -160,7 +160,7 @@ namespace ShapeEditorAttempt
 
 			if (wasShapeClicked)
 			{
-				ClickData.Shape = newShape;
+				ClickData.Set(shape);
 			}
 		}
 

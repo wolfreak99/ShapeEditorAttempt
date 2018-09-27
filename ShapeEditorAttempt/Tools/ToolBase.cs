@@ -25,6 +25,7 @@ namespace ShapeEditorAttempt
 			if (Current != null)
 			{
 				Current.UnloadTool();
+				ClickData.Clear(true);
 				Current = null;
 			}
 			Current = newTool;

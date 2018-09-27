@@ -128,7 +128,10 @@ namespace ShapeEditorAttempt
 			// Set selected shape to color
 			if (setSelectedShapeColor)
 			{
-				Canvas.Instance.SetShapeColor(ClickData.Shape, Value);
+				foreach (Shape s in ClickData.Shapes)
+				{
+					Canvas.Instance.SetShapeColor(s, Value);
+				}
 			}
 		}
 

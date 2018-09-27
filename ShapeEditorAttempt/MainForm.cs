@@ -131,9 +131,9 @@ namespace ShapeEditorAttempt
 			// When enter is pressed, set shape name and clear textbox focus
 			if (e.KeyCode == Keys.Enter && m_prevSelectedShapeNameKey != e.KeyCode)
 			{
-				if (ClickData.Shape != null)
+				if (ClickData.Shapes != null)
 				{
-					ClickData.Shape.Nickname = selectedShapeNameTextBox.Text;
+					ClickData.Shapes[0].Nickname = selectedShapeNameTextBox.Text;
 					ClearFocus();
 				}
 			}

@@ -143,7 +143,7 @@ namespace ShapeEditorAttempt
 
 		public bool ShapeIsSelected()
 		{
-			return ClickData.Shape == this || SelectorTool.ShapeIsSelected(this);
+			return ClickData.ContainsShapes(this);
 		}
 
 		public void Draw(Canvas sender, Graphics graphics)

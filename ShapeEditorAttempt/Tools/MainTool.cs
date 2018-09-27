@@ -67,7 +67,7 @@ namespace ShapeEditorAttempt
 						var action = shape.GetShapeActionByPoint(path, location);
 						if (action != ShapeClickAction.None)
 						{
-							ClickData.Set(shape, action);
+							ClickData.Set(action, shape);
 							createShape = false;
 							OnMouseMove(sender, e);
 						}
@@ -123,9 +123,12 @@ namespace ShapeEditorAttempt
 			switch (e.KeyCode)
 			{
 			case Keys.Delete:
-				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.ShapesEmpty() && Canvas.Instance.Focused)
 				{
-					SharedActions.RemoveShape(ClickData.Shape);
+					foreach (Shape s in ClickData.Shapes)
+					{
+						SharedActions.RemoveShape(s);
+					}
 				}
 				break;
 			}
@@ -137,9 +140,9 @@ namespace ShapeEditorAttempt
 
 			// Generate shape based on either a duplicate or a new shape
 			Shape shape;
-			if (ClickData.Shape != null && KeyboardController.IsControlDown)
+			if (!ClickData.ShapesEmpty() && KeyboardController.IsControlDown)
 			{
-				shape = layer.DuplicateShape(ClickData.Shape, ClickData.Origin);
+				shape = layer.DuplicateShape(ClickData.Shapes[0], ClickData.Origin);
 			}
 			else
 			{
@@ -150,7 +153,7 @@ namespace ShapeEditorAttempt
 			}
 
 			// Force new shape to go into resize mode.
-			ClickData.Set(shape, ShapeClickAction.Resize);
+			ClickData.Set(ShapeClickAction.Resize, shape);
 		}
 	}
 }
