@@ -11,9 +11,9 @@ namespace ShapeEditorAttempt
 			{
 				Canvas.Instance.layer.Remove(shape);
 				ClickData.Action = ShapeClickAction.Delete;
-				if (ClickData.Shapes == new Shape[] { shape })
+				if (ClickData.IsShapesSingle() && ClickData.ContainsShapes(shape))
 				{
-					ClickData.Shapes = null;
+					ClickData.ClearShapes();
 				}
 			}
 			Canvas.Instance.Invalidate();

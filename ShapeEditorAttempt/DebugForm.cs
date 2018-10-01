@@ -3,29 +3,52 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
+
+	public enum LogType
+	{
+		Info,
+		Warning,
+		Error
+	}
+
 	namespace DebugInternal
 	{
-		public partial class DebugForm : Form
+		public class DebugForm : Form
 		{
-			public static Color COLOR_INFO { get; private set; }
-			public static readonly Color COLOR_WARNING = Color.Yellow;
-			public static readonly Color COLOR_ERROR = Color.Red;
+			private struct LogTypeFormatData
+			{
+				private LogType _LogType;
+				public Color Color;
+				public string Prefix;
+				private static LogTypeFormatData[] Datas = new LogTypeFormatData[] {
+					new LogTypeFormatData(LogType.Info, SystemColors.ControlText, "Log: "),
+					new LogTypeFormatData(LogType.Warning, Color.Yellow, "Warning: "),
+					new LogTypeFormatData(LogType.Error, Color.Red, "Error: ")
+				};
 
+				private LogTypeFormatData(LogType logType, Color color, string prefix)
+				{
+					this._LogType = logType;
+					this.Color = color;
+					this.Prefix = prefix;
+				}
+				
+				public static LogTypeFormatData GetData(LogType type)
+				{
+					return Datas[(int)type];
+				}
+			}
+			
 			public static DebugForm Instance = new DebugForm();
 
 			public DebugForm()
 			{
 				Instance = this;
 				InitializeComponent();
-
-				COLOR_INFO = logTextBox.ForeColor;
 			}
 
 			private void Log(string text, Color color)
@@ -41,15 +64,8 @@ namespace ShapeEditorAttempt
 
 			internal static void Log(string text, LogType logType = LogType.Info)
 			{
-				Color color;
-				switch (logType)
-				{
-				case LogType.Warning: color = COLOR_WARNING; break;
-				case LogType.Error: color = COLOR_ERROR; break;
-				case LogType.Info:
-				default: color = COLOR_INFO; break;
-				}
-				Instance.Log(text, color);
+				LogTypeFormatData formatData = LogTypeFormatData.GetData(logType);
+				Instance.Log(formatData.Prefix + text, formatData.Color);
 			}
 
 			private void clearLogButton_Click(object sender, EventArgs e)
@@ -127,20 +143,13 @@ namespace ShapeEditorAttempt
 			private Button clearLogButton;
 		}
 	}
-
-	public enum LogType
-	{
-		Info,
-		Warning,
-		Error
-	}
-
 	public static class Debug
 	{
 		public static void Log(string message, LogType logType = LogType.Info)
 		{
 			DebugInternal.DebugForm.Log(message, logType);
 		}
+
 		public static void Show()
 		{
 			DebugInternal.DebugForm.Instance.Show();
