@@ -4,12 +4,14 @@ using System.Drawing;
 
 namespace ShapeEditorAttempt
 {
-	public class ClickData
+	public static class ClickData
 	{
-		static private Shape[] m_Shapes = new Shape[0];
-		static public Point Origin { get; internal set; }
-		
-		static public Shape[] Shapes
+		private static Shape[] m_Shapes = new Shape[0];
+		public static Point Origin { get; internal set; } = Point.Empty;
+		public static Point Offset { get; internal set; } = Point.Empty;
+		private static ShapeClickAction m_Action = ShapeClickAction.None;
+
+		public static Shape[] Shapes
 		{
 			get { return m_Shapes; }
 			set
@@ -21,18 +23,33 @@ namespace ShapeEditorAttempt
 				else
 				{
 					m_Shapes = value;
-					if (m_Shapes.Length == 1)
+					if (IsShapesSingle())
 					{
 						MainForm.Instance.selectedShapeNameTextBox.Text = m_Shapes[0].Nickname;
 					}
 				}
 			}
 		}
-		static public ShapeClickAction Action { get; internal set; }
-		static public Point Offset { get; internal set; }
+
+		public static ShapeClickAction Action
+		{
+			get
+			{
+				return m_Action;
+			}
+			set
+			{
+				if (m_Action != value)
+				{
+					Debug.Log("ClickData.Action set to " + Utils.GetEnumName(value));
+					m_Action = value;
+				}
+			}
+		}
+
 
 		#region New data
-		public ClickData(Point clickOrigin, ShapeClickAction action, params Shape[] shapes)
+		/*public ClickData(Point clickOrigin, ShapeClickAction action, params Shape[] shapes)
 		{
 			Set(clickOrigin, action, shapes);
 		}
@@ -40,7 +57,7 @@ namespace ShapeEditorAttempt
 		public ClickData() : this(Point.Empty, ShapeClickAction.None, null)
 		{
 
-		}
+		}*/
 
 		static public void Set(Point origin, ShapeClickAction action, params Shape[] shapes)
 		{
@@ -67,9 +84,21 @@ namespace ShapeEditorAttempt
 			Shapes = shapes;
 		}
 
+		static public void Set(ShapeClickAction action)
+		{
+			Action = action;
+		}
+
 		static public void Set(params Shape[] shapes)
 		{
 			Shapes = shapes;
+		}
+
+		static public void AddShapes(params Shape[] shapes)
+		{
+			List<Shape> s = new List<Shape>(Shapes);
+			s.AddRange(shapes);
+			Shapes = s.ToArray();
 		}
 
 		static public void Clear(bool clearShape = true)
@@ -95,7 +124,10 @@ namespace ShapeEditorAttempt
 				throw new NullReferenceException();
 
 			if (Action == ShapeClickAction.None)
+			{
+				Debug.Log("ShapeUpdateOffset ran when Action is none");
 				return;
+			}
 
 			var locationSnapped = Grid.SnapToGrid(location);
 			Point moveTo = new Point(
@@ -133,6 +165,11 @@ namespace ShapeEditorAttempt
 			return true;
 		}
 
+		internal static void ClearShapes()
+		{
+			Shapes = null;
+		}
+
 		static public bool IsShapesEmpty()
 		{
 			return Shapes.Length == 0;
@@ -153,7 +190,18 @@ namespace ShapeEditorAttempt
 				}
 				else
 				{
-					throw new UnauthorizedAccessException("ShapeSingle is accessed when Shapes.Length != 1");
+					throw new UnauthorizedAccessException("ShapeSingle accessed but Shapes.Length != 1");
+				}
+			}
+			set
+			{
+				if (IsShapesSingle())
+				{
+					Shapes = new Shape[1] { value };
+				}
+				else
+				{
+					throw new UnauthorizedAccessException("ShapeSingle accessed but Shapes.Length != 1");
 				}
 			}
 		}
