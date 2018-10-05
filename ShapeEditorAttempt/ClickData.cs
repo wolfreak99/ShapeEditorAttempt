@@ -94,7 +94,7 @@ namespace ShapeEditorAttempt
 		/// Shortkey for "Set(Point.Empty, ShapeClickAction.None, clearShapes ? null : Shapes);"
 		/// </summary>
 		/// <param name="clearShapes">If true, 'Shapes' are set to null, otherwise 'Shapes' is left untouched</param>
-		static public void Clear(bool clearShapes = true)
+		static public void Clear(bool clearShapes)
 		{
 			if (clearShapes)
 				Set(Point.Empty, ShapeClickAction.None, null);
