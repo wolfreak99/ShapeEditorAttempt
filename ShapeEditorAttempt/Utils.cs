@@ -67,7 +67,6 @@ namespace ShapeEditorAttempt
 			);
 		}
 
-
 		/// <summary>
 		/// Returns "EnumType.EnumName"
 		/// </summary>

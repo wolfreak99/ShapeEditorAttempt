@@ -46,19 +46,7 @@ namespace ShapeEditorAttempt
 				}
 			}
 		}
-
-
-		#region New data
-		/*public ClickData(Point clickOrigin, ShapeClickAction action, params Shape[] shapes)
-		{
-			Set(clickOrigin, action, shapes);
-		}
-
-		public ClickData() : this(Point.Empty, ShapeClickAction.None, null)
-		{
-
-		}*/
-
+		
 		static public void Set(Point origin, ShapeClickAction action, params Shape[] shapes)
 		{
 			Origin = origin;
@@ -96,21 +84,28 @@ namespace ShapeEditorAttempt
 
 		static public void AddShapes(params Shape[] shapes)
 		{
+			// Create list, add passed shapes, and return to Shapes.
 			List<Shape> s = new List<Shape>(Shapes);
 			s.AddRange(shapes);
 			Shapes = s.ToArray();
 		}
 
-		static public void Clear(bool clearShape = true)
+		/// <summary>
+		/// Shortkey for "Set(Point.Empty, ShapeClickAction.None, clearShapes ? null : Shapes);"
+		/// </summary>
+		/// <param name="clearShapes">If true, 'Shapes' are set to null, otherwise 'Shapes' is left untouched</param>
+		static public void Clear(bool clearShapes = true)
 		{
-			Set(Point.Empty, ShapeClickAction.None, clearShape ? null : Shapes);
+			if (clearShapes)
+				Set(Point.Empty, ShapeClickAction.None, null);
+			else
+				Set(Point.Empty, ShapeClickAction.None);
 		}
-		#endregion
-
+		
 		static internal void ShapeApplyOffset()
 		{
 			if (Shapes == null)
-				throw new NullReferenceException();
+				throw new NullReferenceException("Shapes is null");
 
 			foreach (var s in Shapes)
 			{
@@ -121,7 +116,7 @@ namespace ShapeEditorAttempt
 		static internal void ShapeUpdateOffset(Point location)
 		{
 			if (Shapes == null)
-				throw new NullReferenceException();
+				throw new NullReferenceException("Shapes is null");
 
 			if (Action == ShapeClickAction.None)
 			{
@@ -144,25 +139,21 @@ namespace ShapeEditorAttempt
 		static public bool ContainsShapes(params Shape[] shapes)
 		{
 			if (Shapes == null)
-				throw new NullReferenceException();
+				throw new NullReferenceException("Shapes is null");
 
+			// Search through locally passed shapes
 			foreach (Shape i in shapes)
 			{
-				bool shapeFound = false;
+				// Search through Selected shapes in memory
 				foreach (Shape j in Shapes)
 				{
 					if (i == j)
 					{
-						shapeFound = true;
-						break;
+						return true;
 					}
 				}
-				if (!shapeFound)
-				{
-					return false;
-				}
 			}
-			return true;
+			return false;
 		}
 
 		internal static void ClearShapes()
@@ -179,7 +170,7 @@ namespace ShapeEditorAttempt
 		{
 			return Shapes.Length == 1;
 		}
-
+		
 		static public Shape ShapeSingle
 		{
 			get

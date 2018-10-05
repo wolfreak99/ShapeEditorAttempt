@@ -141,6 +141,9 @@ namespace ShapeEditorAttempt
 		public abstract bool IsPointOverShape(GraphicsPath path, Point point);
 		#endregion
 
+		/// <summary>
+		/// If ClickData's "Shapes" contains this shape, return true. 
+		/// </summary>
 		public bool ShapeIsSelected()
 		{
 			return ClickData.ContainsShapes(this);
@@ -215,8 +218,7 @@ namespace ShapeEditorAttempt
 			{
 				throw new FieldAccessException("ApplyOffset attempted on unselected shape");
 			}
-
-			Rectangle value = Position;
+			
 			switch (action)
 			{
 			case ShapeClickAction.Drag:
