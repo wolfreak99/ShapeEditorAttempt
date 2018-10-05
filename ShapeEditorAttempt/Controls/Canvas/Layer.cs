@@ -89,7 +89,7 @@ namespace ShapeEditorAttempt
 		{
 			var index = shapes.IndexOf(shape);
 			var newIndex = index - 1;
-			if (newIndex <= 0)
+			if (newIndex < 0)
 				return;
 
 			shapes.Swap(index, newIndex);
