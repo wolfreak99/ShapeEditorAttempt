@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 namespace ShapeEditorAttempt
 {
-
 	public enum LogType
 	{
 		Info,
@@ -19,30 +18,113 @@ namespace ShapeEditorAttempt
 	{
 		public class DebugForm : Form
 		{
-			private struct LogTypeFormatData
+			private class LogMessageData
 			{
-				private LogType _LogType;
-				public Color Color;
-				public string Prefix;
-				private static LogTypeFormatData[] Datas = new LogTypeFormatData[] {
-					new LogTypeFormatData(LogType.Info, SystemColors.ControlText, "Log: "),
-					new LogTypeFormatData(LogType.Warning, Color.Yellow, "Warning: "),
-					new LogTypeFormatData(LogType.Error, Color.Red, "Error: ")
-				};
+				public static List<LogMessageData> Messages
+				{
+					get;
+					private set;
+				} = new List<LogMessageData>();
 
-				private LogTypeFormatData(LogType logType, Color color, string prefix)
+				private LogType LogType;
+				private Color Color;
+				private string Message;
+				private string Prefix;
+
+				/// <summary>
+				/// This will get incremented if a new message 
+				/// was about to be added that matched this.
+				/// </summary>
+				private int Count;
+
+				private LogMessageData(string message, LogType logType)
 				{
-					this._LogType = logType;
-					this.Color = color;
-					this.Prefix = prefix;
+					switch (logType)
+					{
+					case LogType.Info:
+						Color = SystemColors.ControlText;
+						Prefix = "Log: ";
+						break;
+					case LogType.Warning:
+						Color = Color.Yellow;
+						Prefix = "Warning: ";
+						break;
+					case LogType.Error:
+						Color = Color.Red;
+						Prefix = "Error: ";
+						break;
+					default:
+						throw new NotImplementedException();
+					}
+					LogType = logType;
+					Message = message;
+					Count = 1;
 				}
-				
-				public static LogTypeFormatData GetData(LogType type)
+
+				private static void AppendLogToBox(RichTextBox box, LogMessageData msg)
 				{
-					return Datas[(int)type];
+					string msgText = string.Format("{0}{1}{2}\r\n", msg.Prefix, msg.Message,
+						msg.Count > 1 ? " (" + msg.Count.ToString() + ")" : "");
+
+					box.SelectionStart = box.TextLength;
+					box.SelectionLength = 0;
+					box.SelectionColor = msg.Color;
+					box.AppendText(msgText);
+					box.SelectionColor = box.ForeColor;
+				}
+
+				private static bool FindDuplicateMessage(string message, LogType logType, 
+					int searchDepth, out int index)
+				{
+					if (Messages.Count >= 1)
+					{
+						int min = Math.Max(0, Messages.Count - (searchDepth + 1));
+						for (int i = Messages.Count - 1; i > min; i--)
+						{
+							var m = Messages[i];
+							if (m.LogType == logType && m.Message == message)
+							{
+								index = i;
+								return true;
+							}
+						}
+					}
+					index = -1;
+					return false;
+				}
+
+				public static void AppendLog(RichTextBox box, string message, LogType logType)
+				{
+					int duplicateMessageIndex;
+					const int SEARCH_DEPTH = 2;
+					if (FindDuplicateMessage(message, logType, SEARCH_DEPTH, 
+						out duplicateMessageIndex))
+					{
+						Messages[duplicateMessageIndex].Count++;
+
+						// Message count was updated. Clear text and rewrite log info.
+						box.Clear();
+						foreach (var msg in Messages)
+						{
+							AppendLogToBox(box, msg);
+						}
+					}
+					else
+					{
+						// No message count updated. Just add new log to textbox.
+						var msg = new LogMessageData(message, logType);
+						Messages.Add(msg);
+						AppendLogToBox(box, msg);
+					}
+				}
+
+				public static void ClearMessages()
+				{
+					Messages.Clear();
+					Instance.logTextBox.Clear();
 				}
 			}
-			
+
 			public static DebugForm Instance = new DebugForm();
 
 			public DebugForm()
@@ -51,26 +133,14 @@ namespace ShapeEditorAttempt
 				InitializeComponent();
 			}
 
-			private void Log(string text, Color color)
-			{
-				var box = Instance.logTextBox;
-				box.SelectionStart = box.TextLength;
-				box.SelectionLength = 0;
-				box.SelectionColor = color;
-				box.AppendText(text);
-				box.AppendText("\r\n");
-				box.SelectionColor = box.ForeColor;
-			}
-
 			internal static void Log(string text, LogType logType = LogType.Info)
 			{
-				LogTypeFormatData formatData = LogTypeFormatData.GetData(logType);
-				Instance.Log(formatData.Prefix + text, formatData.Color);
+				LogMessageData.AppendLog(Instance.logTextBox, text, logType);
 			}
 
 			private void clearLogButton_Click(object sender, EventArgs e)
 			{
-				Instance.logTextBox.Clear();
+				LogMessageData.ClearMessages();
 			}
 
 			#region Windows Form Designer generated code
@@ -148,6 +218,11 @@ namespace ShapeEditorAttempt
 		public static void Log(string message, LogType logType = LogType.Info)
 		{
 			DebugInternal.DebugForm.Log(message, logType);
+		}
+
+		public static void LogException(Exception e)
+		{
+			Log(e.Message, LogType.Error);
 		}
 
 		public static void Show()
