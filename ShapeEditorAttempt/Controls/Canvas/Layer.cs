@@ -89,7 +89,7 @@ namespace ShapeEditorAttempt
 		{
 			var index = shapes.IndexOf(shape);
 			var newIndex = index - 1;
-			if (newIndex <= 0)
+			if (newIndex < 0)
 				return;
 
 			shapes.Swap(index, newIndex);
@@ -152,7 +152,7 @@ namespace ShapeEditorAttempt
 		internal void Replace(Shape shape, Shape newShape)
 		{
 			// If the shape was selected, select replacement shape once created.
-			bool wasShapeClicked = (ClickData.Shape == shape);
+			bool wasShapeClicked = ClickData.ContainsShapes(shape);
 
 			// Replace old shape with new shape
 			var index = shapes.IndexOf(shape);
@@ -160,7 +160,7 @@ namespace ShapeEditorAttempt
 
 			if (wasShapeClicked)
 			{
-				ClickData.Shape = newShape;
+				ClickData.Set(newShape);
 			}
 		}
 
@@ -194,18 +194,6 @@ namespace ShapeEditorAttempt
 				t = 0;
 
 			return Rectangle.FromLTRB(l, t, r, b);
-		}
-		
-		public void ShowSelectedShapesBorders(Shape[] selectedShapes)
-		{
-			foreach (var s in this.shapes)
-			{
-				s.BorderVisible = false;
-			}
-			foreach (var s in selectedShapes)
-			{
-				s.BorderVisible = true;
-			}
 		}
 	}
 }

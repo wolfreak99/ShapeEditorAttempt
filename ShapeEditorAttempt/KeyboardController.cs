@@ -23,21 +23,30 @@ namespace ShapeEditorAttempt
 			default:
 				break;
 			case Keys.R:
-				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
-					ClickData.Shape.Height = ClickData.Shape.Width;
+					foreach (var s in ClickData.Shapes)
+					{
+						s.Height = s.Width;
+					}
 				}
 				break;
 			case Keys.PageUp:
-				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
-					Canvas.Instance.layer.MoveShapeUp(ClickData.Shape);
+					foreach (var s in ClickData.Shapes)
+					{
+						Canvas.Instance.layer.MoveShapeUp(s);
+					}
 				}
 				break;
 			case Keys.PageDown:
-				if (!isDown && ClickData.Shape != null && Canvas.Instance.Focused)
+				if (!isDown && !ClickData.IsShapesEmpty() && Canvas.Instance.Focused)
 				{
-					Canvas.Instance.layer.MoveShapeDown(ClickData.Shape);
+					foreach (var s in ClickData.Shapes)
+					{
+						Canvas.Instance.layer.MoveShapeDown(s);
+					}
 				}
 				break;
 			case Keys.M:
@@ -69,6 +78,9 @@ namespace ShapeEditorAttempt
 				break;
 			case Keys.ShiftKey:
 				IsShiftDown = isDown;
+				break;
+			case Keys.OemQuestion:
+				Debug.Show();
 				break;
 			}
 

@@ -141,9 +141,21 @@ namespace ShapeEditorAttempt
 		public abstract bool IsPointOverShape(GraphicsPath path, Point point);
 		#endregion
 
+		/// <summary>
+		/// If ClickData's "Shapes" contains this shape, return true. 
+		/// </summary>
 		public bool ShapeIsSelected()
 		{
-			return ClickData.Shape == this || SelectorTool.ShapeIsSelected(this);
+			return ClickData.ContainsShapes(this);
+		}
+
+		private bool ShouldDrawBorder()
+		{
+			if (LoadSaveController.IsExportingImage) return false;
+			if (BorderVisible) return true;
+			if (KeyboardController.IsControlDown && ShapeIsSelected()) return true;
+
+			return false;
 		}
 
 		public void Draw(Canvas sender, Graphics graphics)
@@ -152,8 +164,7 @@ namespace ShapeEditorAttempt
 			DrawShape(graphics, pos);
 
 			// Create outline
-			if (!LoadSaveController.IsExportingImage && 
-				(BorderVisible || (KeyboardController.IsControlDown && ShapeIsSelected())))
+			if (ShouldDrawBorder())
 			{
 				var prevWidth = m_pen.Width;
 				var prevColor = Color;
@@ -169,6 +180,7 @@ namespace ShapeEditorAttempt
 
 				Rectangle borderPos = Position.InflatedBy(-EdgeWidth / 2, -EdgeWidth / 2);
 				pos = ShapeIsSelected() ? PreviewOffset(borderPos, ClickData.Action) : borderPos;
+
 				DrawBorder(graphics, pos);
 
 				Color = prevColor;
@@ -206,8 +218,7 @@ namespace ShapeEditorAttempt
 			{
 				throw new FieldAccessException("ApplyOffset attempted on unselected shape");
 			}
-
-			Rectangle value = Position;
+			
 			switch (action)
 			{
 			case ShapeClickAction.Drag:

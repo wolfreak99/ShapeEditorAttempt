@@ -100,7 +100,7 @@ namespace ShapeEditorAttempt
 		private static bool ExportToImage(string path)
 		{
 			bool result = true;
-			ClickData.Clear();
+			ClickData.Clear(true);
 
 			Canvas canvas = Canvas.Instance;
 
